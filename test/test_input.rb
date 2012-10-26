@@ -68,18 +68,50 @@ EOC
       end
     end
 
+    def test_load
+      json = <<-EOJ
+[
+{"name": "Alice"},
+{"name": "Bob"}
+]
+EOJ
+      @driver.expect_emit("groonga.command.load",
+                          @now,
+                          {
+                            "table" => "Users",
+                            "data" => json,
+                          })
+
+      @driver.run do
+        post("/d/load", json, "table" => "Users")
+      end
+    end
+
     private
     def get(path, parameters={})
+      http = Net::HTTP.new(@host, @port)
+      response = http.get(build_path(path, parameters))
+      assert_equal("200", response.code)
+      response
+    end
+
+    def post(path, body, parameters={})
+      http = Net::HTTP.new(@host, @port)
+      response = http.post(build_path(path, parameters),
+                           body,
+                           {"Content-Type" => "application/json"})
+      assert_equal("200", response.code)
+      response
+    end
+
+    def build_path(path, parameters)
       unless parameters.empty?
         url_encoded_parameters = parameters.collect do |key, value|
           "#{CGI.escape(key)}=#{CGI.escape(value)}"
         end
         path += "?" + url_encoded_parameters.join("&")
       end
-      http = Net::HTTP.new(@host, @port)
-      response = http.get(path)
-      assert_equal("200", response.code)
-      response
+      path
     end
   end
 end
