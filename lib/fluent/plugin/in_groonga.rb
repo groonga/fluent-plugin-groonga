@@ -26,6 +26,7 @@ module Fluent
     end
 
     config_param :protocol, :string, :default => "http"
+    config_param :port, :integer, :default => 10041
 
     def configure(conf)
       super
@@ -39,7 +40,7 @@ module Fluent
         $log.error message
         raise ConfigError, message
       end
-      @input.configure(conf.merge("port" => 10041))
+      @input.configure({"port" => @port}.merge(conf))
     end
 
     def start
@@ -52,7 +53,6 @@ module Fluent
 
     class HTTPInput < HttpInput
       def on_request(path_info, params)
-        p [path_info, params]
         case path_info
         when /\A\/d\/([a-zA-Z0-9\-_]+)\z/
           command = $1
