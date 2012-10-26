@@ -26,10 +26,7 @@ You can replicate your data by using `copy` output plugin.
 
 ## Install
 
-<pre>
-!!!command_line
-% gem install fluent-plugin-groonga
-</pre>
+    % gem install fluent-plugin-groonga
 
 ## Usage
 
