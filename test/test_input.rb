@@ -48,6 +48,7 @@ EOC
       @port = 2929
 
       @driver = create_driver
+      @last_response = nil
     end
 
     def configuration
@@ -65,6 +66,7 @@ EOC
 
       @driver.run do
         get("/d/table_create", "name" => "Users")
+        assert_equal("200", @last_response.code)
       end
     end
 
@@ -84,6 +86,14 @@ EOJ
 
       @driver.run do
         post("/d/load", json, "table" => "Users")
+        assert_equal("200", @last_response.code)
+      end
+    end
+
+    def test_not_command
+      @driver.run do
+        get("/index.html")
+        assert_equal("404", @last_response.code)
       end
     end
 
@@ -91,7 +101,7 @@ EOJ
     def get(path, parameters={})
       http = Net::HTTP.new(@host, @port)
       response = http.get(build_path(path, parameters))
-      assert_equal("200", response.code)
+      @last_response = response
       response
     end
 
@@ -100,7 +110,7 @@ EOJ
       response = http.post(build_path(path, parameters),
                            body,
                            {"Content-Type" => "application/json"})
-      assert_equal("200", response.code)
+      @last_response = response
       response
     end
 
