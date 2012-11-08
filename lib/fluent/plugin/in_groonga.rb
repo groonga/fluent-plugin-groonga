@@ -76,6 +76,25 @@ module Fluent
       config_param :port, :integer, :default => 10041
       config_param :real_host, :string
       config_param :real_port, :integer, :default => 10041
+      DEFAULT_EMIT_COMMANDS = [
+        /\Atable_/,
+        /\Acolumn_/,
+        "load",
+      ]
+      config_param :emit_commands, :default => DEFAULT_EMIT_COMMANDS do |value|
+        commands = value.split(/\s*,\s*/)
+        commands.collect do |command|
+          if /\A\/(.*)\/(i)?\z/ =~ command
+            pattern = $1
+            flag_mark = $2
+            flag = 0
+            flag |= Regexp::IGNORECASE if flag_mark == "i"
+            Regexp.new(pattern, flag)
+          else
+            command
+          end
+        end
+      end
 
       def start
         listen_socket = TCPServer.new(@bind, @port)
@@ -108,12 +127,30 @@ module Fluent
         repeater
       end
 
+      def emit(command, params, body)
+        return unless emit_command?(command)
+        case command
+        when "load"
+          params["data"] = body
+          Engine.emit("groonga.command.#{command}", Engine.now, params)
+        else
+          Engine.emit("groonga.command.#{command}", Engine.now, params)
+        end
+      end
+
       private
       def run
         @loop.run
       rescue
         $log.error "unexpected error", :error => $!.to_s
         $log.error_backtrace
+      end
+
+      def emit_command?(command)
+        return true if @emit_commands.empty?
+        @emit_commands.any? do |pattern|
+          pattern === command
+        end
       end
     end
 
@@ -156,18 +193,7 @@ module Fluent
           case path_info
           when /\A\/d\//
             command = $POSTMATCH
-            process(command, params, @body)
-          end
-        end
-
-        private
-        def process(command, params, body)
-          case command
-          when "load"
-            params["data"] = body
-            Engine.emit("groonga.command.#{command}", Engine.now, params)
-          else
-            Engine.emit("groonga.command.#{command}", Engine.now, params)
+            @input.emit(command, params, @body)
           end
         end
       end

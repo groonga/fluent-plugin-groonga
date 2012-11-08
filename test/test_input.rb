@@ -100,7 +100,7 @@ EOC
 EOC
     end
 
-    def test_basic_command
+    def test_target_command
       @driver.expect_emit("groonga.command.table_create",
                           @now,
                           {"name" => "Users"})
@@ -108,6 +108,14 @@ EOC
         get("/d/table_create", "name" => "Users")
         assert_equal("200", @last_response.code)
       end
+    end
+
+    def test_not_target_command
+      @driver.run do
+        get("/d/status")
+        assert_equal("200", @last_response.code)
+      end
+      assert_empty(@driver.emits)
     end
 
     def test_load
