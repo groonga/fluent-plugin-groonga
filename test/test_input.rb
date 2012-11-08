@@ -18,9 +18,13 @@
 require "time"
 require "cgi/util"
 require "net/http"
+require "webrick/config"
+require "webrick/httpresponse"
 
 require "fluent/test"
 require "fluent/plugin/in_groonga"
+
+require "http_parser"
 
 class GroongaInputTest < Test::Unit::TestCase
   setup
@@ -43,6 +47,41 @@ EOC
   end
 
   class HTTPTest < self
+    setup :before => :append
+    def setup_real_server
+      @real_host = "127.0.0.1"
+      @real_port = 29292
+      @real_server = TCPServer.new(@real_host, @real_port)
+      @repeater = nil
+      response_config = WEBrick::Config::HTTP.dup.update(:Logger => $log)
+      @real_response = WEBrick::HTTPResponse.new(response_config)
+      Thread.new do
+        @repeater = @real_server.accept
+        @real_server.close
+        parser = HTTP::Parser.new
+        parser.on_message_complete = lambda do
+          @real_response.send_response(@repeater)
+          @repeater.close
+        end
+
+        loop do
+          break if @repeater.closed?
+          data = @repeater.readpartial(4096)
+          break if data.nil?
+          parser << data
+        end
+      end
+    end
+
+    teardown
+    def teardown_real_server
+      @real_server.close unless @real_server.closed?
+
+      if @repeater and not @repeater.closed?
+        @repeater.close
+      end
+    end
+
     def setup
       @host = "127.0.0.1"
       @port = 2929
@@ -56,6 +95,8 @@ EOC
       protocol http
       bind #{@host}
       port #{@port}
+      real_host #{@real_host}
+      real_port #{@real_port}
 EOC
     end
 
@@ -63,7 +104,6 @@ EOC
       @driver.expect_emit("groonga.command.table_create",
                           @now,
                           {"name" => "Users"})
-
       @driver.run do
         get("/d/table_create", "name" => "Users")
         assert_equal("200", @last_response.code)
@@ -92,6 +132,7 @@ EOJ
 
     def test_not_command
       @driver.run do
+        @real_response.status = 404
         get("/index.html")
         assert_equal("404", @last_response.code)
       end

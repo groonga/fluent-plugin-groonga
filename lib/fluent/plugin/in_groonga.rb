@@ -16,10 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 require "English"
-
-require "webrick/config"
-require "webrick/httprequest"
-require "webrick/httpresponse"
+require "webrick/httputils"
 
 require "http_parser"
 
@@ -34,18 +31,17 @@ module Fluent
     config_param :protocol, :string, :default => "http"
     config_param :bind, :string, :default => "0.0.0.0"
     config_param :port, :integer, :default => 10041
-    config_param :proxy_protocol, :string, :default => nil
-    config_param :proxy_host, :string, :default => nil
-    config_param :proxy_port, :integer, :default => 10041
+    config_param :real_host, :string
+    config_param :real_port, :integer, :default => 10041
 
     def configure(conf)
       super
-      @proxy_factory = ProxyFactory.new(@proxy_protocol, @proxy_host, @proxy_port)
+      repeater_factory = RepeaterFactory.new(@real_host, @real_port)
       case @protocol
       when "http"
-        @input = HTTPInput.new(@bind, @port, @proxy_factory)
+        @input = HTTPInput.new(@bind, @port, repeater_factory)
       when "gqtp"
-        @input = GQTPInput.new(@bind, @port, @proxy_factory)
+        @input = GQTPInput.new(@bind, @port, repeater_factory)
       else
         message = "unknown protocol: <#{@protocol.inspect}>"
         $log.error message
@@ -61,30 +57,39 @@ module Fluent
       @input.shutdown
     end
 
-    class ProxyFactory
-      def initialize(protocol, host, port)
-        @protocol = protocol
+    class RepeaterFactory
+      def initialize(host, port)
         @host = host
         @port = port
       end
 
       def connect(client)
-        case @protocol
-        when "http"
-          HTTPGroongaProxy.connect(@host, @port, client)
-        else
-          nil
-        end
+        Repeater.connect(@host, @port, client)
+      end
+    end
+
+    class Repeater < Coolio::TCPSocket
+      def initialize(socket, handler)
+        super(socket)
+        @handler = handler
+      end
+
+      def on_read(data)
+        @handler.write(data)
+      end
+
+      def on_close
+        @handler.close
       end
     end
 
     class HTTPInput
       include DetachMultiProcessMixin
 
-      def initialize(bind, port, proxy_factory)
+      def initialize(bind, port, repeater_factory)
         @bind = bind
         @port = port
-        @proxy_factory = proxy_factory
+        @repeater_factory = repeater_factory
       end
 
       def start
@@ -92,8 +97,7 @@ module Fluent
         detach_multi_process do
           @loop = Coolio::Loop.new
 
-          @socket = Coolio::TCPServer.new(listen_socket, nil,
-                                          Handler, @loop, @proxy_factory)
+          @socket = Coolio::TCPServer.new(listen_socket, nil, Handler, self)
           @loop.attach(@socket)
 
           @shutdown_notifier = Coolio::AsyncWatcher.new
@@ -112,6 +116,12 @@ module Fluent
         @thread.join
       end
 
+      def create_repeater(client)
+        repeater = @repeater_factory.connect(client)
+        repeater.attach(@loop)
+        repeater
+      end
+
       private
       def run
         @loop.run
@@ -121,45 +131,19 @@ module Fluent
       end
 
       class Handler < Coolio::Socket
-        class << self
-          @@response_config = nil
-          def response_config
-            @@response_config ||= WEBrick::Config::HTTP.dup.update(
-              :Logger => $log
-            )
-          end
-        end
-
-        def initialize(socket, loop, proxy_factory)
+        def initialize(socket, input)
           super(socket)
-          @loop = loop
-          @proxy_factory = proxy_factory
-          @completed = false
+          @input = input
         end
-
-        alias_method :<<, :write
 
         def on_connect
           @parser = HTTP::Parser.new(self)
-          @proxy = @proxy_factory.connect(self)
-          if @proxy
-            @proxy.attach(@loop)
-            @response = nil
-          else
-            @response = WEBrick::HTTPResponse.new(self.class.response_config)
-          end
+          @repeater = @input.create_repeater(self)
         end
 
         def on_read(data)
           @parser << data
-          @proxy.write(data) if @proxy
-        end
-
-        def on_write_complete
-          return unless @completed
-          if @response
-            close
-          end
+          @repeater.write(data)
         end
 
         def on_message_begin
@@ -167,13 +151,6 @@ module Fluent
         end
 
         def on_headers_complete(headers)
-          expect = nil
-          headers.each do |name, value|
-            case name.downcase
-            when "content-type"
-              @content_type = value
-            end
-          end
         end
 
         def on_body(chunk)
@@ -187,16 +164,7 @@ module Fluent
           when /\A\/d\//
             command = $POSTMATCH
             process(command, params, @body)
-          else
-            if @response
-              @response.status = "404"
-            end
           end
-          if @response
-            @response["connection"] = "close"
-            @response.send_response(self)
-          end
-          @completed = true
         end
 
         private
@@ -209,21 +177,6 @@ module Fluent
             Engine.emit("groonga.command.#{command}", Engine.now, params)
           end
         end
-      end
-    end
-
-    class HTTPGroongaProxy < Coolio::TCPSocket
-      def initialize(socket, handler)
-        super(socket)
-        @handler = handler
-      end
-
-      def on_read(data)
-        @handler.write(data)
-      end
-
-      def on_close
-        @handler.close
       end
     end
   end
