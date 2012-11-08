@@ -19,7 +19,7 @@ require "fileutils"
 require "cgi/util"
 
 module Fluent
-  class GroongaOutput < ObjectBufferedOutput
+  class GroongaOutput < BufferedOutput
     Plugin.register_output("groonga", self)
 
     def initialize
@@ -27,6 +27,7 @@ module Fluent
     end
 
     config_param :protocol, :string, :default => "http"
+    config_param :table, :string, :default => nil
 
     def configure(conf)
       super
@@ -51,11 +52,34 @@ module Fluent
       @client.shutdown
     end
 
-    def write_objects(tag, chunk)
-      command = tag.split(/\./)[2]
-      chunk.each do |time, parameters|
-        @client.send(command, parameters)
+    def format(tag, time, record)
+      [time, record].to_msgpack
+    end
+
+    def write(chunk)
+      if /\Agroonga\.command\./ =~ chunk.key
+        command = $POSTMATCH
+        chunk.msgpack_each do |time, parameters|
+          @client.send(command, parameters)
+        end
+      else
+        store_chunk(chunk)
       end
+    end
+
+    private
+    def store_chunk(chunk)
+      return if @table.nil?
+
+      data = []
+      chunk.each do |time, parameters|
+        data << parameters
+      end
+      parameters = {
+        "table" => @table,
+        "data" => Yajl::Enocder.encode(data),
+      }
+      @client.send("load", parameters)
     end
 
     class HTTPClient
@@ -76,7 +100,10 @@ module Fluent
       include Configurable
 
       config_param :groonga, :string, :default => "groonga"
-      config_param :database, :string, :default => nil
+      config_param :database, :string
+      config_param :arguments, :default => [] do |value|
+        Shellwords.split(value)
+      end
 
       def initialize
         super
@@ -98,8 +125,8 @@ module Fluent
           output_fd => output_fd,
           :err => @error[1],
         }
-        arguments = [
-          "--log-path", "/tmp/groonga.log",
+        arguments = @arguments
+        arguments += [
           "--input-fd", input_fd.to_s,
           "--output-fd", output_fd.to_s,
         ]
@@ -133,7 +160,6 @@ module Fluent
         unless url_encoded_parameters.empty?
           path << "?#{url_encoded_parameters.join('&')}"
         end
-        p path
         @input[1].write("#{path}\n")
         if body
           body.each_line do |line|
@@ -141,7 +167,7 @@ module Fluent
           end
         end
         @input[1].flush
-        p @output[0].gets
+        # p @output[0].gets
       end
     end
   end
