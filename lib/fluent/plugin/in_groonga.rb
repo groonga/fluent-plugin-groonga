@@ -20,6 +20,9 @@ require "webrick/httputils"
 
 require "http_parser"
 
+require "gqtp"
+require "groonga/command"
+
 module Fluent
   class GroongaInput < Input
     Plugin.register_input("groonga", self)
@@ -195,6 +198,54 @@ module Fluent
             command = $POSTMATCH
             @input.emit(command, params, @body)
           end
+        end
+      end
+    end
+
+    class GQTPInput < BaseInput
+      private
+      def handler_class
+        Handler
+      end
+
+      class Handler < Coolio::Socket
+        def initialize(socket, input)
+          super(socket)
+          @input = input
+        end
+
+        def on_connect
+          @parser = Parser.new(@input)
+          @repeater = @input.create_repeater(self)
+        end
+
+        def on_read(data)
+          @parser << data
+          @repeater.write(data)
+        end
+      end
+
+      class Parser < GQTP::Parser
+        def initialize(input)
+          super()
+          @input = input
+        end
+
+        def on_body(chunk)
+          @body << chunk
+        end
+
+        def on_complete
+          command_line, body = @body.split(/\n/, 2)
+          return if command_line.nil?
+          command = Groonga::Command::Parser.parse(command_line.strip)
+          @input.emit(command.name, command.arguments, body)
+        end
+
+        private
+        def reset
+          super
+          @body = ""
         end
       end
     end
