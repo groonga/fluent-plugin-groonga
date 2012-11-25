@@ -53,17 +53,17 @@ module Fluent
     end
 
     def format(tag, time, record)
-      [time, record].to_msgpack
+      [tag, time, record].to_msgpack
     end
 
     def write(chunk)
-      if /\Agroonga\.command\./ =~ chunk.key
-        command = $POSTMATCH
-        chunk.msgpack_each do |time, parameters|
+      chunk.msgpack_each do |tag, time, parameters|
+        if /\Agroonga\.command\./ =~ tag
+          command = $POSTMATCH
           @client.send(command, parameters)
+        else
+          store_chunk(chunk)
         end
-      else
-        store_chunk(chunk)
       end
     end
 
