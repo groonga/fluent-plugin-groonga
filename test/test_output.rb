@@ -45,6 +45,68 @@ class GroongaOutputTest < Test::Unit::TestCase
 EOC
   end
 
+  class HTTPTest < self
+    setup :before => :append
+    def setup_real_server
+      @real_host = "127.0.0.1"
+      @real_port = 29292
+      @real_server_pid = fork do
+        exit
+        real_server = TCPServer.new(@real_host, @real_port)
+        response_config = WEBrick::Config::HTTP.dup.update(:Logger => $log)
+        real_response = WEBrick::HTTPResponse.new(response_config)
+        request_headers = nil
+        request_body = ""
+        client = real_server.accept
+        real_server.close
+        parser = HTTP::Parser.new
+        parser.on_headers_complete = lambda do |headers|
+          request_headers = headers
+        end
+        parser.on_body = lambda do |chunk|
+          request_body << chunk
+        end
+        parser.on_message_complete = lambda do
+          real_response.send_response(client)
+          client.close
+        end
+
+        loop do
+          break if client.closed?
+          data = client.readpartial(4096)
+          break if data.nil?
+          parser << data
+        end
+      end
+    end
+
+    teardown
+    def teardown_real_server
+      Process.kill(:INT, @pid)
+      Process.kill(:KILL, @pid)
+      Process.waitpid(@pid)
+    end
+
+    def configuration
+      <<-EOC
+      protocol http
+      host #{@real_host}
+      port #{@real_port}
+EOC
+    end
+
+    class CommandTest < self
+      def test_basic_command
+        driver = create_driver("groonga.command.table_create")
+        time = Time.parse("2012-10-26T08:45:42Z").to_i
+        driver.emit({"name" => "Users"}, time)
+        driver.run
+        # p @request_headers
+        # p @request_body
+      end
+    end
+  end
+
   class CommandLineTest < self
     setup :before => :append
     def setup_command

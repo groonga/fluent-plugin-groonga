@@ -87,6 +87,37 @@ module Fluent
 
       config_param :host, :string, :default => "localhost"
       config_param :port, :integer, :default => 10041
+
+      def start
+        @loop = Coolio::Loop.new
+      end
+
+      def shutdown
+        @loop.shutdown
+        @thread.join if @thread
+      end
+
+      def send(command, arguments)
+        path = "/d/#{command}"
+        http_arguments = arguments.collect do |key, value|
+          "#{CGI.escape(key)}=#{CGI.escape(value)}"
+        end
+        unless http_arguments.empty?
+          path << "?#{http_arguments.join('&')}"
+        end
+        client = GroongaHTTPClient.connect(@host, @port)
+        client.request("GET", path)
+        @loop.attach(client)
+        if @thread.nil?
+          @thread = Thread.new do
+            @loop.run
+            @thread = nil
+          end
+        end
+      end
+
+      class GroongaHTTPClient < Coolio::HttpClient
+      end
     end
 
     class GQTPClient
