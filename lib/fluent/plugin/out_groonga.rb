@@ -148,17 +148,17 @@ module Fluent
         Process.waitpid(@pid)
       end
 
-      def send(command, parameters={})
+      def send(command, arguments={})
         body = nil
         if command == "load"
-          body = parameters.delete("data")
+          body = arguments.delete("data")
         end
-        url_encoded_parameters = parameters.collect do |key, value|
+        url_encoded_arguments = arguments.collect do |key, value|
           "#{CGI.escape(key)}=#{CGI.escape(value)}"
         end
         path = "/d/#{command}"
-        unless url_encoded_parameters.empty?
-          path << "?#{url_encoded_parameters.join('&')}"
+        unless url_encoded_arguments.empty?
+          path << "?#{url_encoded_arguments.join('&')}"
         end
         @input[1].write("#{path}\n")
         if body
