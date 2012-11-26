@@ -71,13 +71,13 @@ module Fluent
     def store_chunk(chunk)
       return if @table.nil?
 
-      data = []
+      values = []
       chunk.each do |time, parameters|
-        data << parameters
+        values << parameters
       end
       parameters = {
         "table" => @table,
-        "data" => Yajl::Enocder.encode(data),
+        "values" => Yajl::Enocder.encode(values),
       }
       @client.send("load", parameters)
     end
@@ -182,7 +182,7 @@ module Fluent
       def send(command, arguments={})
         body = nil
         if command == "load"
-          body = arguments.delete("data")
+          body = arguments.delete("values")
         end
         url_encoded_arguments = arguments.collect do |key, value|
           "#{CGI.escape(key)}=#{CGI.escape(value)}"
