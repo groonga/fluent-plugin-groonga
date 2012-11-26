@@ -93,7 +93,7 @@ module Fluent
       end
 
       def shutdown
-        @loop.shutdown
+        @loop.stop
         @thread.join if @thread
       end
 
