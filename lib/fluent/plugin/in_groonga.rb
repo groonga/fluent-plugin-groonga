@@ -234,20 +234,25 @@ module Fluent
         end
 
         def on_body(chunk)
-          @body << chunk
+          @command_parser << chunk
         end
 
         def on_complete
-          command_line, body = @body.split(/\n/, 2)
-          return if command_line.nil?
-          command = Groonga::Command::Parser.parse(command_line.strip)
-          @input.emit(command.name, command.arguments, body)
+          @command_parser.finish
         end
 
         private
         def reset
           super
-          @body = ""
+          @command_parser = Groonga::Command::Parser.new
+          @command_parser.on_command do |command|
+            @input.emit(command.name, command.arguments)
+          end
+          @command_parser.on_load_value do |command, value|
+            arguments = command.arguments.dup
+            arguments[:values] = Yajl::Encoder.encode([value])
+            @input.emit(command.name, arguments)
+          end
         end
       end
     end
