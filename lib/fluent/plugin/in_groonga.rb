@@ -130,11 +130,10 @@ module Fluent
         repeater
       end
 
-      def emit(command, params, body)
+      def emit(command, params)
         return unless emit_command?(command)
         case command
         when "load"
-          params["data"] = body
           Engine.emit("groonga.command.#{command}", Engine.now, params)
         else
           Engine.emit("groonga.command.#{command}", Engine.now, params)
@@ -196,7 +195,10 @@ module Fluent
           case path_info
           when /\A\/d\//
             command = $POSTMATCH
-            @input.emit(command, params, @body)
+            if command == "load"
+              params["values"] = @body unless @body.empty?
+            end
+            @input.emit(command, params)
           end
         end
       end
