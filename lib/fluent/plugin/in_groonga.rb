@@ -225,12 +225,17 @@ module Fluent
           @parser << data
           @repeater.write(data)
         end
+
+        def on_close
+          @parser.close
+        end
       end
 
       class Parser < GQTP::Parser
         def initialize(input)
           super()
           @input = input
+          initialize_command_parser
         end
 
         def on_body(chunk)
@@ -238,18 +243,22 @@ module Fluent
         end
 
         def on_complete
+          @command_parser << "\n"
+        end
+
+        def close
           @command_parser.finish
         end
 
         private
-        def reset
-          super
+        def initialize_command_parser
           @command_parser = Groonga::Command::Parser.new
           @command_parser.on_command do |command|
             @input.emit(command.name, command.arguments)
           end
           @command_parser.on_load_value do |command, value|
             arguments = command.arguments.dup
+            arguments[:columns] = command.columns.join(", ")
             arguments[:values] = Yajl::Encoder.encode([value])
             @input.emit(command.name, arguments)
           end

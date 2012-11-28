@@ -90,10 +90,21 @@ module Fluent
 
       def start
         @loop = Coolio::Loop.new
+        @queue = Queue.new
+        @thread = Thread.new do
+          loop do
+            path = @queue.pop
+            break if path.nil?
+            client = GroongaHTTPClient.connect(@host, @port)
+            client.request("GET", path)
+            @loop.attach(client)
+            @loop.run
+          end
+        end
       end
 
       def shutdown
-        @loop.stop
+        @queue.push(nil)
         @thread.join if @thread
       end
 
@@ -105,18 +116,12 @@ module Fluent
         unless http_arguments.empty?
           path << "?#{http_arguments.join('&')}"
         end
-        client = GroongaHTTPClient.connect(@host, @port)
-        client.request("GET", path)
-        @loop.attach(client)
-        if @thread.nil?
-          @thread = Thread.new do
-            @loop.run
-            @thread = nil
-          end
-        end
+        @queue.push(path)
       end
 
       class GroongaHTTPClient < Coolio::HttpClient
+        def on_body_data(data)
+        end
       end
     end
 
