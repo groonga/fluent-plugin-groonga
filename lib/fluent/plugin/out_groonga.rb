@@ -119,6 +119,20 @@ module Fluent
 
       config_param :host, :string, :default => "localhost"
       config_param :port, :integer, :default => 10041
+
+      def start
+        @client = GQTP::Client.new(:host => @host,
+                                   :port => @port,
+                                   :connection => :synchronous)
+      end
+
+      def shutdown
+      end
+
+      def send(command)
+        @client.send(command.to_command_format) do |header, body|
+        end
+      end
     end
 
     class CommandClient
