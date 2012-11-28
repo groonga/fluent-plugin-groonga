@@ -197,19 +197,12 @@ module Fluent
         Process.waitpid(@pid)
       end
 
-      def send(command, arguments={})
+      def send(command)
         body = nil
-        if command == "load"
-          body = arguments.delete("values")
+        if command.name == "load"
+          body = command.arguments.delete(:values)
         end
-        url_encoded_arguments = arguments.collect do |key, value|
-          "#{CGI.escape(key)}=#{CGI.escape(value)}"
-        end
-        path = "/d/#{command}"
-        unless url_encoded_arguments.empty?
-          path << "?#{url_encoded_arguments.join('&')}"
-        end
-        @input[1].write("#{path}\n")
+        @input[1].write("#{command.to_uri_format}\n")
         if body
           body.each_line do |line|
             @input[1].write("#{line}\n")
