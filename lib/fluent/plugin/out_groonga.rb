@@ -96,26 +96,16 @@ module Fluent
 
       def start
         @loop = Coolio::Loop.new
-        @queue = Queue.new
-        @thread = Thread.new do
-          loop do
-            path = @queue.pop
-            break if path.nil?
-            client = GroongaHTTPClient.connect(@host, @port)
-            client.request("GET", path)
-            @loop.attach(client)
-            @loop.run
-          end
-        end
       end
 
       def shutdown
-        @queue.push(nil)
-        @thread.join if @thread
       end
 
       def send(command)
-        @queue.push(command.to_uri_format)
+        client = GroongaHTTPClient.connect(@host, @port)
+        client.request("GET", command.to_uri_format)
+        @loop.attach(client)
+        @loop.run
       end
 
       class GroongaHTTPClient < Coolio::HttpClient
