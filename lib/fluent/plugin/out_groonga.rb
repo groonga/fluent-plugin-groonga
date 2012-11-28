@@ -57,10 +57,10 @@ module Fluent
     end
 
     def write(chunk)
-      chunk.msgpack_each do |tag, time, parameters|
+      chunk.msgpack_each do |tag, time, arguments|
         if /\Agroonga\.command\./ =~ tag
-          command = $POSTMATCH
-          @client.send(command, parameters)
+          name = $POSTMATCH
+          send_command(name, arguments)
         else
           store_chunk(chunk)
         end
@@ -68,18 +68,24 @@ module Fluent
     end
 
     private
+    def send_command(name, arguments)
+      command_class = Groonga::Command.find(name)
+      command = command_class.new(name, arguments)
+      @client.send(command)
+    end
+
     def store_chunk(chunk)
       return if @table.nil?
 
       values = []
-      chunk.each do |time, parameters|
-        values << parameters
+      chunk.each do |time, value|
+        values << value
       end
-      parameters = {
+      arguments = {
         "table" => @table,
         "values" => Yajl::Enocder.encode(values),
       }
-      @client.send("load", parameters)
+      send_command("load", arguments)
     end
 
     class HTTPClient
@@ -108,15 +114,8 @@ module Fluent
         @thread.join if @thread
       end
 
-      def send(command, arguments)
-        path = "/d/#{command}"
-        http_arguments = arguments.collect do |key, value|
-          "#{CGI.escape(key)}=#{CGI.escape(value)}"
-        end
-        unless http_arguments.empty?
-          path << "?#{http_arguments.join('&')}"
-        end
-        @queue.push(path)
+      def send(command)
+        @queue.push(command.to_uri_format)
       end
 
       class GroongaHTTPClient < Coolio::HttpClient
