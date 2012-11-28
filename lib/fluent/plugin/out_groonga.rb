@@ -163,6 +163,33 @@ module Fluent
       end
 
       def start
+        run_groonga
+        wrap_io
+      end
+
+      def shutdown
+        @groonga_input.close
+        @groonga_output.close
+        @groonga_error.close
+        Process.waitpid(@pid)
+      end
+
+      def send(command)
+        body = nil
+        if command.name == "load"
+          body = command.arguments.delete(:values)
+        end
+        @groonga_input.write("#{command.to_uri_format}\n")
+        if body
+          body.each_line do |line|
+            @groonga_input.write("#{line}\n")
+          end
+        end
+        @loop.run
+      end
+
+      private
+      def run_groonga
         env = {}
         @input = IO.pipe("ASCII-8BIT")
         @output = IO.pipe("ASCII-8BIT")
@@ -190,26 +217,22 @@ module Fluent
         @error[1].close
       end
 
-      def shutdown
-        @input[1].close
-        @output[0].close
-        @error[0].close
-        Process.waitpid(@pid)
-      end
+      def wrap_io
+        @loop = Coolio::Loop.new
 
-      def send(command)
-        body = nil
-        if command.name == "load"
-          body = command.arguments.delete(:values)
+        @groonga_input = Coolio::IO.new(@input[1])
+        on_write_complete = lambda do
+          @loop.stop
         end
-        @input[1].write("#{command.to_uri_format}\n")
-        if body
-          body.each_line do |line|
-            @input[1].write("#{line}\n")
-          end
+        @groonga_input.on_write_complete do
+          on_write_complete.call
         end
-        @input[1].flush
-        # p @output[0].gets
+        @groonga_output = Coolio::IO.new(@output[0])
+        @groonga_error = Coolio::IO.new(@error[0])
+
+        @loop.attach(@groonga_input)
+        @loop.attach(@groonga_output)
+        @loop.attach(@groonga_error)
       end
     end
   end
