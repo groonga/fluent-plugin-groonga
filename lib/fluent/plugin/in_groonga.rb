@@ -132,12 +132,7 @@ module Fluent
 
       def emit(command, params)
         return unless emit_command?(command)
-        case command
-        when "load"
-          Engine.emit("groonga.command.#{command}", Engine.now, params)
-        else
-          Engine.emit("groonga.command.#{command}", Engine.now, params)
-        end
+        Engine.emit("groonga.command.#{command}", Engine.now, params)
       end
 
       private
