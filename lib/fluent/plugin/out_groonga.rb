@@ -121,17 +121,27 @@ module Fluent
       config_param :port, :integer, :default => 10041
 
       def start
-        @client = GQTP::Client.new(:host => @host,
-                                   :port => @port,
-                                   :connection => :synchronous)
+        @loop = Coolio::Loop.new
+        @client = nil
       end
 
       def shutdown
+        return if @client.nil?
+        @client.send("shutdown") do
+          @loop.stop
+        end
+        @loop.run
       end
 
       def send(command)
+        @client ||= GQTP::Client.new(:host => @host,
+                                     :port => @port,
+                                     :connection => :coolio,
+                                     :loop => @loop)
         @client.send(command.to_command_format) do |header, body|
+          @loop.stop
         end
+        @loop.run
       end
     end
 
