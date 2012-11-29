@@ -27,6 +27,7 @@ Gem::Specification.new do |spec|
 
   spec.files = ["README.md", "Gemfile", "#{spec.name}.gemspec"]
   spec.files += Dir.glob("lib/**/*.rb")
+  spec.files += Dir.glob("sample/**/*")
   spec.files += Dir.glob("doc/text/**/*")
   spec.require_paths = ["lib"]
 
