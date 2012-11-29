@@ -76,6 +76,8 @@ Here is an example:
   * `arguments`: It specifies additional arguments for groonga command.
      * default: no additional arguments.
 
+Here is an example:
+
     <match groonga.command.*>
       type groonga
       protocol command
