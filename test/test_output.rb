@@ -117,6 +117,8 @@ EOC
       @groonga_stub_path = File.join(@temporary_directory, "groonga")
       @command_line_path = File.join(@temporary_directory, "command-line")
       @input_path = File.join(@temporary_directory, "input")
+      @input_fd_path = File.join(@temporary_directory, "input-fd")
+      @output_fd_path = File.join(@temporary_directory, "output-fd")
       @database_path = File.join(@temporary_directory, "database")
 
       File.open(@groonga_stub_path, "w") do |groonga_stub|
@@ -130,6 +132,10 @@ end
 input_fd = ARGV[ARGV.index("--input-fd") + 1]
 input = IO.new(input_fd.to_i)
 
+File.open(#{@input_fd_path.inspect}, "a") do |file|
+  file.print(input_fd)
+end
+
 File.open(#{@input_path.inspect}, "a") do |file|
   input.each_line do |line|
     file.print(line)
@@ -138,6 +144,11 @@ end
 
 output_fd = ARGV[ARGV.index("--output-fd") + 1]
 output = IO.new(output_fd.to_i)
+
+File.open(#{@output_fd_path.inspect}, "a") do |file|
+  file.print(output_fd)
+end
+
 output.puts("done")
 output.flush
 EOR
@@ -170,6 +181,14 @@ EOC
       File.read(@input_path)
     end
 
+    def actual_input_fd
+      File.read(@input_fd_path)
+    end
+
+    def actual_output_fd
+      File.read(@output_fd_path)
+    end
+
     class CommandTest < self
       def test_basic_command
         driver = create_driver("groonga.command.table_create")
@@ -178,8 +197,8 @@ EOC
         driver.run
         assert_equal([
                        [
-                         "--input-fd", "5",
-                         "--output-fd", "8",
+                         "--input-fd", actual_input_fd,
+                         "--output-fd", actual_output_fd,
                          "-n", @database_path,
                        ],
                        "/d/table_create?name=Users\n",
