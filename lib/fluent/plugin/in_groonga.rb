@@ -82,6 +82,9 @@ module Fluent
       DEFAULT_EMIT_COMMANDS = [
         /\Atable_/,
         /\Acolumn_/,
+        "delete",
+        "register",
+        "truncate",
         "load",
       ]
       config_param :emit_commands, :default => DEFAULT_EMIT_COMMANDS do |value|
