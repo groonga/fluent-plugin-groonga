@@ -82,9 +82,9 @@ EOC
 
     teardown
     def teardown_real_server
-      Process.kill(:INT, @pid)
-      Process.kill(:KILL, @pid)
-      Process.waitpid(@pid)
+      Process.kill(:INT, @real_server_pid)
+      Process.kill(:KILL, @real_server_pid)
+      Process.waitpid(@real_server_pid)
     end
 
     def configuration
