@@ -1,2 +1,4 @@
 /test/.test-result/
 /pkg/
+/.yardoc/
+/doc/reference/
