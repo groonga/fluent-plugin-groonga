@@ -34,6 +34,8 @@ You can replicate your data by using `copy` output plugin.
 
 * About configuration: See doc/text/configuration.md or
   [Web](http://www.rubydoc.info/gems/fluent-plugin-groonga/file/configuration.md).
+* About constitution: See doc/text/constitution.md or
+  [Web](http://www.rubydoc.info/gems/fluent-plugin-groonga/file/constitution.md).
 
 ## Authors
 
