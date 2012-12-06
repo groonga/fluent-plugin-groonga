@@ -44,7 +44,7 @@ Here is a diagram of this constitution.
     +--------+ <------> | fluentd | <------> | master  |
     |        |          +---------+          | groonga |
     | client |        update |               +---------+
-    |        |              \_/              
+    |        |              \_/
     |        |  search  +---------+
     +--------+ <------> |  slave  |
                         | groonga |
@@ -85,7 +85,7 @@ Here is an example configuration file:
                                # master groonga server and slave groonga server
       host 192.168.29.29       # IP address of slave groonga server
       port 10041               # Port number of slave groonga server
-      
+
       # Buffer
       flush_interval 1s        # Use small value for less delay replication
 
@@ -95,7 +95,7 @@ Here is an example configuration file:
       ## configuration.
 
       ## For supporting resending data after fluentd is restarted
-      # buffer_type file         
+      # buffer_type file
       # buffer_path /var/log/fluent/groonga.*.buffer
       ## Use large value if a record has many data in load command.
       ## A value in load command is a chunk.
@@ -107,3 +107,29 @@ Here is an example configuration file:
       ## A value in load command is a chunk.
       # buffer_queue_limit 10000
     </match>
+
+### Medium system
+
+In medium system, you has two or more groonga slave servers.
+
+Here is a diagram of this constitution.
+
+                update               update
+                 and                  and
+                search  +---------+  search  +---------+
+    +--------+ <------> | fluentd | <------> | master  |
+    |        |          +---------+          | groonga |
+    | client |               +--------+      +---------+
+    |        |                        |
+    +--------+  search  +---------+   |
+    |        | <------> |  slave  | <-+ update
+    | client |          | groonga |   |
+    |        |          +---------+   |
+    +--------+  search  +---------+   |
+    |        | <------> |  slave  | <-+ update
+    | client |          | groonga |   |
+    |        |          +---------+   |
+    +- ...  -+   ...        ...      ...
+
+TODO: ...
+
