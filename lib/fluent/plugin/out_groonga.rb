@@ -126,7 +126,7 @@ module Fluent
 
       def shutdown
         return if @client.nil?
-        @client.send("shutdown") do
+        @client.close do
           @loop.stop
         end
         @loop.run
