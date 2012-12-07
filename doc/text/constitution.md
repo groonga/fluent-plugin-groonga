@@ -166,7 +166,9 @@ You cannot update data until you finish to recover.
 
 ### Medium system
 
-In medium system, you has two or more groonga slave servers.
+In medium system, you have two or more slave groonga servers. Fluentd
+updates two or more slave groonga servers with the `copy` output
+plugin and the `groonga` output plugin.
 
 Here is a diagram of this constitution.
 
@@ -189,3 +191,49 @@ Here is a diagram of this constitution.
 
 TODO: ...
 
+### Large system
+
+In large system, you have two or more slave groonga server clusters.
+Fluentd that connects with master groonga server updates two or more
+fluentds that are in slave groonga server clusters with the `copy`
+output plugin and the `forward` output plugin. A slave cluster has a
+fluentd. Fluentd in slave groonga server clusters updates slave
+groonga server in the same slave groonga server cluster by the `copy`
+output plugin and `groonga` output plugin.
+
+Here is a diagram of this constitution.
+
+                update                 update
+                 and                    and
+                search    +---------+  search  +---------+
+    +--------+ <--------> | fluentd | <------> | master  |
+    |        |            +---------+          | groonga |
+    | client |                |                +---------+
+    |        |                +------------------------------+
+    +--------+          +----------------------------------+ |
+    |        |          |        slave cluster             | |
+    | client |  search  | +---------+  update  +---------+ | |
+    |        | <------> | |  slave  | <------- | fluentd | <-+ update
+    +--------|          | | groonga |          +---------+ | |
+    |        |          | +---------+   +-----------+      | |
+    | client |  search  | +---------+   |                  | |
+    |        | <------> | |  slave  | <-+ update           | |
+    +--------|          | | groonga |   |                  | |
+    |        |          | +---------+   |                  | |
+    |  ...   |   ...    |     ...      ...                 | |
+                        +----------------------------------+ |
+    +--------+          +----------------------------------+ |
+    |        |          |        slave cluster             | |
+    | client |  search  | +---------+  update  +---------+ | |
+    |        | <------> | |  slave  | <------- | fluentd | <-+ update
+    +--------|          | | groonga |          +---------+ | |
+    |        |          | +---------+   +-----------+      | |
+    | client |  search  | +---------+   |                  | |
+    |        | <------> | |  slave  | <-+ update           | |
+    +--------|          | | groonga |   |                  | |
+    |        |          | +---------+   |                  | |
+    |  ...   |   ...    |     ...      ...                 | |
+                        +----------------------------------+ |
+                                      ...                   ...
+
+TODO: ...
