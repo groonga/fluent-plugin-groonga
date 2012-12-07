@@ -7,16 +7,16 @@ ready groonga system. This document describes some patterns.
 
 Here are available patterns:
 
-* Master slave replication
-* Resending data to recovered slave
+  * Master slave replication
+  * Resending data to recovered slave
 
 Here are unavailable patterns:
 
-* Multi master replication
-* Auto slave recovery
-* Dynamic slave adding
-* Failover
-* No SPOF (Single Point of Failure) without downing service level
+  * Multi master replication
+  * Auto slave recovery
+  * Dynamic slave adding
+  * Failover
+  * No SPOF (Single Point of Failure) without downing service level
 
 ## Master slave replication
 
@@ -102,7 +102,12 @@ Here is an example configuration file:
       # buffer_chunk_limit 256m
       ## Use large value if you want to support resending data after
       ## slave groonga server is down long time.
-      # retry_limit 100
+      ## 17: about 1.5day =
+      ##       ((2 ** 0) + (2 ** 1) + ... + (2 ** 17)) / 60.0 / 60.0 / 24.0
+      ##     (default)
+      ## 18: about 3.0day = ((2 ** 0) + ... + (2 ** 18)) / ...
+      ## 19: about 6.0day = ((2 ** 0) + ... + (2 ** 19)) / ...
+      # retry_limit 19
       ## Use large value if you load many records.
       ## A value in load command is a chunk.
       # buffer_queue_limit 10000
@@ -118,11 +123,46 @@ You cannot update data until fluentd is up.
 
 #### How to recover from master groonga server down
 
-If master groonga server is down, you ...
+Here are recover steps when master groonga server is down:
 
-TODO
+  1. Stop fluentd.
+  2. Run `grndump /PATH/TO/SLAVE/GROONGA/SERVER/DB` on slave groonga
+     server host.
+  3. Run `groonga -n /PATH/TO/MASTER/GROONGA/SERVER/DB <
+     SLAVE_GROONGA_DUMP.grn` on master groonga server.
+  4. Run master groonga server.
+  5. Start fluentd.
+
+You cannot update data until you finish to recover.
 
 #### How to recover from slave groonga server down
+
+Here are recover steps when slave groonga server is down:
+
+  1. Run `grndump /PATH/TO/MASTER/GROONGA/SERVER/DB` on master groonga
+     server host.
+  2. Run `groonga -n /PATH/TO/SLAVE/GROONGA/SERVER/DB <
+     MASTER_GROONGA_DUMP.grn` on slave groonga server.
+  3. Run slave groonga server.
+
+You can update data while you recover. If your system can't process
+all search requests by only master groonga server, your system will be
+down.
+
+You need to recover slave groonga server before fluentd's buffer queue
+is full (see `buffer_queue_limit`) or fluentd gives up retrying (see
+`retry_limit`). Here are recover steps when you cannot recover slave
+groonga server before those situations:
+
+  1. Stop fluentd.
+  2. Run `grndump /PATH/TO/MASTER/GROONGA/SERVER/DB` on master groonga
+     server host.
+  3. Run `groonga -n /PATH/TO/SLAVE/GROONGA/SERVER/DB <
+     SLAVE_GROONGA_DUMP.grn` on slave groonga server.
+  4. Run slave groonga server.
+  5. Start fluentd.
+
+You cannot update data until you finish to recover.
 
 ### Medium system
 
