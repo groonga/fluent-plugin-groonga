@@ -110,7 +110,17 @@ Here is an example configuration file:
 
 #### How to recover from fluentd down
 
+If fluentd is down, you just restart fluentd. Note that you may resend
+the last command if fluentd is down while you are sending update
+commands.
+
+You cannot update data until fluentd is up.
+
 #### How to recover from master groonga server down
+
+If master groonga server is down, you ...
+
+TODO
 
 #### How to recover from slave groonga server down
 
