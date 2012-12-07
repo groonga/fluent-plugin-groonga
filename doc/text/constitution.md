@@ -108,6 +108,12 @@ Here is an example configuration file:
       # buffer_queue_limit 10000
     </match>
 
+#### How to recover from fluentd down
+
+#### How to recover from master groonga server down
+
+#### How to recover from slave groonga server down
+
 ### Medium system
 
 In medium system, you has two or more groonga slave servers.
