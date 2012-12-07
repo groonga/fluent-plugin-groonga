@@ -32,10 +32,10 @@ You can replicate your data by using `copy` output plugin.
 
 ## Usage
 
-* About configuration: See doc/text/configuration.md or
-  [Web](http://www.rubydoc.info/gems/fluent-plugin-groonga/file/configuration.md).
-* About constitution: See doc/text/constitution.md or
-  [Web](http://www.rubydoc.info/gems/fluent-plugin-groonga/file/constitution.md).
+* [Configuration](doc/text/configuration.md)
+  ([on the Web](http://www.rubydoc.info/gems/fluent-plugin-groonga/file/doc/text/configuration.md))
+* [Constitution](doc/text/constitution.md)
+  ([on the Web](http://www.rubydoc.info/gems/fluent-plugin-groonga/file/doc/text/constitution.md))
 
 ## Authors
 
