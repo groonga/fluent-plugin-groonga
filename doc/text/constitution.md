@@ -189,6 +189,82 @@ Here is a diagram of this constitution.
     |        |          +---------+   |
     +- ...  -+   ...        ...      ...
 
+Here is an example configuration file:
+
+    # For master groonga server
+    <source>
+      type groonga
+      protocol gqtp          # Or use the below line
+      # protocol http
+      bind 127.0.0.1         # For client side fluentd
+      # bind 192.168.0.1     # For master groonga server side fluentd
+      port 10041
+      real_host 192.168.29.1 # IP address of master groonga server
+      real_port 10041        # Port number of master groonga server
+      # real_port 20041      # Use different port number
+                             # for master groonga server side fluentd
+    </source>
+
+    # For slave groonga servers
+    <match groonga.command.*>
+      type copy
+
+      # The first slave groonga server
+      <store>
+        type groonga
+        protocol gqtp            # Or use the below line
+        # protocol http          # You can use different protocol for
+                                 # master groonga server and slave groonga server
+        host 192.168.29.2        # IP address of slave groonga server
+        port 10041               # Port number of slave groonga server
+
+        # Buffer
+        flush_interval 1s        # Use small value for less delay replication
+
+        ## Use the following configurations to support resending data to
+        ## recovered slave groonga server. If you don't care about slave
+        ## groonga server is down case, you don't need the following
+        ## configuration.
+
+        ## For supporting resending data after fluentd is restarted
+        # buffer_type file
+        # buffer_path /var/log/fluent/groonga.*.buffer
+        ## Use large value if a record has many data in load command.
+        ## A value in load command is a chunk.
+        # buffer_chunk_limit 256m
+        ## Use large value if you want to support resending data after
+        ## slave groonga server is down long time.
+        ## 17: about 1.5day =
+        ##       ((2 ** 0) + (2 ** 1) + ... + (2 ** 17)) / 60.0 / 60.0 / 24.0
+        ##     (default)
+        ## 18: about 3.0day = ((2 ** 0) + ... + (2 ** 18)) / ...
+        ## 19: about 6.0day = ((2 ** 0) + ... + (2 ** 19)) / ...
+        # retry_limit 19
+        ## Use large value if you load many records.
+        ## A value in load command is a chunk.
+        # buffer_queue_limit 10000
+      </store>
+
+      # The second slave groonga server
+      <store>
+        type groonga
+        protocol gqtp            # Or use the below line
+        # protocol http          # You can use different protocol for
+                                 # master groonga server and slave groonga server
+        host 192.168.29.3        # IP address of slave groonga server
+        port 10041               # Port number of slave groonga server
+
+        # Buffer
+        # ...
+      </store>
+
+      # More slave groonga servers
+      # <store>
+      #   type groonga
+      #   ...
+      # </store>
+    </match>
+
 TODO: ...
 
 ### Large system
