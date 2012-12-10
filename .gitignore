@@ -2,3 +2,4 @@
 /pkg/
 /.yardoc/
 /doc/reference/
+/doc/po/*.pot
