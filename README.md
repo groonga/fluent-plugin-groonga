@@ -18,7 +18,7 @@ plugin. Both of them are named `groonga`.
 The input plugin provides groonga compatible interface. It means that
 HTTP and GQTP interface. You can use the input plugin as groonga
 server. The input plugin receives groonga commands and sends them to
-the output plugin through some fluentds.
+the output plugin through zero or more fluentds.
 
 The output plugin sends received groonga commands to groonga. The
 output plugin supports all interfaces, HTTP, GQTP and command

@@ -126,8 +126,8 @@ You cannot update data until fluentd is up.
 Here are recover steps when master groonga server is down:
 
   1. Stop fluentd.
-  2. Run `grndump /PATH/TO/SLAVE/GROONGA/SERVER/DB` on slave groonga
-     server host.
+  2. Run `grndump /PATH/TO/SLAVE/GROONGA/SERVER/DB >
+     SLAVE_GROONGA_DUMP.grn` on slave groonga server host.
   3. Run `groonga -n /PATH/TO/MASTER/GROONGA/SERVER/DB <
      SLAVE_GROONGA_DUMP.grn` on master groonga server.
   4. Run master groonga server.
@@ -139,8 +139,8 @@ You cannot update data until you finish to recover.
 
 Here are recover steps when slave groonga server is down:
 
-  1. Run `grndump /PATH/TO/MASTER/GROONGA/SERVER/DB` on master groonga
-     server host.
+  1. Run `grndump /PATH/TO/MASTER/GROONGA/SERVER/DB >
+     MASTER_GROONGA_DUMP.grn` on master groonga server host.
   2. Run `groonga -n /PATH/TO/SLAVE/GROONGA/SERVER/DB <
      MASTER_GROONGA_DUMP.grn` on slave groonga server.
   3. Run slave groonga server.
@@ -155,10 +155,10 @@ is full (see `buffer_queue_limit`) or fluentd gives up retrying (see
 groonga server before those situations:
 
   1. Stop fluentd.
-  2. Run `grndump /PATH/TO/MASTER/GROONGA/SERVER/DB` on master groonga
-     server host.
+  2. Run `grndump /PATH/TO/MASTER/GROONGA/SERVER/DB >
+     MASTER_GROONGA_DUMP.grn` on master groonga server host.
   3. Run `groonga -n /PATH/TO/SLAVE/GROONGA/SERVER/DB <
-     SLAVE_GROONGA_DUMP.grn` on slave groonga server.
+     MASTER_GROONGA_DUMP.grn` on slave groonga server host.
   4. Run slave groonga server.
   5. Start fluentd.
 
@@ -166,7 +166,7 @@ You cannot update data until you finish to recover.
 
 ### Medium system
 
-In medium system, you have two or more slave groonga servers. Fluentd
+In medium system, you have three or more slave groonga servers. Fluentd
 updates two or more slave groonga servers with the `copy` output
 plugin and the `groonga` output plugin.
 
