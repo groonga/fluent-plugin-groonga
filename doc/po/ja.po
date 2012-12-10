@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-20 22:17+0900\n"
-"PO-Revision-Date: 2012-12-10 11:56+0900\n"
+"PO-Revision-Date: 2012-12-10 14:30+0900\n"
 "Last-Translator: Kouhei Sutou <kou@clear-code.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -20,15 +20,15 @@ msgstr ""
 # title
 #: ../../README.md:1
 msgid "README"
-msgstr ""
+msgstr "はじめに"
 
 #: ../../README.md:3
 msgid "# README"
-msgstr ""
+msgstr "# はじめに"
 
 #: ../../README.md:5
 msgid "## Name"
-msgstr ""
+msgstr "## 名前"
 
 #: ../../README.md:7
 msgid "fluent-plugin-groonga"
@@ -36,41 +36,41 @@ msgstr ""
 
 #: ../../README.md:9
 msgid "## Description"
-msgstr ""
+msgstr "## 説明"
 
 #: ../../README.md:11
 msgid ""
 "Fluent-plugin-groonga is fluentd plugin collection for\n"
 "[groonga](http://groonga.org/) users. Groonga users can replicate\n"
 "their data by fluent-plugin-groonga."
-msgstr ""
+msgstr "fluent-plugin-groongaは [groonga](http://groonga.org/ja/) ユーザー用のfluentdプラグイン集です。groongaユーザーはfluent-plugin-groongaを使ってレプリケーションを実現することができます。"
 
 #: ../../README.md:15
 msgid "Fluent-plugin-groonga includes an input plugin and an output\nplugin. Both of them are named `groonga`."
-msgstr ""
+msgstr "fluent-plugin-groongaはinputプラグインとoutputプラグインを提供しています。どちらも `groonga` という名前です。"
 
 #: ../../README.md:18
 msgid ""
 "The input plugin provides groonga compatible interface. It means that\n"
 "HTTP and GQTP interface. You can use the input plugin as groonga\n"
 "server. The input plugin receives groonga commands and sends them to\n"
-"the output plugin through some fluentds."
-msgstr ""
+"the output plugin through zero or more fluentds."
+msgstr "inputプラグインはgroongaと互換性のあるインターフェイスを提供します。つまり、HTTPインターフェイスとGQTPインターフェイスがあるということです。inputプラグインをgroongaサーバーと同じように使うことができます。inputプラグインはgroongaのコマンドを受け取って、受け取ったgroongaのコマンドを0個以上のfluentdを経由してoutputプラグインに送ります。"
 
 #: ../../README.md:23
 msgid ""
 "The output plugin sends received groonga commands to groonga. The\n"
 "output plugin supports all interfaces, HTTP, GQTP and command\n"
 "interface."
-msgstr ""
+msgstr "outputプラグインは受け取ったgroongaコマンドをgroongaに送ります。outputプラグインはHTTP、GQTP、コマンドとすべてのインターフェイスをサポートしています。"
 
 #: ../../README.md:27
 msgid "You can replicate your data by using `copy` output plugin."
-msgstr ""
+msgstr "データは `copy` outputプラグインで複製することができます。"
 
 #: ../../README.md:29
 msgid "## Install"
-msgstr ""
+msgstr "## インストール"
 
 #: ../../README.md:31
 msgid "    % gem install fluent-plugin-groonga"
@@ -78,7 +78,7 @@ msgstr ""
 
 #: ../../README.md:33
 msgid "## Usage"
-msgstr ""
+msgstr "## 使い方"
 
 #: ../../README.md:35
 msgid ""
@@ -87,10 +87,14 @@ msgid ""
 "* [Constitution](doc/text/constitution.md)\n"
 "  ([on the Web](http://www.rubydoc.info/gems/fluent-plugin-groonga/file/doc/text/constitution.md))"
 msgstr ""
+"* [設定](doc/text/configuration.md)\n"
+"  ([Web](http://www.rubydoc.info/gems/fluent-plugin-groonga/file/doc/text/configuration.md))\n"
+"* [構成](doc/text/constitution.md)\n"
+"  ([Web](http://www.rubydoc.info/gems/fluent-plugin-groonga/file/doc/text/constitution.md))"
 
 #: ../../README.md:40
 msgid "## Authors"
-msgstr ""
+msgstr "## 作者"
 
 #: ../../README.md:42
 msgid "* Kouhei Sutou `<kou@clear-code.com>`"
@@ -98,27 +102,29 @@ msgstr ""
 
 #: ../../README.md:44
 msgid "## License"
-msgstr ""
+msgstr "## ライセンス"
 
 #: ../../README.md:46
 msgid "LGPL 2.1. See doc/text/lgpl-2.1.txt for details."
-msgstr ""
+msgstr "LGPL 2.1です。詳細は doc/text/lgpl-2.1.txt を見てください。"
 
 #: ../../README.md:48
 msgid "(Kouhei Sutou has a right to change the license including\ncontributed patches.)"
-msgstr ""
+msgstr "（提供してもらったパッチも含め、須藤功平がライセンスを変更できる権利を持つことに同意してもらったこととします。）"
 
 #: ../../README.md:51
 msgid "## Mailing list"
-msgstr ""
+msgstr "## メーリングリスト"
 
 #: ../../README.md:53
 msgid "* English: [groonga-talk](https://lists.sourceforge.net/lists/listinfo/groonga-talk)\n* Japanese: [groonga-dev](http://lists.sourceforge.jp/mailman/listinfo/groonga-dev)"
 msgstr ""
+"* 英語: [groonga-talk](https://lists.sourceforge.net/lists/listinfo/groonga-talk)\n"
+"* 日本語: [groonga-dev](http://lists.sourceforge.jp/mailman/listinfo/groonga-dev)"
 
 #: ../../README.md:56
 msgid "## Thanks"
-msgstr ""
+msgstr "## 感謝"
 
 #: ../../README.md:58
 msgid "* ..."
@@ -127,26 +133,26 @@ msgstr ""
 # title
 #: ../../doc/text/configuration.md:1
 msgid "Configuration"
-msgstr ""
+msgstr "設定"
 
 #: ../../doc/text/configuration.md:3
 msgid "# Configuration"
-msgstr ""
+msgstr "# 設定"
 
 #: ../../doc/text/configuration.md:5
 msgid ""
 "Fluent-plugin-groonga includes two fluentd plugins. They are the\n"
 "`groonga` input plugin and the `groonga` output plugin. This documents\n"
 "describes configuration parameters of them."
-msgstr ""
+msgstr "fluent-plugin-groongaは2つのfluentdプラグインを提供します。1つが `groonga` inputプラグインで、もう1つが `groonga` outputプラグインです。このドキュメントではこれらのプラグインの設定パラメーターを説明します。"
 
 #: ../../doc/text/configuration.md:9
 msgid "## The `groonga` input plugin"
-msgstr ""
+msgstr "## `groonga` inputプラグイン"
 
 #: ../../doc/text/configuration.md:11
 msgid "Here are available parameters:"
-msgstr ""
+msgstr "利用可能なパラメーターは以下の通りです。"
 
 #: ../../doc/text/configuration.md:13
 msgid ""
@@ -163,11 +169,23 @@ msgid ""
 "   * default: `10041`\n"
 "* `emit_commands`: TODO"
 msgstr ""
+"* `protocol`: groongaのコマンドを受け取るプロトコルを指定します。\n"
+"  * 利用可能な値: `http` と `gqtp`\n"
+"  * デフォルト: `http`\n"
+"* `bind`: バインドするアドレスを指定します。\n"
+"   * デフォルト: `0.0.0.0`\n"
+"* `port`: ポート番号を指定します。\n"
+"   * デフォルト: `10041`\n"
+"* `real_host`: 本当のgroongaサーバーのアドレスを指定します。必須です。\n"
+"   * デフォルト: デフォルトはなし。\n"
+"* `real_port`: 本当のgroongaサーバーのポート番号を指定します。\n"
+"   * デフォルト: `10041`\n"
+"* `emit_commands`: TODO"
 
 #: ../../doc/text/configuration.md:26
 #: ../../doc/text/configuration.md:55
 msgid "Here is an example:"
-msgstr ""
+msgstr "以下は設定例です。"
 
 #: ../../doc/text/configuration.md:28
 msgid ""
@@ -183,7 +201,7 @@ msgstr ""
 
 #: ../../doc/text/configuration.md:37
 msgid "## The `groonga` output plugin"
-msgstr ""
+msgstr "## `groonga` outputプラグイン"
 
 #: ../../doc/text/configuration.md:39
 msgid ""
@@ -203,6 +221,21 @@ msgid ""
 "  * `arguments`: It specifies additional arguments for groonga command.\n"
 "     * default: no additional arguments."
 msgstr ""
+"* `protocol`: groongaのコマンドをgroongaへ送るときに使うプロトコルを指定します。\n"
+"  * 利用可能な値: `http` と `gqtp` と `command`\n"
+"  * デフォルト: `http`\n"
+"* `http` あるいは `gqtp` を使った場合:\n"
+"  * `host`: groongaサーバーのアドレスを指定します。\n"
+"     * デフォルト: `localhost`\n"
+"  * `port`: groongaサーバーのポート番号を指定します。\n"
+"     * デフォルト: `10041`\n"
+"* `command` を使った場合:\n"
+"  * `groonga`: groongaコマンドのパスを指定します。\n"
+"     * デフォルト: `groonga`\n"
+"  * `database`: groongaデータベースのパスを指定します。必須です。\n"
+"     * デフォルト: デフォルトなし。\n"
+"  * `arguments`: groongaコマンドに追加する引数を指定します。\n"
+"     * デフォルト: 追加の引数はありません。"
 
 #: ../../doc/text/configuration.md:57
 msgid ""
@@ -216,27 +249,29 @@ msgstr ""
 # title
 #: ../../doc/text/constitution.md:1
 msgid "Constitution"
-msgstr ""
+msgstr "構成"
 
 #: ../../doc/text/constitution.md:3
 msgid "# Constitution"
-msgstr ""
+msgstr "# 構成"
 
 #: ../../doc/text/constitution.md:5
 msgid "You can chose some system constitutions to implemented replication\nready groonga system. This document describes some patterns."
-msgstr ""
+msgstr "レプリケーション対応のgroongaシステムを実装するには、いくつかのシステム構成を選ぶことができます。このドキュメントではいくつかのパターンを説明します。"
 
 #: ../../doc/text/constitution.md:8
 msgid "Here are available patterns:"
-msgstr ""
+msgstr "利用可能なパターンは以下の通りです。"
 
 #: ../../doc/text/constitution.md:10
 msgid "  * Master slave replication\n  * Resending data to recovered slave"
 msgstr ""
+"  * マスタースレーブレプリケーション\n"
+"  * 復帰したスレーブへのデータの再送"
 
 #: ../../doc/text/constitution.md:13
 msgid "Here are unavailable patterns:"
-msgstr ""
+msgstr "利用できないパターンは以下の通りです。"
 
 #: ../../doc/text/constitution.md:15
 msgid ""
@@ -246,18 +281,23 @@ msgid ""
 "  * Failover\n"
 "  * No SPOF (Single Point of Failure) without downing service level"
 msgstr ""
+"  * マルチマスターレプリケーション\n"
+"  * 自動でのスレーブ復旧\n"
+"  * 動的なスレーブ追加\n"
+"  * フェイルオーバー\n"
+"  * サービスレベルを落とすSPOF（Single Point of Failure。単一障害点）がないシステム"
 
 #: ../../doc/text/constitution.md:21
 msgid "## Master slave replication"
-msgstr ""
+msgstr "## マスタースレーブレプリケーション"
 
 #: ../../doc/text/constitution.md:23
 msgid "Master slave replication is available. This section describes how to\nconfigure your system constitution."
-msgstr ""
+msgstr "マスタースレーブレプリケーションを利用可能です。このセクションではどのようにシステムを構成すればよいかを説明します。"
 
 #: ../../doc/text/constitution.md:26
 msgid "### Small system"
-msgstr ""
+msgstr "### 小さいシステム"
 
 #: ../../doc/text/constitution.md:28
 msgid ""
@@ -271,13 +311,13 @@ msgid ""
 "`groonga` input plugin passes through comamands and responses. The\n"
 "fluent messages are sent to slave groonga server by the `groonga`\n"
 "output plugin."
-msgstr ""
+msgstr "小さいシステムでは、2つのサーバーだけがあるとします。1つがマスターgroongaサーバーで、もうひとつがスレーブgroongaサーバーです。（ `table_create` 、 `column_create` や `load` のような）すべての更新系のコマンドをfluentdに送ります。fluentdでは、クライアントから `groonga` inputプラグインを使ってgroongaのコマンドを受け取ります。受け取ったコマンドはそのままマスターgroongaサーバーへ素通しし、マスターgroongaサーバーからのレスポンスをクライアントへ返します。 `groonga` inputプラグインは、groongaのコマンドとそのレスポンスを素通しするときに、更新系のコマンドをfluentのメッセージに変換します。fluentのメッセージは `groonga` outputプラグインでスレーブgroongaサーバーへ送られます。"
 
 #: ../../doc/text/constitution.md:39
 #: ../../doc/text/constitution.md:173
 #: ../../doc/text/constitution.md:280
 msgid "Here is a diagram of this constitution."
-msgstr ""
+msgstr "この構成のときの構成図です。"
 
 #: ../../doc/text/constitution.md:41
 msgid ""
@@ -300,7 +340,7 @@ msgid ""
 "have only one client that updates data, client side is reasonable. If\n"
 "you have multiple clients that update data, master groonga server side\n"
 "is reasonable."
-msgstr ""
+msgstr "fluentdはクライアント側かマスターgroongaサーバー側に置きます。データを更新するクライアントが1つの場合は、クライアント側に置くのがよいでしょう。データを更新するクライアントが複数いる場合は、マスターgroongaサーバー側に置くのがよいでしょう。"
 
 #: ../../doc/text/constitution.md:58
 msgid ""
@@ -309,12 +349,12 @@ msgid ""
 "availability. If master groonga server or fluentd is down, this system\n"
 "can't update data. (Searching is still available because slabe groonga\n"
 "server is alive.)"
-msgstr ""
+msgstr "レプリケーションを使えば、複数のサーバーで検索サービスを提供することができるため、パフォーマンスを向上できます。可用性を上げるためにレプリケーションを使うことはできません。もし、マスターgroongaサーバーかfluentdがダウンしたら、このシステムはデータを更新できません。（スレーブgroongaサーバーは稼働しているため、検索機能は利用可能です。）"
 
 #: ../../doc/text/constitution.md:64
 #: ../../doc/text/constitution.md:192
 msgid "Here is an example configuration file:"
-msgstr ""
+msgstr "以下は設定例です。"
 
 #: ../../doc/text/constitution.md:66
 #: ../../doc/text/constitution.md:194
@@ -333,6 +373,19 @@ msgid ""
 "                             # for master groonga server side fluentd\n"
 "    </source>"
 msgstr ""
+"    # マスターgroongaサーバー用設定\n"
+"    <source>\n"
+"      type groonga\n"
+"      protocol gqtp          # あるいは下の行を使う\n"
+"      # protocol http\n"
+"      bind 127.0.0.1         # クライアント側にfluentdを置く場合\n"
+"      # bind 192.168.0.1     # マスターgroongaサーバー側にfluentdを置く場合\n"
+"      port 10041\n"
+"      real_host 192.168.29.1 # マスターgroongaサーバーのIPアドレス\n"
+"      real_port 10041        # マスターgroongaサーバーのポート番号\n"
+"      # real_port 20041      # マスターgroongaサーバー側にfluentdを置く場合は\n"
+"                             # 違うポート番号を使うこと\n"
+"    </source>"
 
 #: ../../doc/text/constitution.md:80
 msgid ""
@@ -345,10 +398,20 @@ msgid ""
 "      host 192.168.29.29       # IP address of slave groonga server\n"
 "      port 10041               # Port number of slave groonga server"
 msgstr ""
+"    # スレーブgroongaサーバー\n"
+"    <match groonga.command.*>\n"
+"      type groonga\n"
+"      protocol gqtp            # あるいは下の行を使う\n"
+"      # protocol http          # マスターgroongaサーバーとスレーブgroongaサーバーで\n"
+"                               # 違うプロトコルを使うこともできる\n"
+"      host 192.168.29.29       # スレーブgroongaサーバーのIPアドレス\n"
+"      port 10041               # スレーブgroongaサーバーのポート番号"
 
 #: ../../doc/text/constitution.md:89
 msgid "      # Buffer\n      flush_interval 1s        # Use small value for less delay replication"
 msgstr ""
+"      # buffer\n"
+"      flush_interval 1s        # レプリケーションの遅延を小さくするため小さな値を使う"
 
 #: ../../doc/text/constitution.md:92
 msgid ""
@@ -357,6 +420,10 @@ msgid ""
 "      ## groonga server is down case, you don't need the following\n"
 "      ## configuration."
 msgstr ""
+"      ## 復帰したスレーブgroongaサーバーへデータ再送をサポートするために以下の\n"
+"      ## 設定をする。\n"
+"      ## もし、スレーブgroongaサーバーがダウンするケースを考慮しなくてもよいなら、\n"
+"      ## 以下の設定は必要ありません。"
 
 #: ../../doc/text/constitution.md:97
 msgid ""
@@ -379,69 +446,96 @@ msgid ""
 "      # buffer_queue_limit 10000\n"
 "    </match>"
 msgstr ""
+"      ## fluentdが再起動したときのデータ再送をサポートする設定\n"
+"      # buffer_type file\n"
+"      # buffer_path /var/log/fluent/groonga.*.buffer\n"
+"      ## loadコマンドの1つのレコードが大きいときは大きな値を使います。\n"
+"      ## loadコマンドの1つのレコードが1つのチャンクになります。\n"
+"      # buffer_chunk_limit 256m\n"
+"      ## スレーブgroongaサーバーが長い間ダウンした後のデータ再送をサポートするには\n"
+"      ## 大きい値を指定してください。\n"
+"      ## 17: 約1.5日 =\n"
+"      ##       ((2 ** 0) + (2 ** 1) + ... + (2 ** 17)) / 60.0 / 60.0 / 24.0\n"
+"      ##     （デフォルト）\n"
+"      ## 18: 約3.0日 = ((2 ** 0) + ... + (2 ** 18)) / ...\n"
+"      ## 19: 約6.0日 = ((2 ** 0) + ... + (2 ** 19)) / ...\n"
+"      # retry_limit 19\n"
+"      ## たくさんのレコードをロードするときは大きな値にします。\n"
+"      ## loadコマンドの中の1つのレコードが1つのチャンクに対応します。\n"
+"      # buffer_queue_limit 10000\n"
+"    </match>"
 
 #: ../../doc/text/constitution.md:116
 msgid "#### How to recover from fluentd down"
-msgstr ""
+msgstr "#### ダウンしたfluentdを復旧する方法"
 
 #: ../../doc/text/constitution.md:118
 msgid ""
 "If fluentd is down, you just restart fluentd. Note that you may resend\n"
 "the last command if fluentd is down while you are sending update\n"
 "commands."
-msgstr ""
+msgstr "もし、fluentdがダウンしたら、fluentdを再起動するだけで復旧します。もし、fluentdが更新系のコマンドを実行している最中にダウンしたとしたら、最後の更新系のコマンドをfluentdに再送しなければいけないかもしれません。"
 
 #: ../../doc/text/constitution.md:122
 msgid "You cannot update data until fluentd is up."
-msgstr ""
+msgstr "fluentdが復旧するまでデータを更新することはできません。"
 
 #: ../../doc/text/constitution.md:124
 msgid "#### How to recover from master groonga server down"
-msgstr ""
+msgstr "#### ダウンしたマスターgroongaサーバーを復旧する方法"
 
 #: ../../doc/text/constitution.md:126
 msgid "Here are recover steps when master groonga server is down:"
-msgstr ""
+msgstr "以下は、ダウンしたマスターgroongaサーバーを復旧する手順です。"
 
 #: ../../doc/text/constitution.md:128
 msgid ""
 "  1. Stop fluentd.\n"
-"  2. Run `grndump /PATH/TO/SLAVE/GROONGA/SERVER/DB` on slave groonga\n"
-"     server host.\n"
+"  2. Run `grndump /PATH/TO/SLAVE/GROONGA/SERVER/DB >\n"
+"     SLAVE_GROONGA_DUMP.grn` on slave groonga server host.\n"
 "  3. Run `groonga -n /PATH/TO/MASTER/GROONGA/SERVER/DB <\n"
-"     SLAVE_GROONGA_DUMP.grn` on master groonga server.\n"
+"     SLAVE_GROONGA_DUMP.grn` on master groonga server host.\n"
 "  4. Run master groonga server.\n"
 "  5. Start fluentd."
 msgstr ""
+"  1. fluentdを止めます。\n"
+"  2. スレーブgroongaサーバーがあるホストで `grndump /スレーブ/groonga/サーバー/の/データベース/のパス > SLAVE_GROONGA_DUMP.grn` を実行します。\n"
+"  3. マスターgroongaサーバーがあるホストで `groonga -n /マスター/groonga/サーバー/の/データベース/の/パス <\n"
+"     SLAVE_GROONGA_DUMP.grn` を実行します。\n"
+"  4. マスターgroongaサーバーを起動します。\n"
+"  5. fluentdを起動します。"
 
 #: ../../doc/text/constitution.md:136
 #: ../../doc/text/constitution.md:165
 msgid "You cannot update data until you finish to recover."
-msgstr ""
+msgstr "復旧が完了するまでデータを更新することはできません。"
 
 #: ../../doc/text/constitution.md:138
 msgid "#### How to recover from slave groonga server down"
-msgstr ""
+msgstr "#### ダウンしたスレーブgroongaサーバーを復旧する方法"
 
 #: ../../doc/text/constitution.md:140
 msgid "Here are recover steps when slave groonga server is down:"
-msgstr ""
+msgstr "以下はダウンしたスレーブgroongaサーバーを復旧する手順です。"
 
 #: ../../doc/text/constitution.md:142
 msgid ""
-"  1. Run `grndump /PATH/TO/MASTER/GROONGA/SERVER/DB` on master groonga\n"
-"     server host.\n"
+"  1. Run `grndump /PATH/TO/MASTER/GROONGA/SERVER/DB >\n"
+"     MASTER_GROONGA_DUMP.grn` on master groonga server host.\n"
 "  2. Run `groonga -n /PATH/TO/SLAVE/GROONGA/SERVER/DB <\n"
-"     MASTER_GROONGA_DUMP.grn` on slave groonga server.\n"
+"     MASTER_GROONGA_DUMP.grn` on slave groonga server host.\n"
 "  3. Run slave groonga server."
 msgstr ""
+"  1. マスターgroongaサーバーがあるホストで `grndump /マスター/groonga/サーバー/の/データベース/の/パス > MASTER_GROONGA_DUMP.grn` を実行します。\n"
+"  2. スレーブgroongaサーバーがあるホストで `groonga -n /スレーブ/groonga/サーバー/の/データベース/の/パス < MASTER_GROONGA_DUMP.grn` を実行します。\n"
+"  3. スレーブgroongaサーバーを起動します。"
 
 #: ../../doc/text/constitution.md:148
 msgid ""
 "You can update data while you recover. If your system can't process\n"
 "all search requests by only master groonga server, your system will be\n"
 "down."
-msgstr ""
+msgstr "復旧中もデータを更新することができます。もし、システムが1つのマスターgroongaサーバーだけですべての検索リクエストを処理できない場合は、そのシステムはダウンします。"
 
 #: ../../doc/text/constitution.md:152
 msgid ""
@@ -449,29 +543,34 @@ msgid ""
 "is full (see `buffer_queue_limit`) or fluentd gives up retrying (see\n"
 "`retry_limit`). Here are recover steps when you cannot recover slave\n"
 "groonga server before those situations:"
-msgstr ""
+msgstr "fluentdのバッファキューが溢れる（ `buffer_queue_limit` 参照）前、かつ、fluentdが再送を諦める（ `retry_limit` 参照）前にスレーブgroongaサーバーを復旧する必要があります。以下は復旧が間に合わなかった時に復旧する手順です。"
 
 #: ../../doc/text/constitution.md:157
 msgid ""
 "  1. Stop fluentd.\n"
-"  2. Run `grndump /PATH/TO/MASTER/GROONGA/SERVER/DB` on master groonga\n"
-"     server host.\n"
+"  2. Run `grndump /PATH/TO/MASTER/GROONGA/SERVER/DB >\n"
+"     MASTER_GROONGA_DUMP.grn` on master groonga server host.\n"
 "  3. Run `groonga -n /PATH/TO/SLAVE/GROONGA/SERVER/DB <\n"
-"     SLAVE_GROONGA_DUMP.grn` on slave groonga server.\n"
+"     MASTER_GROONGA_DUMP.grn` on slave groonga server host.\n"
 "  4. Run slave groonga server.\n"
 "  5. Start fluentd."
 msgstr ""
+"  1. fluentdを止めます。\n"
+"  2. マスターgroongaサーバーがあるホストで `grndump /マスター/groonga/サーバー/の/データベース/の/パス > MASTER_GROONGA_DUMP.grn` を実行します。\n"
+"  3. スレーブgroongaサーバーがあるホストで `groonga -n /スレーブ/groonga/サーバー/の/データベース/の/パス < MASTER_GROONGA_DUMP.grn` を実行します。\n"
+"  4. スレーブgroongaサーバーを起動します。\n"
+"  5. fluetndを起動します。"
 
 #: ../../doc/text/constitution.md:167
 msgid "### Medium system"
-msgstr ""
+msgstr "### 中規模のシステム"
 
 #: ../../doc/text/constitution.md:169
 msgid ""
-"In medium system, you have two or more slave groonga servers. Fluentd\n"
+"In medium system, you have three or more slave groonga servers. Fluentd\n"
 "updates two or more slave groonga servers with the `copy` output\n"
 "plugin and the `groonga` output plugin."
-msgstr ""
+msgstr "中規模のシステムでは3つ以上のgroongaサーバーがいます。fluentdは2つ以上のスレーブgroongaサーバーを `copy` outputプラグインと `groonga` outputプラグインで更新します。"
 
 #: ../../doc/text/constitution.md:175
 msgid ""
@@ -499,6 +598,9 @@ msgid ""
 "    <match groonga.command.*>\n"
 "      type copy"
 msgstr ""
+"    # スレーブgroongaサーバー用\n"
+"    <match groonga.command.*>\n"
+"      type copy"
 
 #: ../../doc/text/constitution.md:212
 msgid ""
@@ -511,10 +613,20 @@ msgid ""
 "        host 192.168.29.2        # IP address of slave groonga server\n"
 "        port 10041               # Port number of slave groonga server"
 msgstr ""
+"      # 最初のスレーブgroongaサーバー\n"
+"      <store>\n"
+"        type groonga\n"
+"        protocol gqtp            # あるいは下の行を使う\n"
+"        # protocol http          # マスターgroongaサーバーとスレーブgroongaサーバーで\n"
+"                                 # 違うプロトコルを使うこともできる\n"
+"        host 192.168.29.2        # スレーブgroongaサーバーのIPアドレス\n"
+"        port 10041               # スレーブgroongaサーバーのポート番号"
 
 #: ../../doc/text/constitution.md:221
 msgid "        # Buffer\n        flush_interval 1s        # Use small value for less delay replication"
 msgstr ""
+"        # buffer\n"
+"        flush_interval 1s        # レプリケーションの遅延を小さくするため小さな値を使う\""
 
 #: ../../doc/text/constitution.md:224
 msgid ""
@@ -523,6 +635,10 @@ msgid ""
 "        ## groonga server is down case, you don't need the following\n"
 "        ## configuration."
 msgstr ""
+"        ## 復帰したスレーブgroongaサーバーへデータ再送をサポートするために以下の\n"
+"        ## 設定をする。\n"
+"        ## もし、スレーブgroongaサーバーがダウンするケースを考慮しなくてもよいなら、\n"
+"        ## 以下の設定は必要ありません。\n"
 
 #: ../../doc/text/constitution.md:229
 msgid ""
@@ -545,6 +661,24 @@ msgid ""
 "        # buffer_queue_limit 10000\n"
 "      </store>"
 msgstr ""
+"        ## fluentdが再起動したときのデータ再送をサポートする設定\n"
+"        # buffer_type file\n"
+"        # buffer_path /var/log/fluent/groonga.*.buffer\n"
+"        ## loadコマンドの1つのレコードが大きいときは大きな値を使います。\n"
+"        ## loadコマンドの1つのレコードが1つのチャンクになります。\n"
+"        # buffer_chunk_limit 256m\n"
+"        ## スレーブgroongaサーバーが長い間ダウンした後のデータ再送をサポートするには\n"
+"        ## 大きい値を指定してください。\n"
+"        ## 17: 約1.5日 =\n"
+"        ##       ((2 ** 0) + (2 ** 1) + ... + (2 ** 17)) / 60.0 / 60.0 / 24.0\n"
+"        ##     （デフォルト）\n"
+"        ## 18: 約3.0日 = ((2 ** 0) + ... + (2 ** 18)) / ...\n"
+"        ## 19: 約6.0日 = ((2 ** 0) + ... + (2 ** 19)) / ...\n"
+"        # retry_limit 19\n"
+"        ## たくさんのレコードをロードするときは大きな値にします。\n"
+"        ## loadコマンドの中の1つのレコードが1つのチャンクに対応します。\n"
+"        # buffer_queue_limit 10000\n"
+"      </match>"
 
 #: ../../doc/text/constitution.md:248
 msgid ""
@@ -557,6 +691,14 @@ msgid ""
 "        host 192.168.29.3        # IP address of slave groonga server\n"
 "        port 10041               # Port number of slave groonga server"
 msgstr ""
+"      # 2番目のスレーブgroongaサーバー\n"
+"      <store>\n"
+"        type groonga\n"
+"        protocol gqtp            # あるいは下の行を使う\n"
+"        # protocol http          # マスターgroongaサーバーとスレーブgroongaサーバーで\n"
+"                                 # 違うプロトコルを使うこともできる\n"
+"        host 192.168.29.3        # スレーブgroongaサーバーのIPアドレス\n"
+"        port 10041               # スレーブgroongaサーバーのポート番号"
 
 #: ../../doc/text/constitution.md:257
 msgid ""
@@ -564,6 +706,9 @@ msgid ""
 "        # ...\n"
 "      </store>"
 msgstr ""
+"        # buffer\n"
+"        # ...\n"
+"      </store>"
 
 #: ../../doc/text/constitution.md:261
 msgid ""
@@ -574,6 +719,12 @@ msgid ""
 "      # </store>\n"
 "    </match>"
 msgstr ""
+"      # さらに追加のスレーブgroongaサーバー\n"
+"      # <store>\n"
+"      #   type groonga\n"
+"      #   ...\n"
+"      # </store>\n"
+"    </match>"
 
 #: ../../doc/text/constitution.md:268
 #: ../../doc/text/constitution.md:315
@@ -582,7 +733,7 @@ msgstr ""
 
 #: ../../doc/text/constitution.md:270
 msgid "### Large system"
-msgstr ""
+msgstr "### 大規模システム"
 
 #: ../../doc/text/constitution.md:272
 msgid ""
@@ -593,7 +744,7 @@ msgid ""
 "fluentd. Fluentd in slave groonga server clusters updates slave\n"
 "groonga server in the same slave groonga server cluster by the `copy`\n"
 "output plugin and `groonga` output plugin."
-msgstr ""
+msgstr "大規模なシステムでは2つ以上のスレーブgroongaサーバークラスターがあります。マスターgroongaサーバーと通信するfluentdは、スレーブgroongaサーバークラスターの中にあるfluetnd（2つ以上）を使って更新します。そのために `copy` outputプラグインと `forward` outputプラグインを使います。スレーブクラスターはfluentdを1つ持ちます。スレーブgroongaサーバークラスターのfluentdは同じクラスター内にあるスレーブgroongaサーバーを `copy` outputプラグインと `groonga` outputプラグインで更新します。"
 
 #: ../../doc/text/constitution.md:282
 msgid ""
