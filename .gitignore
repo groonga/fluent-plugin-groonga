@@ -3,3 +3,4 @@
 /.yardoc/
 /doc/reference/
 /doc/po/*.pot
+/Gemfile.lock
