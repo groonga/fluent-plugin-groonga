@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.homepage = "https://github.com/groonga/fluent-plugin-groonga"
 
   spec.files = ["README.md", "Gemfile", "#{spec.name}.gemspec"]
+  spec.files += [".yardopts"]
   spec.files += Dir.glob("lib/**/*.rb")
   spec.files += Dir.glob("sample/**/*")
   spec.files += Dir.glob("doc/text/**/*")
