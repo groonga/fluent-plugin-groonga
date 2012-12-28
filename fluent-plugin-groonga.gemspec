@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
   spec.files += Dir.glob("lib/**/*.rb")
   spec.files += Dir.glob("sample/**/*")
   spec.files += Dir.glob("doc/text/**/*")
+  spec.test_files += Dir.glob("test/**/*")
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency("fluentd")
