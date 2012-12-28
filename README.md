@@ -33,9 +33,9 @@ You can replicate your data by using `copy` output plugin.
 ## Usage
 
 * [Configuration](doc/text/configuration.md)
-  ([on the Web](http://www.rubydoc.info/gems/fluent-plugin-groonga/file/doc/text/configuration.md))
+  ([on the Web](http://groonga.org/fluent-plugin-groonga/en/file.configuration.html))
 * [Constitution](doc/text/constitution.md)
-  ([on the Web](http://www.rubydoc.info/gems/fluent-plugin-groonga/file/doc/text/constitution.md))
+  ([on the Web](http://groonga.org/fluent-plugin-groonga/en/file.constitution.html))
 
 ## Authors
 
