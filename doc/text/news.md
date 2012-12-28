@@ -8,6 +8,7 @@
 
 * Added more destructive emit commands ("delete", "register", "truncate").
 * [out] Used close instead of sending "shutdown".
+* Placed documents to http://groonga.org/fluent-plugin-groonga/en/.
 * [doc] Updated documents:
   * Added the documents of configuration and constitution.
   * Added recover steps.
