@@ -34,8 +34,7 @@ class GroongaOutputTest < Test::Unit::TestCase
 
   private
   def create_driver(tag)
-    driver = Fluent::Test::BufferedOutputTestDriver.new(Fluent::GroongaOutput,
-                                                        tag)
+    driver = Fluent::Test::OutputTestDriver.new(Fluent::GroongaOutput, tag)
     driver.configure(configuration)
     driver
   end
@@ -99,8 +98,9 @@ EOC
       def test_basic_command
         driver = create_driver("groonga.command.table_create")
         time = Time.parse("2012-10-26T08:45:42Z").to_i
-        driver.emit({"name" => "Users"}, time)
-        driver.run
+        driver.run do
+          driver.emit({"name" => "Users"}, time)
+        end
         # p @request_headers
         # p @request_body
       end
@@ -193,8 +193,9 @@ EOC
       def test_basic_command
         driver = create_driver("groonga.command.table_create")
         time = Time.parse("2012-10-26T08:45:42Z")
-        driver.emit({"name" => "Users"}, time)
-        driver.run
+        driver.run do
+          driver.emit({"name" => "Users"}, time)
+        end
         assert_equal([
                        [
                          "--input-fd", actual_input_fd,
