@@ -192,7 +192,7 @@ module Fluent
       end
 
       def send(command)
-        @client ||= GQTP::Client.new(:host => @host,
+        @client ||= GQTP::Client.new(:address => @host,
                                      :port => @port,
                                      :connection => :coolio,
                                      :loop => @loop)
