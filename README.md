@@ -53,6 +53,11 @@ contributed patches.)
 * English: [groonga-talk](https://lists.sourceforge.net/lists/listinfo/groonga-talk)
 * Japanese: [groonga-dev](http://lists.sourceforge.jp/mailman/listinfo/groonga-dev)
 
+## Source
+
+The repository for fluent-plugin-groonga is on
+[GitHub](https://github.com/groonga/fluent-plugin-groonga/).
+
 ## Thanks
 
 * ...
