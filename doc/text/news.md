@@ -2,6 +2,13 @@
 
 # News
 
+## 1.0.2: 2013-08-08
+
+### Improvements
+
+* Supported non-buffer mode.
+* Required gqtp gem >= 1.0.3.
+
 ## 1.0.1: 2012-12-29
 
 ### Improvements
