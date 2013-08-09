@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.description =
     "Groonga users can replicate their data by fluent-plugin-groonga"
   spec.homepage = "https://github.com/groonga/fluent-plugin-groonga"
+  spec.license = "LGPL-2.1"
 
   spec.files = ["README.md", "Gemfile", "#{spec.name}.gemspec"]
   spec.files += [".yardopts"]
