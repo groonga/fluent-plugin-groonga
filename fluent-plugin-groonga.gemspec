@@ -36,7 +36,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency("fluentd")
   spec.add_runtime_dependency("gqtp", ">= 1.0.3")
-  spec.add_runtime_dependency("groonga-command")
+  spec.add_runtime_dependency("groonga-command-parser")
 
   spec.add_development_dependency("rake")
   spec.add_development_dependency("bundler")
