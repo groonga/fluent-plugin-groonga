@@ -2,6 +2,18 @@
 
 # News
 
+## 1.0.3: 2013-09-29
+
+### Improvements
+
+* Added license information to gemspec.
+  [GitHub#1][Reported by Benjamin Fleischer]
+* Supported groonga-command-parser.
+
+### Thanks
+
+* Benjamin Fleischer
+
 ## 1.0.2: 2013-08-08
 
 ### Improvements
