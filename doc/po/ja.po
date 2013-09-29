@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: fluent-plugin-groonga 1.0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-11-20 22:17+0900\n"
-"PO-Revision-Date: 2013-08-08 22:15+0900\n"
+"PO-Revision-Date: 2013-09-29 18:42+0900\n"
 "Last-Translator: Kouhei Sutou <kou@clear-code.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -1624,11 +1624,13 @@ msgid ""
 "  [GitHub#1][Reported by Benjamin Fleischer]\n"
 "* Supported groonga-command-parser."
 msgstr ""
+"* gemspecにライセンス情報を追加した。\n"
+"  [GitHub#1][Benjamin Fleischerさんが報告]\n"
+"* groonga-command-parserをサポート。"
 
 #: ../../doc/text/news.md:13
-#, fuzzy
 msgid "### Thanks"
-msgstr "## 感謝"
+msgstr "### 感謝"
 
 #: ../../doc/text/news.md:15
 msgid "* Benjamin Fleischer"
