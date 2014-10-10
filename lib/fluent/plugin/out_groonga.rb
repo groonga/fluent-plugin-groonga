@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2014  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,19 +18,11 @@
 require "fileutils"
 
 module Fluent
-  class GroongaOutput < Output
+  class GroongaOutput < ObjectBufferedOutput
     Plugin.register_output("groonga", self)
 
     def initialize
       super
-    end
-
-    BufferedOutput.config_params.each do |name, (block, options)|
-      if options[:type]
-        config_param(name, options[:type], options)
-      else
-        config_param(name, options, &block)
-      end
     end
 
     config_param :protocol, :string, :default => "http"
@@ -42,24 +34,22 @@ module Fluent
       @client.configure(conf)
 
       @emitter = Emitter.new(@client, @table)
-      @output = create_output(@buffer_type, @emitter)
-      @output.configure(conf)
     end
 
     def start
       super
       @client.start
-      @output.start
     end
 
     def shutdown
       super
-      @output.shutdown
       @client.shutdown
     end
 
-    def emit(tag, event_stream, chain)
-      @output.emit(tag, event_stream, chain)
+    def write_objects(tag, messages)
+      messages.each do |time, record|
+        @emitter.emit(tag, record)
+      end
     end
 
     def create_client(protocol)
@@ -112,37 +102,6 @@ module Fluent
           "values" => Yajl::Enocder.encode(values),
         }
         send_command("load", arguments)
-      end
-    end
-
-    class RawGroongaOutput < Output
-      def initialize(emitter)
-        @emitter = emitter
-        super()
-      end
-
-      def emit(tag, event_stream, chain)
-        event_stream.each do |time, record|
-          @emitter.emit(tag, record)
-        end
-        chain.next
-      end
-    end
-
-    class BufferedGroongaOutput < BufferedOutput
-      def initialize(emitter)
-        @emitter = emitter
-        super()
-      end
-
-      def format(tag, time, record)
-        [tag, time, record].to_msgpack
-      end
-
-      def write(chunk)
-        chunk.msgpack_each do |tag, time, record|
-          @emitter.emit(tag, record)
-        end
       end
     end
 
