@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012-2013  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2014  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,6 +16,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 require "English"
+require "uri"
 require "webrick/httputils"
 
 require "http_parser"
@@ -188,8 +189,9 @@ module Fluent
         end
 
         def on_message_complete
-          params = WEBrick::HTTPUtils.parse_query(@parser.query_string)
-          path_info = @parser.request_path
+          uri = URI.parse(@parser.request_url)
+          params = WEBrick::HTTPUtils.parse_query(uri.query)
+          path_info = uri.path
           case path_info
           when /\A\/d\//
             command = $POSTMATCH
