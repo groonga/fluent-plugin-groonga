@@ -149,8 +149,8 @@ module Fluent
     class HTTPClient
       include Configurable
 
-      config_param :host, :string, :default => "localhost"
-      config_param :port, :integer, :default => 10041
+      config_param :host, :string, :default => nil
+      config_param :port, :integer, :default => nil
 
       def start
         @loop = Coolio::Loop.new
@@ -175,8 +175,8 @@ module Fluent
     class GQTPClient
       include Configurable
 
-      config_param :host, :string, :default => "localhost"
-      config_param :port, :integer, :default => 10041
+      config_param :host, :string, :default => nil
+      config_param :port, :integer, :default => nil
 
       def start
         @loop = Coolio::Loop.new
