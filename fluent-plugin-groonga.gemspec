@@ -1,6 +1,6 @@
 # -*- mode: ruby; coding: utf-8 -*-
 #
-# Copyright (C) 2012-2013  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2014  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -35,7 +35,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency("fluentd")
-  spec.add_runtime_dependency("gqtp", ">= 1.0.3")
+  spec.add_runtime_dependency("groonga-client")
   spec.add_runtime_dependency("groonga-command-parser")
 
   spec.add_development_dependency("rake")

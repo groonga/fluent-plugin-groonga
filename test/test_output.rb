@@ -47,10 +47,13 @@ EOC
   class HTTPTest < self
     setup :before => :append
     def setup_real_server
+      @request_parser = HTTP::Parser.new
+      @request_body = ""
+      @response_body = nil
+
       @real_host = "127.0.0.1"
       @real_port = 29292
-      @real_server_pid = fork do
-        exit
+      @real_server_thread = Thread.new do
         real_server = TCPServer.new(@real_host, @real_port)
         response_config = WEBrick::Config::HTTP.dup.update(:Logger => $log)
         real_response = WEBrick::HTTPResponse.new(response_config)
@@ -58,14 +61,11 @@ EOC
         request_body = ""
         client = real_server.accept
         real_server.close
-        parser = HTTP::Parser.new
-        parser.on_headers_complete = lambda do |headers|
-          request_headers = headers
+        @request_parser.on_body = lambda do |chunk|
+          @request_body << chunk
         end
-        parser.on_body = lambda do |chunk|
-          request_body << chunk
-        end
-        parser.on_message_complete = lambda do
+        @request_parser.on_message_complete = lambda do
+          real_response.body = @response_body
           real_response.send_response(client)
           client.close
         end
@@ -74,16 +74,14 @@ EOC
           break if client.closed?
           data = client.readpartial(4096)
           break if data.nil?
-          parser << data
+          @request_parser << data
         end
       end
     end
 
     teardown
     def teardown_real_server
-      Process.kill(:INT, @real_server_pid)
-      Process.kill(:KILL, @real_server_pid)
-      Process.waitpid(@real_server_pid)
+      @real_server_thread.join
     end
 
     def configuration
@@ -96,13 +94,14 @@ EOC
 
     class CommandTest < self
       def test_basic_command
+        @response_body = JSON.generate([[0, 0.0, 0.0], true])
         driver = create_driver("groonga.command.table_create")
         time = Time.parse("2012-10-26T08:45:42Z").to_i
         driver.run do
           driver.emit({"name" => "Users"}, time)
         end
-        # p @request_headers
-        # p @request_body
+        assert_equal("/d/table_create?name=Users",
+                     @request_parser.request_url)
       end
     end
   end

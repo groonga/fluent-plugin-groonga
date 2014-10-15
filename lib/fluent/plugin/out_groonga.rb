@@ -17,15 +17,24 @@
 
 require "fileutils"
 
+require "groonga/client"
+
 module Fluent
-  class GroongaOutput < ObjectBufferedOutput
+  class GroongaOutput < BufferedOutput
     Plugin.register_output("groonga", self)
 
     def initialize
       super
     end
 
-    config_param :protocol, :string, :default => "http"
+    config_param :protocol, :default => :http do |value|
+      case value
+      when "http", "gqtp", "command"
+        value.to_sym
+      else
+        raise ConfigError, "must be http, gqtp or command: <#{value}>"
+      end
+    end
     config_param :table, :string, :default => nil
 
     def configure(conf)
@@ -46,28 +55,24 @@ module Fluent
       @client.shutdown
     end
 
-    def write_objects(tag, messages)
-      messages.each do |time, record|
+    def format(tag, time, record)
+      [tag, time, record].to_msgpack
+    end
+
+    def write(chunk)
+      chunk.msgpack_each do |message|
+        tag, _, record = message
         @emitter.emit(tag, record)
       end
     end
 
+    private
     def create_client(protocol)
       case protocol
-      when "http"
-        HTTPClient.new
-      when "gqtp"
-        GQTPClient.new
-      when "command"
+      when :http, :gqtp
+        NetworkClient.new(protocol)
+      when :command
         CommandClient.new
-      end
-    end
-
-    def create_output(buffer_type, emitter)
-      if buffer_type == "none"
-        RawGroongaOutput.new(emitter)
-      else
-        BufferedGroongaOutput.new(emitter)
       end
     end
 
@@ -105,60 +110,32 @@ module Fluent
       end
     end
 
-    class HTTPClient
+    class NetworkClient
       include Configurable
 
       config_param :host, :string, :default => nil
       config_param :port, :integer, :default => nil
 
-      def start
-        @loop = Coolio::Loop.new
+      def initialize(protocol)
+        super()
+        @protocol = protocol
       end
-
-      def shutdown
-      end
-
-      def send(command)
-        client = GroongaHTTPClient.connect(@host, @port)
-        client.request("GET", command.to_uri_format)
-        @loop.attach(client)
-        @loop.run
-      end
-
-      class GroongaHTTPClient < Coolio::HttpClient
-        def on_body_data(data)
-        end
-      end
-    end
-
-    class GQTPClient
-      include Configurable
-
-      config_param :host, :string, :default => nil
-      config_param :port, :integer, :default => nil
 
       def start
-        @loop = Coolio::Loop.new
         @client = nil
       end
 
       def shutdown
         return if @client.nil?
-        @client.close do
-          @loop.stop
-        end
-        @loop.run
+        @client.close
       end
 
       def send(command)
-        @client ||= GQTP::Client.new(:address => @host,
-                                     :port => @port,
-                                     :connection => :coolio,
-                                     :loop => @loop)
-        @client.send(command.to_command_format) do |header, body|
-          @loop.stop
-        end
-        @loop.run
+        @client ||= Groonga::Client.new(:protocol => @protocol,
+                                        :host     => @host,
+                                        :port     => @port,
+                                        :backend  => :synchronous)
+        @client.execute(command)
       end
     end
 
@@ -181,13 +158,13 @@ module Fluent
 
       def start
         run_groonga
-        wrap_io
       end
 
       def shutdown
-        @groonga_input.close
-        @groonga_output.close
-        @groonga_error.close
+        @input.close
+        read_output("shutdown")
+        @output.close
+        @error.close
         Process.waitpid(@pid)
       end
 
@@ -196,27 +173,29 @@ module Fluent
         if command.name == "load"
           body = command.arguments.delete(:values)
         end
-        @groonga_input.write("#{command.to_uri_format}\n")
+        uri = command.to_uri_format
+        @input.write("#{uri}\n")
         if body
           body.each_line do |line|
-            @groonga_input.write("#{line}\n")
+            @input.write("#{line}\n")
           end
         end
-        @loop.run
+        @input.flush
+        read_output(uri)
       end
 
       private
       def run_groonga
         env = {}
-        @input = IO.pipe("ASCII-8BIT")
-        @output = IO.pipe("ASCII-8BIT")
-        @error = IO.pipe("ASCII-8BIT")
-        input_fd = @input[0].to_i
-        output_fd = @output[1].to_i
+        input = IO.pipe("ASCII-8BIT")
+        output = IO.pipe("ASCII-8BIT")
+        error = IO.pipe("ASCII-8BIT")
+        input_fd = input[0].to_i
+        output_fd = output[1].to_i
         options = {
           input_fd => input_fd,
           output_fd => output_fd,
-          :err => @error[1],
+          :err => error[1],
         }
         arguments = @arguments
         arguments += [
@@ -229,27 +208,42 @@ module Fluent
         end
         arguments << @database
         @pid = spawn(env, @groonga, *arguments, options)
-        @input[0].close
-        @output[1].close
-        @error[1].close
+        input[0].close
+        @input = input[1]
+        output[1].close
+        @output = output[0]
+        error[1].close
+        @error = error[0]
       end
 
-      def wrap_io
-        @loop = Coolio::Loop.new
+      def read_output(context)
+        output_message = ""
+        error_message = ""
 
-        @groonga_input = Coolio::IO.new(@input[1])
-        on_write_complete = lambda do
-          @loop.stop
-        end
-        @groonga_input.on_write_complete do
-          on_write_complete.call
-        end
-        @groonga_output = Coolio::IO.new(@output[0])
-        @groonga_error = Coolio::IO.new(@error[0])
+        loop do
+          readables = IO.select([@output, @error], nil, nil, 0)
+          break if readables.nil?
 
-        @loop.attach(@groonga_input)
-        @loop.attach(@groonga_output)
-        @loop.attach(@groonga_error)
+          readables.each do |readable|
+            case readable
+            when @output
+              output_message << @output.gets
+            when @error
+              error_message << @error.gets
+            end
+          end
+        end
+
+        unless output_message.empty?
+          Engine.log.debug("[output][groonga][output]",
+                           :context => context,
+                           :message => output_message)
+        end
+        unless error_message.empty?
+          Engine.log.error("[output][groonga][error]",
+                           :context => context,
+                           :message => error_message)
+        end
       end
     end
   end
