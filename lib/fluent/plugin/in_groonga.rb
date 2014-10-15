@@ -32,19 +32,22 @@ module Fluent
       super
     end
 
-    config_param :protocol, :string, :default => "http"
+    config_param :protocol, :defalut => :http do |value|
+      case value
+      when "http", "gqtp"
+        value.to_sym
+      else
+        raise ConfigError, "must be http or gqtp: <#{value}>"
+      end
+    end
 
     def configure(conf)
       super
       case @protocol
-      when "http"
+      when :http
         @input = HTTPInput.new
-      when "gqtp"
+      when :gqtp
         @input = GQTPInput.new
-      else
-        message = "unknown protocol: <#{@protocol.inspect}>"
-        $log.error message
-        raise ConfigError, message
       end
       @input.configure(conf)
     end
