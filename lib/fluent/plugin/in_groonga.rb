@@ -77,9 +77,9 @@ module Fluent
       include DetachMultiProcessMixin
 
       config_param :bind, :string, :default => "0.0.0.0"
-      config_param :port, :integer, :default => 10041
+      config_param :port, :integer, :default => nil
       config_param :real_host, :string
-      config_param :real_port, :integer, :default => 10041
+      config_param :real_port, :integer, :default => nil
       DEFAULT_EMIT_COMMANDS = [
         /\Atable_/,
         /\Acolumn_/,
@@ -101,6 +101,13 @@ module Fluent
             command
           end
         end
+      end
+
+      def configure(conf)
+        super
+
+        @port ||= default_port
+        @real_port ||= default_port
       end
 
       def start
@@ -157,6 +164,10 @@ module Fluent
 
     class HTTPInput < BaseInput
       private
+      def default_port
+        10041
+      end
+
       def handler_class
         Handler
       end
@@ -206,6 +217,10 @@ module Fluent
 
     class GQTPInput < BaseInput
       private
+      def default_port
+        10043
+      end
+
       def handler_class
         Handler
       end
