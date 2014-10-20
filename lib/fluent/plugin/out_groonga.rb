@@ -156,7 +156,7 @@ module Fluent
                         "name" => name,
                         "flags" => flags,
                         "type" => value_type)
-        @columns[name] = Column.new(name, value_type, vector_p)
+        Column.new(name, value_type, vector_p)
       end
 
       class TypeGuesser
