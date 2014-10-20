@@ -33,7 +33,9 @@ Packnga::DocumentTask.new(spec) do |task|
   task.translate_language = "ja"
 end
 
-Packnga::ReleaseTask.new(spec) do
+groonga_org_dir = Dir.glob("{..,../../www}/groonga.org").first
+Packnga::ReleaseTask.new(spec) do |task|
+  task.index_html_dir = groonga_org_dir
 end
 
 desc "Run test"

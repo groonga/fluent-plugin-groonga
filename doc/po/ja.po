@@ -7,7 +7,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fluent-plugin-groonga 1.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-20 22:17+0900\n"
 "PO-Revision-Date: 2013-09-29 18:42+0900\n"
 "Last-Translator: Kouhei Sutou <kou@clear-code.com>\n"
 "Language-Team: Japanese\n"
@@ -18,78 +17,225 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 # title
-#: ../../README.md:1
 msgid "README"
 msgstr "はじめに"
 
-#: ../../README.md:3
 msgid "# README"
 msgstr "# はじめに"
 
-#: ../../README.md:5
 msgid "## Name"
 msgstr "## 名前"
 
-#: ../../README.md:7
 msgid "fluent-plugin-groonga"
 msgstr ""
 
-#: ../../README.md:9
 msgid "## Description"
 msgstr "## 説明"
 
-#: ../../README.md:11
+#, fuzzy
 msgid ""
-"Fluent-plugin-groonga is fluentd plugin collection for\n"
-"[groonga](http://groonga.org/) users. Groonga users can replicate\n"
-"their data by fluent-plugin-groonga."
+"Fluent-plugin-groonga is a Fluentd plugin collection to use\n"
+"[Groonga](http://groonga.org/) with Fluentd. Fluent-plugin-groonga\n"
+"supports the following two usages:"
 msgstr ""
 "fluent-plugin-groongaは [groonga](http://groonga.org/ja/) ユーザー用のfluentdプラグイン集です"
 "。groongaユーザーはfluent-plugin-groongaを使ってレプリケーションを実現することができます。"
 
-#: ../../README.md:15
+msgid ""
+"  * Store logs collected by Fluentd to Groonga.\n"
+"  * Implement replication system for Groonga."
+msgstr ""
+
+msgid ""
+"The first usage is normal usage. You can store logs to Groonga and\n"
+"find logs by full-text search."
+msgstr ""
+
+msgid ""
+"The second usage is for Groonga users. Groonga itself doesn't support\n"
+"replication. But Groonga users can replicate their data by\n"
+"fluent-plugin-groonga."
+msgstr ""
+
 msgid ""
 "Fluent-plugin-groonga includes an input plugin and an output\n"
 "plugin. Both of them are named `groonga`."
 msgstr "fluent-plugin-groongaはinputプラグインとoutputプラグインを提供しています。どちらも `groonga` という名前です。"
 
-#: ../../README.md:18
 msgid ""
-"The input plugin provides groonga compatible interface. It means that\n"
-"HTTP and GQTP interface. You can use the input plugin as groonga\n"
-"server. The input plugin receives groonga commands and sends them to\n"
-"the output plugin through zero or more fluentds."
+"If you want to use fluent-plugin-groonga to store logs to Groonga, you\n"
+"need to use only `groonga` output plugin."
+msgstr ""
+
+msgid ""
+"The following configuration stores all data in `/var/log/messages`\n"
+"into Groonga:"
+msgstr ""
+
+msgid ""
+"    <source>\n"
+"      type tail\n"
+"      format syslog\n"
+"      path /var/log/syslog.1\n"
+"      pos_file /tmp/messages.pos\n"
+"      tag log.messages\n"
+"      read_from_head true\n"
+"    </source>"
+msgstr ""
+
+msgid ""
+"    <match log.**>\n"
+"      type groonga\n"
+"      table logs"
+msgstr ""
+
+msgid ""
+"      protocol http\n"
+"      host 127.0.0.1"
+msgstr ""
+
+msgid ""
+"      buffer_type file\n"
+"      buffer_path /tmp/buffer\n"
+"      flush_interval 1\n"
+"    </match>"
+msgstr ""
+
+msgid ""
+"If you want to use fluent-plugin-groonga to implement Groonga\n"
+"replication system, you need to use both plugins."
+msgstr ""
+
+#, fuzzy
+msgid ""
+"The input plugin provides Groonga compatible interface. It means that\n"
+"HTTP and GQTP interface. You can use the input plugin as Groonga\n"
+"server. The input plugin receives Groonga commands and sends them to\n"
+"the output plugin through zero or more Fluentds."
 msgstr ""
 "inputプラグインはgroongaと互換性のあるインターフェイスを提供します。つまり、HTTPインターフェイスとGQTPインターフェイスがあるということで"
 "す。inputプラグインをgroongaサーバーと同じように使うことができます。inputプラグインはgroongaのコマンドを受け取って、受け取ったgro"
 "ongaのコマンドを0個以上のfluentdを経由してoutputプラグインに送ります。"
 
-#: ../../README.md:23
+#, fuzzy
 msgid ""
-"The output plugin sends received groonga commands to groonga. The\n"
+"The output plugin sends received Groonga commands to Groonga. The\n"
 "output plugin supports all interfaces, HTTP, GQTP and command\n"
 "interface."
 msgstr ""
 "outputプラグインは受け取ったgroongaコマンドをgroongaに送ります。outputプラグインはHTTP、GQTP、コマンドとすべてのインターフ"
 "ェイスをサポートしています。"
 
-#: ../../README.md:27
 msgid "You can replicate your data by using `copy` output plugin."
 msgstr "データは `copy` outputプラグインで複製することができます。"
 
-#: ../../README.md:29
 msgid "## Install"
 msgstr "## インストール"
 
-#: ../../README.md:31
 msgid "    % gem install fluent-plugin-groonga"
 msgstr ""
 
-#: ../../README.md:33
 msgid "## Usage"
 msgstr "## 使い方"
 
-#: ../../README.md:35
+msgid "There are two usages:"
+msgstr ""
+
+msgid "They are described in other sections."
+msgstr ""
+
+msgid "### Store logs into Groonga"
+msgstr ""
+
+msgid "You need to use `groonga` output plugin to store logs into Groonga."
+msgstr ""
+
+msgid ""
+"The output plugin has auto schema define feature. So you don't need to\n"
+"define schema in Groonga before running Fluentd. You just run Groonga."
+msgstr ""
+
+msgid "There is one required parameter:"
+msgstr ""
+
+msgid "  * `table`: It specifies table name for storing logs."
+msgstr ""
+
+#, fuzzy
+msgid "Here is a minimum configuration:"
+msgstr "以下は設定例です。"
+
+msgid ""
+"    <match log.**>\n"
+"      type groonga\n"
+"      table logs\n"
+"    </match>"
+msgstr ""
+
+msgid ""
+"The configuration stores logs into `logs` table in Groonga that runs\n"
+"on `localhost`."
+msgstr ""
+
+#, fuzzy
+msgid "There are optional parameters:"
+msgstr "利用可能なパラメーターは以下の通りです。"
+
+msgid ""
+"  * `protocol`: It specifies protocol to communicate Groonga server.\n"
+"    * Available values: `http`, `gqtp`, `command`\n"
+"    * Default: `http`\n"
+"  * `host`: It specifies host name or IP address of Groonga server.\n"
+"    * Default: `127.0.0.1`\n"
+"  * `port`: It specifies port number of Groonga server.\n"
+"    * Default for `http` protocol: `10041`\n"
+"    * Default for `gqtp` protocol: `10043`"
+msgstr ""
+
+msgid "Here is a configuration that specifies optional parameters explicitly:"
+msgstr ""
+
+msgid ""
+"      protocol http\n"
+"      host 127.0.0.1\n"
+"      port 10041\n"
+"    </match>"
+msgstr ""
+
+msgid ""
+"`groonga` output plugin supports buffer. So you can use buffer related\n"
+"parameters. See\n"
+"[Buffer Plugin Overview | Fluentd](http://docs.fluentd.org/articles/buffer-plu"
+"gin-overview)\n"
+"for details."
+msgstr ""
+
+msgid ""
+"Note that there is special tag name. You can't use\n"
+"`groonga.command.XXX` tag name for this usage. It means that you can't\n"
+"use the following configuration:"
+msgstr ""
+
+msgid ""
+"    <match groonga.command.*>\n"
+"      type groonga\n"
+"      # ...\n"
+"    </match>"
+msgstr ""
+
+msgid ""
+"`groonga.command.XXX` tag name is reserved for implementing\n"
+"replication system for Groonga."
+msgstr ""
+
+msgid "### Implement replication system for Groonga"
+msgstr ""
+
+msgid ""
+"See the following documents how to implement replication system for\n"
+"Groonga:"
+msgstr ""
+
 msgid ""
 "* [Configuration](doc/text/configuration.md)\n"
 "  ([on the Web](http://groonga.org/fluent-plugin-groonga/en/file.configuration"
@@ -104,33 +250,26 @@ msgstr ""
 "* [構成](doc/text/constitution.md)\n"
 "  ([Web](http://groonga.org/fluent-plugin-groonga/ja/file.constitution.html))"
 
-#: ../../README.md:40
 msgid "## Authors"
 msgstr "## 作者"
 
-#: ../../README.md:42
 msgid "* Kouhei Sutou `<kou@clear-code.com>`"
 msgstr ""
 
-#: ../../README.md:44
 msgid "## License"
 msgstr "## ライセンス"
 
-#: ../../README.md:46
 msgid "LGPL 2.1. See doc/text/lgpl-2.1.txt for details."
 msgstr "LGPL 2.1です。詳細は doc/text/lgpl-2.1.txt を見てください。"
 
-#: ../../README.md:48
 msgid ""
 "(Kouhei Sutou has a right to change the license including\n"
 "contributed patches.)"
 msgstr "（提供してもらったパッチも含め、須藤功平がライセンスを変更できる権利を持つことに同意してもらったこととします。）"
 
-#: ../../README.md:51
 msgid "## Mailing list"
 msgstr "## メーリングリスト"
 
-#: ../../README.md:53
 msgid ""
 "* English: [groonga-talk](https://lists.sourceforge.net/lists/listinfo/groonga"
 "-talk)\n"
@@ -141,34 +280,27 @@ msgstr ""
 ")\n"
 "* 日本語: [groonga-dev](http://lists.sourceforge.jp/mailman/listinfo/groonga-dev)"
 
-#: ../../README.md:56
 msgid "## Source"
 msgstr ""
 
-#: ../../README.md:58
 msgid ""
 "The repository for fluent-plugin-groonga is on\n"
 "[GitHub](https://github.com/groonga/fluent-plugin-groonga/)."
 msgstr ""
 
-#: ../../README.md:61
 msgid "## Thanks"
 msgstr "## 感謝"
 
-#: ../../README.md:63
 msgid "* ..."
 msgstr ""
 
 # title
-#: ../../doc/text/configuration.md:1
 msgid "Configuration"
 msgstr "設定"
 
-#: ../../doc/text/configuration.md:3
 msgid "# Configuration"
 msgstr "# 設定"
 
-#: ../../doc/text/configuration.md:5
 msgid ""
 "Fluent-plugin-groonga includes two fluentd plugins. They are the\n"
 "`groonga` input plugin and the `groonga` output plugin. This documents\n"
@@ -177,15 +309,12 @@ msgstr ""
 "fluent-plugin-groongaは2つのfluentdプラグインを提供します。1つが `groonga` inputプラグインで、もう1つが `g"
 "roonga` outputプラグインです。このドキュメントではこれらのプラグインの設定パラメーターを説明します。"
 
-#: ../../doc/text/configuration.md:9
 msgid "## The `groonga` input plugin"
 msgstr "## `groonga` inputプラグイン"
 
-#: ../../doc/text/configuration.md:11
 msgid "Here are available parameters:"
 msgstr "利用可能なパラメーターは以下の通りです。"
 
-#: ../../doc/text/configuration.md:13
 msgid ""
 "* `protocol`: It specifies protocol for receiving groonga commands.\n"
 "  * available values: `http` and `gqtp`\n"
@@ -213,11 +342,9 @@ msgstr ""
 "   * デフォルト: `10041`\n"
 "* `emit_commands`: TODO"
 
-#: ../../doc/text/configuration.md:26 ../../doc/text/configuration.md:55
 msgid "Here is an example:"
 msgstr "以下は設定例です。"
 
-#: ../../doc/text/configuration.md:28
 msgid ""
 "    <source>\n"
 "      type groonga\n"
@@ -229,11 +356,9 @@ msgid ""
 "    </source>"
 msgstr ""
 
-#: ../../doc/text/configuration.md:37
 msgid "## The `groonga` output plugin"
 msgstr "## `groonga` outputプラグイン"
 
-#: ../../doc/text/configuration.md:39
 msgid ""
 "* `protocol`: It specifies protocol for sending groonga commands to groonga.\n"
 "  * available values: `http`, `gqtp` and `command`\n"
@@ -267,7 +392,6 @@ msgstr ""
 "  * `arguments`: groongaコマンドに追加する引数を指定します。\n"
 "     * デフォルト: 追加の引数はありません。"
 
-#: ../../doc/text/configuration.md:57
 msgid ""
 "    <match groonga.command.*>\n"
 "      type groonga\n"
@@ -277,25 +401,20 @@ msgid ""
 msgstr ""
 
 # title
-#: ../../doc/text/constitution.md:1
 msgid "Constitution"
 msgstr "構成"
 
-#: ../../doc/text/constitution.md:3
 msgid "# Constitution"
 msgstr "# 構成"
 
-#: ../../doc/text/constitution.md:5
 msgid ""
 "You can chose some system constitutions to implemented replication\n"
 "ready groonga system. This document describes some patterns."
 msgstr "レプリケーション対応のgroongaシステムを実装するには、いくつかのシステム構成を選ぶことができます。このドキュメントではいくつかのパターンを説明します。"
 
-#: ../../doc/text/constitution.md:8
 msgid "Here are available patterns:"
 msgstr "利用可能なパターンは以下の通りです。"
 
-#: ../../doc/text/constitution.md:10
 msgid ""
 "  * Master slave replication\n"
 "  * Resending data to recovered slave"
@@ -303,11 +422,9 @@ msgstr ""
 "  * マスタースレーブレプリケーション\n"
 "  * 復帰したスレーブへのデータの再送"
 
-#: ../../doc/text/constitution.md:13
 msgid "Here are unavailable patterns:"
 msgstr "利用できないパターンは以下の通りです。"
 
-#: ../../doc/text/constitution.md:15
 msgid ""
 "  * Multi master replication\n"
 "  * Auto slave recovery\n"
@@ -321,21 +438,17 @@ msgstr ""
 "  * フェイルオーバー\n"
 "  * サービスレベルを落とすSPOF（Single Point of Failure。単一障害点）がないシステム"
 
-#: ../../doc/text/constitution.md:21
 msgid "## Master slave replication"
 msgstr "## マスタースレーブレプリケーション"
 
-#: ../../doc/text/constitution.md:23
 msgid ""
 "Master slave replication is available. This section describes how to\n"
 "configure your system constitution."
 msgstr "マスタースレーブレプリケーションを利用可能です。このセクションではどのようにシステムを構成すればよいかを説明します。"
 
-#: ../../doc/text/constitution.md:26
 msgid "### Small system"
 msgstr "### 小さいシステム"
 
-#: ../../doc/text/constitution.md:28
 msgid ""
 "In small system, you just has two servers. One is the master groonga\n"
 "server and the other is the slave groonga server. You send all update\n"
@@ -355,12 +468,9 @@ msgstr ""
 "マンドとそのレスポンスを素通しするときに、更新系のコマンドをfluentのメッセージに変換します。fluentのメッセージは `groonga` outpu"
 "tプラグインでスレーブgroongaサーバーへ送られます。"
 
-#: ../../doc/text/constitution.md:39 ../../doc/text/constitution.md:173
-#: ../../doc/text/constitution.md:280
 msgid "Here is a diagram of this constitution."
 msgstr "この構成のときの構成図です。"
 
-#: ../../doc/text/constitution.md:41
 msgid ""
 "                update               update\n"
 "                 and                  and\n"
@@ -375,7 +485,6 @@ msgid ""
 "                        +---------+"
 msgstr ""
 
-#: ../../doc/text/constitution.md:53
 msgid ""
 "Fluentd should be placed at client or master groonga server. If you\n"
 "have only one client that updates data, client side is reasonable. If\n"
@@ -385,7 +494,6 @@ msgstr ""
 "fluentdはクライアント側かマスターgroongaサーバー側に置きます。データを更新するクライアントが1つの場合は、クライアント側に置くのがよいでしょう"
 "。データを更新するクライアントが複数いる場合は、マスターgroongaサーバー側に置くのがよいでしょう。"
 
-#: ../../doc/text/constitution.md:58
 msgid ""
 "You can use replication for high performance by providing search\n"
 "service with multi servers. You can't use replication for high\n"
@@ -397,11 +505,9 @@ msgstr ""
 "とはできません。もし、マスターgroongaサーバーかfluentdがダウンしたら、このシステムはデータを更新できません。（スレーブgroongaサーバーは"
 "稼働しているため、検索機能は利用可能です。）"
 
-#: ../../doc/text/constitution.md:64 ../../doc/text/constitution.md:192
 msgid "Here is an example configuration file:"
 msgstr "以下は設定例です。"
 
-#: ../../doc/text/constitution.md:66 ../../doc/text/constitution.md:194
 msgid ""
 "    # For master groonga server\n"
 "    <source>\n"
@@ -431,7 +537,6 @@ msgstr ""
 "                             # 違うポート番号を使うこと\n"
 "    </source>"
 
-#: ../../doc/text/constitution.md:80
 msgid ""
 "    # For slave groonga server\n"
 "    <match groonga.command.*>\n"
@@ -452,7 +557,6 @@ msgstr ""
 "      host 192.168.29.29       # スレーブgroongaサーバーのIPアドレス\n"
 "      port 10041               # スレーブgroongaサーバーのポート番号"
 
-#: ../../doc/text/constitution.md:89
 msgid ""
 "      # Buffer\n"
 "      flush_interval 1s        # Use small value for less delay replication"
@@ -460,7 +564,6 @@ msgstr ""
 "      # buffer\n"
 "      flush_interval 1s        # レプリケーションの遅延を小さくするため小さな値を使う"
 
-#: ../../doc/text/constitution.md:92
 msgid ""
 "      ## Use the following configurations to support resending data to\n"
 "      ## recovered slave groonga server. If you don't care about slave\n"
@@ -472,7 +575,6 @@ msgstr ""
 "      ## もし、スレーブgroongaサーバーがダウンするケースを考慮しなくてもよいなら、\n"
 "      ## 以下の設定は必要ありません。"
 
-#: ../../doc/text/constitution.md:97
 msgid ""
 "      ## For supporting resending data after fluentd is restarted\n"
 "      # buffer_type file\n"
@@ -512,11 +614,9 @@ msgstr ""
 "      # buffer_queue_limit 10000\n"
 "    </match>"
 
-#: ../../doc/text/constitution.md:116
 msgid "#### How to recover from fluentd down"
 msgstr "#### ダウンしたfluentdを復旧する方法"
 
-#: ../../doc/text/constitution.md:118
 msgid ""
 "If fluentd is down, you just restart fluentd. Note that you may resend\n"
 "the last command if fluentd is down while you are sending update\n"
@@ -525,19 +625,15 @@ msgstr ""
 "もし、fluentdがダウンしたら、fluentdを再起動するだけで復旧します。もし、fluentdが更新系のコマンドを実行している最中にダウンしたとしたら"
 "、最後の更新系のコマンドをfluentdに再送しなければいけないかもしれません。"
 
-#: ../../doc/text/constitution.md:122
 msgid "You cannot update data until fluentd is up."
 msgstr "fluentdが復旧するまでデータを更新することはできません。"
 
-#: ../../doc/text/constitution.md:124
 msgid "#### How to recover from master groonga server down"
 msgstr "#### ダウンしたマスターgroongaサーバーを復旧する方法"
 
-#: ../../doc/text/constitution.md:126
 msgid "Here are recover steps when master groonga server is down:"
 msgstr "以下は、ダウンしたマスターgroongaサーバーを復旧する手順です。"
 
-#: ../../doc/text/constitution.md:128
 msgid ""
 "  1. Stop fluentd.\n"
 "  2. Run `grndump /PATH/TO/SLAVE/GROONGA/SERVER/DB >\n"
@@ -555,19 +651,15 @@ msgstr ""
 "  4. マスターgroongaサーバーを起動します。\n"
 "  5. fluentdを起動します。"
 
-#: ../../doc/text/constitution.md:136 ../../doc/text/constitution.md:165
 msgid "You cannot update data until you finish to recover."
 msgstr "復旧が完了するまでデータを更新することはできません。"
 
-#: ../../doc/text/constitution.md:138
 msgid "#### How to recover from slave groonga server down"
 msgstr "#### ダウンしたスレーブgroongaサーバーを復旧する方法"
 
-#: ../../doc/text/constitution.md:140
 msgid "Here are recover steps when slave groonga server is down:"
 msgstr "以下はダウンしたスレーブgroongaサーバーを復旧する手順です。"
 
-#: ../../doc/text/constitution.md:142
 msgid ""
 "  1. Run `grndump /PATH/TO/MASTER/GROONGA/SERVER/DB >\n"
 "     MASTER_GROONGA_DUMP.grn` on master groonga server host.\n"
@@ -581,7 +673,6 @@ msgstr ""
 "TER_GROONGA_DUMP.grn` を実行します。\n"
 "  3. スレーブgroongaサーバーを起動します。"
 
-#: ../../doc/text/constitution.md:148
 msgid ""
 "You can update data while you recover. If your system can't process\n"
 "all search requests by only master groonga server, your system will be\n"
@@ -590,7 +681,6 @@ msgstr ""
 "復旧中もデータを更新することができます。もし、システムが1つのマスターgroongaサーバーだけですべての検索リクエストを処理できない場合は、そのシステムは"
 "ダウンします。"
 
-#: ../../doc/text/constitution.md:152
 msgid ""
 "You need to recover slave groonga server before fluentd's buffer queue\n"
 "is full (see `buffer_queue_limit`) or fluentd gives up retrying (see\n"
@@ -600,7 +690,6 @@ msgstr ""
 "fluentdのバッファキューが溢れる（ `buffer_queue_limit` 参照）前、かつ、fluentdが再送を諦める（ `retry_limit"
 "` 参照）前にスレーブgroongaサーバーを復旧する必要があります。以下は復旧が間に合わなかった時に復旧する手順です。"
 
-#: ../../doc/text/constitution.md:157
 msgid ""
 "  1. Stop fluentd.\n"
 "  2. Run `grndump /PATH/TO/MASTER/GROONGA/SERVER/DB >\n"
@@ -618,11 +707,9 @@ msgstr ""
 "  4. スレーブgroongaサーバーを起動します。\n"
 "  5. fluetndを起動します。"
 
-#: ../../doc/text/constitution.md:167
 msgid "### Medium system"
 msgstr "### 中規模のシステム"
 
-#: ../../doc/text/constitution.md:169
 msgid ""
 "In medium system, you have three or more slave groonga servers. Fluentd\n"
 "updates two or more slave groonga servers with the `copy` output\n"
@@ -631,7 +718,6 @@ msgstr ""
 "中規模のシステムでは3つ以上のgroongaサーバーがいます。fluentdは2つ以上のスレーブgroongaサーバーを `copy` outputプラグイ"
 "ンと `groonga` outputプラグインで更新します。"
 
-#: ../../doc/text/constitution.md:175
 msgid ""
 "                update               update\n"
 "                 and                  and\n"
@@ -651,7 +737,6 @@ msgid ""
 "    +- ...  -+   ...        ...      ..."
 msgstr ""
 
-#: ../../doc/text/constitution.md:208
 msgid ""
 "    # For slave groonga servers\n"
 "    <match groonga.command.*>\n"
@@ -661,7 +746,6 @@ msgstr ""
 "    <match groonga.command.*>\n"
 "      type copy"
 
-#: ../../doc/text/constitution.md:212
 msgid ""
 "      # The first slave groonga server\n"
 "      <store>\n"
@@ -682,7 +766,6 @@ msgstr ""
 "        host 192.168.29.2        # スレーブgroongaサーバーのIPアドレス\n"
 "        port 10041               # スレーブgroongaサーバーのポート番号"
 
-#: ../../doc/text/constitution.md:221
 msgid ""
 "        # Buffer\n"
 "        flush_interval 1s        # Use small value for less delay replication"
@@ -690,7 +773,6 @@ msgstr ""
 "        # buffer\n"
 "        flush_interval 1s        # レプリケーションの遅延を小さくするため小さな値を使う\""
 
-#: ../../doc/text/constitution.md:224
 msgid ""
 "        ## Use the following configurations to support resending data to\n"
 "        ## recovered slave groonga server. If you don't care about slave\n"
@@ -702,7 +784,6 @@ msgstr ""
 "        ## もし、スレーブgroongaサーバーがダウンするケースを考慮しなくてもよいなら、\n"
 "        ## 以下の設定は必要ありません。"
 
-#: ../../doc/text/constitution.md:229
 msgid ""
 "        ## For supporting resending data after fluentd is restarted\n"
 "        # buffer_type file\n"
@@ -742,7 +823,6 @@ msgstr ""
 "        # buffer_queue_limit 10000\n"
 "      </match>"
 
-#: ../../doc/text/constitution.md:248
 msgid ""
 "      # The second slave groonga server\n"
 "      <store>\n"
@@ -763,7 +843,6 @@ msgstr ""
 "        host 192.168.29.3        # スレーブgroongaサーバーのIPアドレス\n"
 "        port 10041               # スレーブgroongaサーバーのポート番号"
 
-#: ../../doc/text/constitution.md:257
 msgid ""
 "        # Buffer\n"
 "        # ...\n"
@@ -773,7 +852,6 @@ msgstr ""
 "        # ...\n"
 "      </store>"
 
-#: ../../doc/text/constitution.md:261
 msgid ""
 "      # More slave groonga servers\n"
 "      # <store>\n"
@@ -789,15 +867,12 @@ msgstr ""
 "      # </store>\n"
 "    </match>"
 
-#: ../../doc/text/constitution.md:268 ../../doc/text/constitution.md:315
 msgid "TODO: ..."
 msgstr ""
 
-#: ../../doc/text/constitution.md:270
 msgid "### Large system"
 msgstr "### 大規模システム"
 
-#: ../../doc/text/constitution.md:272
 msgid ""
 "In large system, you have two or more slave groonga server clusters.\n"
 "Fluentd that connects with master groonga server updates two or more\n"
@@ -812,7 +887,6 @@ msgstr ""
 "tputプラグインを使います。スレーブクラスターはfluentdを1つ持ちます。スレーブgroongaサーバークラスターのfluentdは同じクラスター内に"
 "あるスレーブgroongaサーバーを `copy` outputプラグインと `groonga` outputプラグインで更新します。"
 
-#: ../../doc/text/constitution.md:282
 msgid ""
 "                update                 update\n"
 "                 and                    and\n"
@@ -848,13 +922,11 @@ msgid ""
 "                                      ...                   ..."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:1
 msgid ""
 "                  GNU LESSER GENERAL PUBLIC LICENSE\n"
 "                       Version 2.1, February 1999"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:4
 msgid ""
 " Copyright (C) 1991, 1999 Free Software Foundation, Inc.\n"
 " 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA\n"
@@ -862,18 +934,15 @@ msgid ""
 " of this license document, but changing it is not allowed."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:9
 msgid ""
 "[This is the first released version of the Lesser GPL.  It also counts\n"
 " as the successor of the GNU Library Public License, version 2, hence\n"
 " the version number 2.1.]"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:13
 msgid "                            Preamble"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:15
 msgid ""
 "  The licenses for most software are designed to take away your\n"
 "freedom to share and change it.  By contrast, the GNU General Public\n"
@@ -881,7 +950,6 @@ msgid ""
 "free software--to make sure the software is free for all its users."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:20
 msgid ""
 "  This license, the Lesser General Public License, applies to some\n"
 "specially designated software packages--typically libraries--of the\n"
@@ -891,7 +959,6 @@ msgid ""
 "strategy to use in any particular case, based on the explanations below."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:27
 msgid ""
 "  When we speak of free software, we are referring to freedom of use,\n"
 "not price.  Our General Public Licenses are designed to make sure that\n"
@@ -902,7 +969,6 @@ msgid ""
 "these things."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:35
 msgid ""
 "  To protect your rights, we need to make restrictions that forbid\n"
 "distributors to deny you these rights or to ask you to surrender these\n"
@@ -910,7 +976,6 @@ msgid ""
 "you if you distribute copies of the library or if you modify it."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:40
 msgid ""
 "  For example, if you distribute copies of the library, whether gratis\n"
 "or for a fee, you must give the recipients all the rights that we gave\n"
@@ -921,14 +986,12 @@ msgid ""
 "it.  And you must show them these terms so they know their rights."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:48
 msgid ""
 "  We protect your rights with a two-step method: (1) we copyright the\n"
 "library, and (2) we offer you this license, which gives you legal\n"
 "permission to copy, distribute and/or modify the library."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:52
 msgid ""
 "  To protect each distributor, we want to make it very clear that\n"
 "there is no warranty for the free library.  Also, if the library is\n"
@@ -938,7 +1001,6 @@ msgid ""
 "introduced by others."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:59
 msgid ""
 "  Finally, software patents pose a constant threat to the existence of\n"
 "any free program.  We wish to make sure that a company cannot\n"
@@ -948,7 +1010,6 @@ msgid ""
 "consistent with the full freedom of use specified in this license."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:66
 msgid ""
 "  Most GNU software, including some libraries, is covered by the\n"
 "ordinary GNU General Public License.  This license, the GNU Lesser\n"
@@ -958,7 +1019,6 @@ msgid ""
 "libraries into non-free programs."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:73
 msgid ""
 "  When a program is linked with a library, whether statically or using\n"
 "a shared library, the combination of the two is legally speaking a\n"
@@ -969,7 +1029,6 @@ msgid ""
 "the library."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:81
 msgid ""
 "  We call this license the \"Lesser\" General Public License because it\n"
 "does Less to protect the user's freedom than the ordinary General\n"
@@ -980,7 +1039,6 @@ msgid ""
 "special circumstances."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:89
 msgid ""
 "  For example, on rare occasions, there may be a special need to\n"
 "encourage the widest possible use of a certain library, so that it becomes\n"
@@ -991,7 +1049,6 @@ msgid ""
 "software only, so we use the Lesser General Public License."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:97
 msgid ""
 "  In other cases, permission to use a particular library in non-free\n"
 "programs enables a greater number of people to use a large body of\n"
@@ -1001,7 +1058,6 @@ msgid ""
 "system."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:104
 msgid ""
 "  Although the Lesser General Public License is Less protective of the\n"
 "users' freedom, it does ensure that the user of a program that is\n"
@@ -1009,7 +1065,6 @@ msgid ""
 "that program using a modified version of the Library."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:109
 msgid ""
 "  The precise terms and conditions for copying, distribution and\n"
 "modification follow.  Pay close attention to the difference between a\n"
@@ -1018,13 +1073,11 @@ msgid ""
 "be combined with the library in order to run."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:115
 msgid ""
 "                  GNU LESSER GENERAL PUBLIC LICENSE\n"
 "   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:118
 msgid ""
 "  0. This License Agreement applies to any software library or other\n"
 "program which contains a notice placed by the copyright holder or\n"
@@ -1033,14 +1086,12 @@ msgid ""
 "Each licensee is addressed as \"you\"."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:124
 msgid ""
 "  A \"library\" means a collection of software functions and/or data\n"
 "prepared so as to be conveniently linked with application programs\n"
 "(which use some of those functions and data) to form executables."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:128
 msgid ""
 "  The \"Library\", below, refers to any such software library or work\n"
 "which has been distributed under these terms.  A \"work based on the\n"
@@ -1051,7 +1102,6 @@ msgid ""
 "included without limitation in the term \"modification\".)"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:136
 msgid ""
 "  \"Source code\" for a work means the preferred form of the work for\n"
 "making modifications to it.  For a library, complete source code means\n"
@@ -1060,7 +1110,6 @@ msgid ""
 "and installation of the library."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:142
 msgid ""
 "  Activities other than copying, distribution and modification are not\n"
 "covered by this License; they are outside its scope.  The act of\n"
@@ -1071,7 +1120,6 @@ msgid ""
 "and what the program that uses the Library does."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:150
 msgid ""
 "  1. You may copy and distribute verbatim copies of the Library's\n"
 "complete source code as you receive it, in any medium, provided that\n"
@@ -1082,14 +1130,12 @@ msgid ""
 "Library."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:158
 msgid ""
 "  You may charge a fee for the physical act of transferring a copy,\n"
 "and you may at your option offer warranty protection in exchange for a\n"
 "fee."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:162
 msgid ""
 "  2. You may modify your copy or copies of the Library or any portion\n"
 "of it, thus forming a work based on the Library, and copy and\n"
@@ -1097,23 +1143,19 @@ msgid ""
 "above, provided that you also meet all of these conditions:"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:167
 msgid "    a) The modified work must itself be a software library."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:169
 msgid ""
 "    b) You must cause the files modified to carry prominent notices\n"
 "    stating that you changed the files and the date of any change."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:172
 msgid ""
 "    c) You must cause the whole of the work to be licensed at no\n"
 "    charge to all third parties under the terms of this License."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:175
 msgid ""
 "    d) If a facility in the modified Library refers to a function or a\n"
 "    table of data to be supplied by an application program that uses\n"
@@ -1124,7 +1166,6 @@ msgid ""
 "    its purpose remains meaningful."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:183
 msgid ""
 "    (For example, a function in a library to compute square roots has\n"
 "    a purpose that is entirely well-defined independent of the\n"
@@ -1134,7 +1175,6 @@ msgid ""
 "    root function must still compute square roots.)"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:190
 msgid ""
 "These requirements apply to the modified work as a whole.  If\n"
 "identifiable sections of that work are not derived from the Library,\n"
@@ -1148,7 +1188,6 @@ msgid ""
 "it."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:201
 msgid ""
 "Thus, it is not the intent of this section to claim rights or contest\n"
 "your rights to work written entirely by you; rather, the intent is to\n"
@@ -1156,7 +1195,6 @@ msgid ""
 "collective works based on the Library."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:206
 msgid ""
 "In addition, mere aggregation of another work not based on the Library\n"
 "with the Library (or with a work based on the Library) on a volume of\n"
@@ -1164,7 +1202,6 @@ msgid ""
 "the scope of this License."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:211
 msgid ""
 "  3. You may opt to apply the terms of the ordinary GNU General Public\n"
 "License instead of this License to a given copy of the Library.  To do\n"
@@ -1176,20 +1213,17 @@ msgid ""
 "these notices."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:220
 msgid ""
 "  Once this change is made in a given copy, it is irreversible for\n"
 "that copy, so the ordinary GNU General Public License applies to all\n"
 "subsequent copies and derivative works made from that copy."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:224
 msgid ""
 "  This option is useful when you wish to copy part of the code of\n"
 "the Library into a program that is not a library."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:227
 msgid ""
 "  4. You may copy and distribute the Library (or a portion or\n"
 "derivative of it, under Section 2) in object code or executable form\n"
@@ -1199,7 +1233,6 @@ msgid ""
 "medium customarily used for software interchange."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:234
 msgid ""
 "  If distribution of object code is made by offering access to copy\n"
 "from a designated place, then offering equivalent access to copy the\n"
@@ -1208,7 +1241,6 @@ msgid ""
 "compelled to copy the source along with the object code."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:240
 msgid ""
 "  5. A program that contains no derivative of any portion of the\n"
 "Library, but is designed to work with the Library by being compiled or\n"
@@ -1217,7 +1249,6 @@ msgid ""
 "therefore falls outside the scope of this License."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:246
 msgid ""
 "  However, linking a \"work that uses the Library\" with the Library\n"
 "creates an executable that is a derivative of the Library (because it\n"
@@ -1226,7 +1257,6 @@ msgid ""
 "Section 6 states terms for distribution of such executables."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:252
 msgid ""
 "  When a \"work that uses the Library\" uses material from a header file\n"
 "that is part of the Library, the object code for the work may be a\n"
@@ -1236,7 +1266,6 @@ msgid ""
 "threshold for this to be true is not precisely defined by law."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:259
 msgid ""
 "  If such an object file uses only numerical parameters, data\n"
 "structure layouts and accessors, and small macros and small inline\n"
@@ -1246,7 +1275,6 @@ msgid ""
 "Library will still fall under Section 6.)"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:266
 msgid ""
 "  Otherwise, if the work is a derivative of the Library, you may\n"
 "distribute the object code for the work under the terms of Section 6.\n"
@@ -1254,7 +1282,6 @@ msgid ""
 "whether or not they are linked directly with the Library itself."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:271
 msgid ""
 "  6. As an exception to the Sections above, you may also combine or\n"
 "link a \"work that uses the Library\" with the Library to produce a\n"
@@ -1264,7 +1291,6 @@ msgid ""
 "engineering for debugging such modifications."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:278
 msgid ""
 "  You must give prominent notice with each copy of the work that the\n"
 "Library is used in it and that the Library and its use are covered by\n"
@@ -1275,7 +1301,6 @@ msgid ""
 "of these things:"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:286
 msgid ""
 "    a) Accompany the work with the complete corresponding\n"
 "    machine-readable source code for the Library including whatever\n"
@@ -1290,7 +1315,6 @@ msgid ""
 "    to use the modified definitions.)"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:298
 msgid ""
 "    b) Use a suitable shared library mechanism for linking with the\n"
 "    Library.  A suitable mechanism is one that (1) uses at run time a\n"
@@ -1301,7 +1325,6 @@ msgid ""
 "    interface-compatible with the version that the work was made with."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:306
 msgid ""
 "    c) Accompany the work with a written offer, valid for at\n"
 "    least three years, to give the same user the materials\n"
@@ -1309,20 +1332,17 @@ msgid ""
 "    than the cost of performing this distribution."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:311
 msgid ""
 "    d) If distribution of the work is made by offering access to copy\n"
 "    from a designated place, offer equivalent access to copy the above\n"
 "    specified materials from the same place."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:315
 msgid ""
 "    e) Verify that the user has already received a copy of these\n"
 "    materials or that you have already sent this user a copy."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:318
 msgid ""
 "  For an executable, the required form of the \"work that uses the\n"
 "Library\" must include any data and utility programs needed for\n"
@@ -1334,7 +1354,6 @@ msgid ""
 "the executable."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:327
 msgid ""
 "  It may happen that this requirement contradicts the license\n"
 "restrictions of other proprietary libraries that do not normally\n"
@@ -1343,7 +1362,6 @@ msgid ""
 "distribute."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:333
 msgid ""
 "  7. You may place library facilities that are a work based on the\n"
 "Library side-by-side in a single library together with other library\n"
@@ -1353,7 +1371,6 @@ msgid ""
 "permitted, and provided that you do these two things:"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:340
 msgid ""
 "    a) Accompany the combined library with a copy of the same work\n"
 "    based on the Library, uncombined with any other library\n"
@@ -1361,14 +1378,12 @@ msgid ""
 "    Sections above."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:345
 msgid ""
 "    b) Give prominent notice with the combined library of the fact\n"
 "    that part of it is a work based on the Library, and explaining\n"
 "    where to find the accompanying uncombined form of the same work."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:349
 msgid ""
 "  8. You may not copy, modify, sublicense, link with, or distribute\n"
 "the Library except as expressly provided under this License.  Any\n"
@@ -1379,7 +1394,6 @@ msgid ""
 "terminated so long as such parties remain in full compliance."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:357
 msgid ""
 "  9. You are not required to accept this License, since you have not\n"
 "signed it.  However, nothing else grants you permission to modify or\n"
@@ -1391,7 +1405,6 @@ msgid ""
 "the Library or works based on it."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:366
 msgid ""
 "  10. Each time you redistribute the Library (or any work based on the\n"
 "Library), the recipient automatically receives a license from the\n"
@@ -1402,7 +1415,6 @@ msgid ""
 "this License."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:374
 msgid ""
 "  11. If, as a consequence of a court judgment or allegation of patent\n"
 "infringement or for any other reason (not limited to patent issues),\n"
@@ -1418,14 +1430,12 @@ msgid ""
 "refrain entirely from distribution of the Library."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:387
 msgid ""
 "If any portion of this section is held invalid or unenforceable under any\n"
 "particular circumstance, the balance of the section is intended to apply,\n"
 "and the section as a whole is intended to apply in other circumstances."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:391
 msgid ""
 "It is not the purpose of this section to induce you to infringe any\n"
 "patents or other property right claims or to contest validity of any\n"
@@ -1439,13 +1449,11 @@ msgid ""
 "impose that choice."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:402
 msgid ""
 "This section is intended to make thoroughly clear what is believed to\n"
 "be a consequence of the rest of this License."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:405
 msgid ""
 "  12. If the distribution and/or use of the Library is restricted in\n"
 "certain countries either by patents or by copyrighted interfaces, the\n"
@@ -1456,7 +1464,6 @@ msgid ""
 "written in the body of this License."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:413
 msgid ""
 "  13. The Free Software Foundation may publish revised and/or new\n"
 "versions of the Lesser General Public License from time to time.\n"
@@ -1464,7 +1471,6 @@ msgid ""
 "but may differ in detail to address new problems or concerns."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:418
 msgid ""
 "Each version is given a distinguishing version number.  If the Library\n"
 "specifies a version number of this License which applies to it and\n"
@@ -1475,7 +1481,6 @@ msgid ""
 "the Free Software Foundation."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:426
 msgid ""
 "  14. If you wish to incorporate parts of the Library into other free\n"
 "programs whose distribution conditions are incompatible with these,\n"
@@ -1487,11 +1492,9 @@ msgid ""
 "and reuse of software generally."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:435
 msgid "                            NO WARRANTY"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:437
 msgid ""
 "  15. BECAUSE THE LIBRARY IS LICENSED FREE OF CHARGE, THERE IS NO\n"
 "WARRANTY FOR THE LIBRARY, TO THE EXTENT PERMITTED BY APPLICABLE LAW.\n"
@@ -1504,7 +1507,6 @@ msgid ""
 "THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:447
 msgid ""
 "  16. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN\n"
 "WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY\n"
@@ -1518,15 +1520,12 @@ msgid ""
 "DAMAGES."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:458
 msgid "                     END OF TERMS AND CONDITIONS"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:460
 msgid "           How to Apply These Terms to Your New Libraries"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:462
 msgid ""
 "  If you develop a new library, and you want it to be of the greatest\n"
 "possible use to the public, we recommend making it free software that\n"
@@ -1535,7 +1534,6 @@ msgid ""
 "ordinary General Public License)."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:468
 msgid ""
 "  To apply these terms, attach the following notices to the library.  It is\n"
 "safest to attach them to the start of each source file to most effectively\n"
@@ -1543,13 +1541,11 @@ msgid ""
 "\"copyright\" line and a pointer to where the full notice is found."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:473
 msgid ""
 "    <one line to give the library's name and a brief idea of what it does.>\n"
 "    Copyright (C) <year>  <name of author>"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:476
 msgid ""
 "    This library is free software; you can redistribute it and/or\n"
 "    modify it under the terms of the GNU Lesser General Public\n"
@@ -1557,7 +1553,6 @@ msgid ""
 "    version 2.1 of the License, or (at your option) any later version."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:481
 msgid ""
 "    This library is distributed in the hope that it will be useful,\n"
 "    but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
@@ -1565,7 +1560,6 @@ msgid ""
 "    Lesser General Public License for more details."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:486
 msgid ""
 "    You should have received a copy of the GNU Lesser General Public\n"
 "    License along with this library; if not, write to the Free Software\n"
@@ -1573,52 +1567,58 @@ msgid ""
 " USA"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:490
 msgid "Also add information on how to contact you by electronic and paper mail."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:492
 msgid ""
 "You should also get your employer (if you work as a programmer) or your\n"
 "school, if any, to sign a \"copyright disclaimer\" for the library, if\n"
 "necessary.  Here is a sample; alter the names:"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:496
 msgid ""
 "  Yoyodyne, Inc., hereby disclaims all copyright interest in the\n"
 "  library `Frob' (a library for tweaking knobs) written by James Random Hacker"
 "."
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:499
 msgid ""
 "  <signature of Ty Coon>, 1 April 1990\n"
 "  Ty Coon, President of Vice"
 msgstr ""
 
-#: ../../doc/text/lgpl-2.1.txt:502
 msgid "That's all there is to it!"
 msgstr ""
 
 # title
-#: ../../doc/text/news.md:1
 msgid "News"
 msgstr "お知らせ"
 
-#: ../../doc/text/news.md:3
 msgid "# News"
 msgstr "# お知らせ"
 
-#: ../../doc/text/news.md:5
-msgid "## 1.0.3: 2013-09-29"
+msgid "## 1.0.4: 2014-10-20"
 msgstr ""
 
-#: ../../doc/text/news.md:7 ../../doc/text/news.md:19 ../../doc/text/news.md:26
 msgid "### Improvements"
 msgstr "### 改善"
 
-#: ../../doc/text/news.md:9
+msgid ""
+"* Supported the latest http_parser gem.\n"
+"* Removed no buffer mode. Use `flush_interval 0` for no buffer like\n"
+"  behavior.\n"
+"* Changed the default port number to `10043` for `gqtp` protocol usage.\n"
+"  Because Groonga changed the default port number for `gqtp` protocol.\n"
+"* Reduced the number of `load` calls. It improves `load` performance.\n"
+"* Supported auto schema define. You don't need to define schema in Groonga\n"
+"  before running Fluentd.\n"
+"* Added document to use fluent-plugin-groonga to store logs into Groonga.\n"
+"  It fits normal Fluentd usage."
+msgstr ""
+
+msgid "## 1.0.3: 2013-09-29"
+msgstr ""
+
 msgid ""
 "* Added license information to gemspec.\n"
 "  [GitHub#1][Reported by Benjamin Fleischer]\n"
@@ -1628,19 +1628,15 @@ msgstr ""
 "  [GitHub#1][Benjamin Fleischerさんが報告]\n"
 "* groonga-command-parserをサポート。"
 
-#: ../../doc/text/news.md:13
 msgid "### Thanks"
 msgstr "### 感謝"
 
-#: ../../doc/text/news.md:15
 msgid "* Benjamin Fleischer"
 msgstr ""
 
-#: ../../doc/text/news.md:17
 msgid "## 1.0.2: 2013-08-08"
 msgstr ""
 
-#: ../../doc/text/news.md:21
 msgid ""
 "* Supported non-buffer mode.\n"
 "* Required gqtp gem >= 1.0.3."
@@ -1648,11 +1644,9 @@ msgstr ""
 "* バッファーを使わなくても動くようにした。\n"
 "* gqtp gem 1.0.3以降を必須にした。"
 
-#: ../../doc/text/news.md:24
 msgid "## 1.0.1: 2012-12-29"
 msgstr ""
 
-#: ../../doc/text/news.md:28
 msgid ""
 "* Added more destructive emit commands (\"delete\", \"register\", \"truncate\").\n"
 "* [out] Used close instead of sending \"shutdown\".\n"
@@ -1671,56 +1665,56 @@ msgstr ""
 "  * 復旧の方法を追加した。\n"
 "  * 3パターンの大きさのシステムでマスター・スレーブ方式のレプリケーションを使うためのドキュメントを追加した。"
 
-#: ../../doc/text/news.md:37
 msgid "## 1.0.0: 2012-11-29"
 msgstr ""
 
-#: ../../doc/text/news.md:39
 msgid "The first release!!!"
 msgstr ""
 
 # @return [GroongaInput]
-#: ../../lib/fluent/plugin/in_groonga.rb:30
 msgid "a new instance of GroongaInput"
 msgstr ""
 
 # @return [Repeater]
-#: ../../lib/fluent/plugin/in_groonga.rb:60
 msgid "a new instance of Repeater"
 msgstr ""
 
 # @return [Handler]
-#: ../../lib/fluent/plugin/in_groonga.rb:164
-#: ../../lib/fluent/plugin/in_groonga.rb:212
 msgid "a new instance of Handler"
 msgstr ""
 
 # @return [Parser]
-#: ../../lib/fluent/plugin/in_groonga.rb:233
 msgid "a new instance of Parser"
 msgstr ""
 
 # @return [GroongaOutput]
-#: ../../lib/fluent/plugin/out_groonga.rb:24
 msgid "a new instance of GroongaOutput"
 msgstr ""
 
+# @return [Schema]
+msgid "a new instance of Schema"
+msgstr ""
+
+# @return [TypeGuesser]
+msgid "a new instance of TypeGuesser"
+msgstr ""
+
+# @return [Table]
+msgid "a new instance of Table"
+msgstr ""
+
+# @return [Column]
+msgid "a new instance of Column"
+msgstr ""
+
 # @return [Emitter]
-#: ../../lib/fluent/plugin/out_groonga.rb:85
 msgid "a new instance of Emitter"
 msgstr ""
 
-# @return [RawGroongaOutput]
-#: ../../lib/fluent/plugin/out_groonga.rb:119
-msgid "a new instance of RawGroongaOutput"
-msgstr ""
-
-# @return [BufferedGroongaOutput]
-#: ../../lib/fluent/plugin/out_groonga.rb:133
-msgid "a new instance of BufferedGroongaOutput"
+# @return [NetworkClient]
+msgid "a new instance of NetworkClient"
 msgstr ""
 
 # @return [CommandClient]
-#: ../../lib/fluent/plugin/out_groonga.rb:215
 msgid "a new instance of CommandClient"
 msgstr ""
