@@ -20,9 +20,9 @@ Gem::Specification.new do |spec|
   spec.version = "1.0.4"
   spec.authors = ["Kouhei Sutou"]
   spec.email = ["kou@clear-code.com"]
-  spec.summary = "Fluentd plugin collection for groonga users"
+  spec.summary = "Fluentd plugin to store data into Groonga and implement Groonga replication system."
   spec.description =
-    "Groonga users can replicate their data by fluent-plugin-groonga"
+    "There are two usages. 1) Store data into Groonga. 2) Implement Groonga replication system. See documentation for details."
   spec.homepage = "https://github.com/groonga/fluent-plugin-groonga"
   spec.license = "LGPL-2.1"
 
