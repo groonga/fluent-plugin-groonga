@@ -2,6 +2,21 @@
 
 # News
 
+## 1.0.4: 2014-10-20
+
+### Improvements
+
+* Supported the latest http_parser gem.
+* Removed no buffer mode. Use `flush_interval 0` for no buffer like
+  behavior.
+* Changed the default port number to `10043` for `gqtp` protocol usage.
+  Because Groonga changed the default port number for `gqtp` protocol.
+* Reduced the number of `load` calls. It improves `load` performance.
+* Supported auto schema define. You don't need to define schema in Groonga
+  before running Fluentd.
+* Added document to use fluent-plugin-groonga to store logs into Groonga.
+  It fits normal Fluentd usage.
+
 ## 1.0.3: 2013-09-29
 
 ### Improvements
