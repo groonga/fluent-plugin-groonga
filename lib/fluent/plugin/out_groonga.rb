@@ -194,26 +194,57 @@ module Fluent
           end
         end
 
+        def integer_value?(value)
+          case value
+          when String
+            begin
+              Integer(value)
+              true
+            rescue ArgumentError
+              false
+            end
+          when Integer
+            true
+          else
+            false
+          end
+        end
+
         def int32_values?
           int32_min = -(2 ** 31)
           int32_max = 2 ** 31 - 1
           range = int32_min..int32_max
           @sample_values.all? do |sample_value|
-            sample_value.is_a?(Integer) and
-              range.cover?(sample_value)
+            integer_value?(sample_value) and
+              range.cover?(Integer(sample_value))
           end
         end
 
         def int64_values?
           @sample_values.all? do |sample_value|
-            sample_value.is_a?(Integer)
+            integer_value?(sample_value)
+          end
+        end
+
+        def float_value?(value)
+          case value
+          when String
+            begin
+              Float(value)
+              true
+            rescue ArgumentError
+              false
+            end
+          when Float
+            true
+          else
+            false
           end
         end
 
         def float_values?
           @sample_values.all? do |sample_value|
-            sample_value.is_a?(Float) or
-              sample_value.is_a?(Integer)
+            float_value?(sample_value)
           end
         end
 

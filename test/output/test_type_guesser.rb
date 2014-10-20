@@ -65,6 +65,10 @@ class OutputTypeGuesserTest < Test::Unit::TestCase
       test "zero" do
         assert_equal("Int32", guess([0]))
       end
+
+      test "string" do
+        assert_equal("Int32", guess(["0"]))
+      end
     end
 
     sub_test_case "Int64" do
@@ -76,6 +80,28 @@ class OutputTypeGuesserTest < Test::Unit::TestCase
       test "int32_max + 1" do
         int32_max = 2 ** 31 - 1
         assert_equal("Int64", guess([int32_max + 1]))
+      end
+
+      test "string" do
+        assert_equal("Int64", guess([(2 ** 32).to_s]))
+      end
+    end
+
+    sub_test_case "Float" do
+      test "positive" do
+        assert_equal("Float", guess([1.0]))
+      end
+
+      test "negative" do
+        assert_equal("Float", guess([-1.0]))
+      end
+
+      test "zero" do
+        assert_equal("Float", guess([0.0]))
+      end
+
+      test "string" do
+        assert_equal("Float", guess(["1.1"]))
       end
     end
 
