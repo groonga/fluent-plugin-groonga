@@ -54,34 +54,36 @@ EOC
       @real_host = "127.0.0.1"
       @real_port = 29292
       @real_server_thread = Thread.new do
-        real_server = TCPServer.new(@real_host, @real_port)
-        response_config = WEBrick::Config::HTTP.dup.update(:Logger => $log)
-        real_response = WEBrick::HTTPResponse.new(response_config)
-        request_headers = nil
-        request_body = ""
-        client = real_server.accept
-        real_server.close
-        @request_parser.on_body = lambda do |chunk|
-          @request_body << chunk
-        end
-        @request_parser.on_message_complete = lambda do
-          real_response.body = @response_body
-          real_response.send_response(client)
-          client.close
-        end
-
+        @real_server = TCPServer.new(@real_host, @real_port)
         loop do
-          break if client.closed?
-          data = client.readpartial(4096)
-          break if data.nil?
-          @request_parser << data
+          response_config = WEBrick::Config::HTTP.dup.update(:Logger => $log)
+          real_response = WEBrick::HTTPResponse.new(response_config)
+          request_headers = nil
+          request_body = ""
+          client = @real_server.accept
+          @request_parser.on_body = lambda do |chunk|
+            @request_body << chunk
+          end
+          @request_parser.on_message_complete = lambda do
+            real_response.body = @response_body
+            real_response.send_response(client)
+            client.close
+          end
+
+          loop do
+            break if client.closed?
+            data = client.readpartial(4096)
+            break if data.nil?
+            @request_parser << data
+          end
         end
       end
     end
 
     teardown
     def teardown_real_server
-      @real_server_thread.join
+      @real_server_thread.kill
+      @real_server.close
     end
 
     def configuration

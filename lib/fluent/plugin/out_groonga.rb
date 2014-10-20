@@ -50,10 +50,12 @@ module Fluent
     def start
       super
       @client.start
+      @emitter.start
     end
 
     def shutdown
       super
+      @emitter.shutdown
       @client.shutdown
     end
 
@@ -75,10 +77,182 @@ module Fluent
       end
     end
 
+    class Schema
+      def initialize(client, table_name)
+        @client = client
+        @table_name = table_name
+        @table = nil
+        @columns = nil
+      end
+
+      def populate
+        # TODO
+      end
+
+      def update(records)
+        ensure_table
+        ensure_columns
+
+        nonexistent_columns = {}
+        records.each do |record|
+          record.each do |key, value|
+            column = @columns[key]
+            if column.nil?
+              nonexistent_columns[key] ||= []
+              nonexistent_columns[key] << value
+            end
+          end
+        end
+
+        nonexistent_columns.each do |name, values|
+          @columns[name] = create_column(name, values)
+        end
+      end
+
+      private
+      def ensure_table
+        return if @table
+
+        table_list = @client.send("table_list")
+        target_table = table_list.find do |table|
+          table.name == @table_name
+        end
+        if target_table
+          @table = Table.new(@table_name, target_table.domain)
+        else
+          # TODO: Check response
+          @client.send("table_create",
+                       "name"  => @table_name,
+                       "flags" => "TABLE_NO_KEY")
+          @table = Table.new(@table_name, nil)
+        end
+      end
+
+      def ensure_columns
+        return if @columns
+
+        column_list = @client.send("column_list", "table" => @table_name)
+        @columns = {}
+        column_list.each do |column|
+          vector_p = column.flags.split("|").include?("COLUMN_VECTOR")
+          @columns[column.name] = Column.new(column.name,
+                                             column.range,
+                                             vector_p)
+        end
+      end
+
+      def create_column(name, sample_values)
+        guesser = TypeGuesser.new(sample_values)
+        value_type = guesser.guess
+        vector_p = guesser.vector?
+        if vector_p
+          flags = "COLUMN_VECTOR"
+        else
+          flags = "COLUMN_SCALAR"
+        end
+        # TODO: Check response
+        @client.send("column_create",
+                     "table" => @table_name,
+                     "name" => name,
+                     "flags" => flags,
+                     "type" => value_type)
+        @columns[name] = Column.new(name, value_type, vector_p)
+      end
+
+      class TypeGuesser
+        def initialize(sample_values)
+          @sample_values = sample_values
+        end
+
+        def guess
+          return "Time"          if time_values?
+          return "Int32"         if int32_values?
+          return "Int64"         if int64_values?
+          return "Float"         if float_values?
+          return "WGS84GeoPoint" if geo_point_values?
+
+          "Text"
+        end
+
+        def vector?
+          @sample_values.any? do |sample_value|
+            sample_value.is_a?(Array)
+          end
+        end
+
+        private
+        def time_values?
+          now = Time.now.to_i
+          year_in_seconds = 365 * 24 * 60 * 60
+          window = 10 * year_in_seconds
+          new = now + window
+          old = now - window
+          recent_range = old..new
+          @sample_values.all? do |sample_value|
+            sample_value.is_a?(Integer) and
+              recent_range.cover?(sample_value)
+          end
+        end
+
+        def int32_values?
+          int32_min = -(2 ** 31)
+          int32_max = 2 ** 31 - 1
+          range = int32_min..int32_max
+          @sample_values.all? do |sample_value|
+            sample_value.is_a?(Integer) and
+              range.cover?(sample_value)
+          end
+        end
+
+        def int64_values?
+          @sample_values.all? do |sample_value|
+            sample_value.is_a?(Integer)
+          end
+        end
+
+        def float_values?
+          @sample_values.all? do |sample_value|
+            sample_value.is_a?(Float) or
+              sample_value.is_a?(Integer)
+          end
+        end
+
+        def geo_point_values?
+          @sample_values.all? do |sample_value|
+            sample_value.is_a?(String) and
+              /\A-?\d+(?:\.\d+)[,x]-?\d+(?:\.\d+)\z/ =~ sample_value
+          end
+        end
+      end
+
+      class Table
+        def initialize(name, key_type)
+          @name = name
+          @key_type = key_type
+        end
+      end
+
+      class Column
+        def initialize(name, value_type, vector_p)
+          @name = name
+          @value_type = value_type
+          @vector_p = vector_p
+        end
+      end
+    end
+
     class Emitter
       def initialize(client, table)
         @client = client
         @table = table
+        @schema = nil
+      end
+
+      def start
+        @schema = Schema.new(@client, @table)
+      end
+
+      def shutdown
       end
 
       def emit(chunk)
@@ -102,6 +276,8 @@ module Fluent
       private
       def store_records(records)
         return if @table.nil?
+
+        @schema.update(records)
 
         arguments = {
           "table" => @table,
