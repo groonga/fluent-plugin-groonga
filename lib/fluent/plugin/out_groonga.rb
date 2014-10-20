@@ -113,7 +113,7 @@ module Fluent
       def ensure_table
         return if @table
 
-        table_list = @client.send("table_list")
+        table_list = @client.execute("table_list")
         target_table = table_list.find do |table|
           table.name == @table_name
         end
@@ -121,9 +121,9 @@ module Fluent
           @table = Table.new(@table_name, target_table.domain)
         else
           # TODO: Check response
-          @client.send("table_create",
-                       "name"  => @table_name,
-                       "flags" => "TABLE_NO_KEY")
+          @client.execute("table_create",
+                          "name"  => @table_name,
+                          "flags" => "TABLE_NO_KEY")
           @table = Table.new(@table_name, nil)
         end
       end
@@ -131,7 +131,7 @@ module Fluent
       def ensure_columns
         return if @columns
 
-        column_list = @client.send("column_list", "table" => @table_name)
+        column_list = @client.execute("column_list", "table" => @table_name)
         @columns = {}
         column_list.each do |column|
           vector_p = column.flags.split("|").include?("COLUMN_VECTOR")
@@ -151,11 +151,11 @@ module Fluent
           flags = "COLUMN_SCALAR"
         end
         # TODO: Check response
-        @client.send("column_create",
-                     "table" => @table_name,
-                     "name" => name,
-                     "flags" => flags,
-                     "type" => value_type)
+        @client.execute("column_create",
+                        "table" => @table_name,
+                        "name" => name,
+                        "flags" => flags,
+                        "type" => value_type)
         @columns[name] = Column.new(name, value_type, vector_p)
       end
 
@@ -265,7 +265,7 @@ module Fluent
               store_records(records)
               records.clear
             end
-            @client.send(name, record)
+            @client.execute(name, record)
           else
             records << record
           end
@@ -283,7 +283,7 @@ module Fluent
           "table" => @table,
           "values" => Yajl::Encoder.encode(records),
         }
-        @client.send("load", arguments)
+        @client.execute("load", arguments)
       end
     end
 
@@ -315,7 +315,7 @@ module Fluent
         @client.close
       end
 
-      def send(name, arguments={})
+      def execute(name, arguments={})
         command = build_command(name, arguments)
         @client ||= Groonga::Client.new(:protocol => @protocol,
                                         :host     => @host,
@@ -354,7 +354,7 @@ module Fluent
         Process.waitpid(@pid)
       end
 
-      def send(name, arguments={})
+      def execute(name, arguments={})
         command = build_command(name, arguments)
         body = nil
         if command.name == "load"
