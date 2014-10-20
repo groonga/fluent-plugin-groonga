@@ -17,6 +17,8 @@
 
 require "fileutils"
 
+require "yajl"
+
 require "groonga/client"
 
 module Fluent
@@ -60,10 +62,7 @@ module Fluent
     end
 
     def write(chunk)
-      chunk.msgpack_each do |message|
-        tag, _, record = message
-        @emitter.emit(tag, record)
-      end
+      @emitter.emit(chunk)
     end
 
     private
@@ -82,13 +81,22 @@ module Fluent
         @table = table
       end
 
-      def emit(tag, record)
-        if /\Agroonga\.command\./ =~ tag
-          name = $POSTMATCH
-          send_command(name, record)
-        else
-          store_chunk(data)
+      def emit(chunk)
+        values = []
+        chunk.msgpack_each do |message|
+          tag, _, record = message
+          if /\Agroonga\.command\./ =~ tag
+            name = $POSTMATCH
+            unless values.empty?
+              store_values(values)
+              values.clear
+            end
+            send_command(name, record)
+          else
+            values << record
+          end
         end
+        store_values(values) unless values.empty?
       end
 
       private
@@ -98,13 +106,12 @@ module Fluent
         @client.send(command)
       end
 
-      def store_chunk(value)
+      def store_values(values)
         return if @table.nil?
 
-        values = [value]
         arguments = {
           "table" => @table,
-          "values" => Yajl::Enocder.encode(values),
+          "values" => Yajl::Encoder.encode(values),
         }
         send_command("load", arguments)
       end

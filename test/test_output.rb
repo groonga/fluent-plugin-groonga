@@ -104,6 +104,45 @@ EOC
                      @request_parser.request_url)
       end
     end
+
+    class StoreTest < self
+      def configuration
+        <<-CONFIGURATION
+          #{super}
+          table Logs
+        CONFIGURATION
+      end
+
+      def test_one_message
+        @response_body = JSON.generate([[0, 0.0, 0.0], [1]])
+        driver = create_driver("log")
+        time = Time.parse("2012-10-26T08:45:42Z").to_i
+        driver.run do
+          driver.emit({"message" => "1st message"}, time)
+        end
+        assert_equal("/d/load?table=Logs",
+                     @request_parser.request_url)
+        assert_equal([{"message" => "1st message"}],
+                     JSON.parse(@request_body))
+      end
+
+      def test_multiple_messages
+        @response_body = JSON.generate([[0, 0.0, 0.0], [2]])
+        driver = create_driver("log")
+        time = Time.parse("2012-10-26T08:45:42Z").to_i
+        driver.run do
+          driver.emit({"message" => "1st message"}, time)
+          driver.emit({"message" => "2nd message"}, time + 1)
+        end
+        assert_equal("/d/load?table=Logs",
+                     @request_parser.request_url)
+        assert_equal([
+                       {"message" => "1st message"},
+                       {"message" => "2nd message"},
+                     ],
+                     JSON.parse(@request_body))
+      end
+    end
   end
 
   class CommandLineTest < self
