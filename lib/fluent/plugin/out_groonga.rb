@@ -100,12 +100,6 @@ module Fluent
       end
 
       private
-      def send_command(name, arguments)
-        command_class = Groonga::Command.find(name)
-        command = command_class.new(name, arguments)
-        @client.send(command)
-      end
-
       def store_records(records)
         return if @table.nil?
 
@@ -113,7 +107,7 @@ module Fluent
           "table" => @table,
           "values" => Yajl::Encoder.encode(records),
         }
-        send_command("load", arguments)
+        @client.send("load", arguments)
       end
     end
 
@@ -137,7 +131,9 @@ module Fluent
         @client.close
       end
 
-      def send(command)
+      def send(name, arguments={})
+        command_class = Groonga::Command.find(name)
+        command = command_class.new(name, arguments)
         @client ||= Groonga::Client.new(:protocol => @protocol,
                                         :host     => @host,
                                         :port     => @port,
