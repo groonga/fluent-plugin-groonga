@@ -287,7 +287,15 @@ module Fluent
       end
     end
 
-    class NetworkClient
+    class BaseClient
+      private
+      def build_command(name, arguments={})
+        command_class = Groonga::Command.find(name)
+        command_class.new(name, arguments)
+      end
+    end
+
+    class NetworkClient < BaseClient
       include Configurable
 
       config_param :host, :string, :default => nil
@@ -308,8 +316,7 @@ module Fluent
       end
 
       def send(name, arguments={})
-        command_class = Groonga::Command.find(name)
-        command = command_class.new(name, arguments)
+        command = build_command(name, arguments)
         @client ||= Groonga::Client.new(:protocol => @protocol,
                                         :host     => @host,
                                         :port     => @port,
@@ -318,7 +325,7 @@ module Fluent
       end
     end
 
-    class CommandClient
+    class CommandClient < BaseClient
       include Configurable
 
       config_param :groonga, :string, :default => "groonga"
@@ -347,7 +354,8 @@ module Fluent
         Process.waitpid(@pid)
       end
 
-      def send(command)
+      def send(name, arguments={})
+        command = build_command(name, arguments)
         body = nil
         if command.name == "load"
           body = command.arguments.delete(:values)
