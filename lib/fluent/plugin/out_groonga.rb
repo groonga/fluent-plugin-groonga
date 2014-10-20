@@ -82,21 +82,21 @@ module Fluent
       end
 
       def emit(chunk)
-        values = []
+        records = []
         chunk.msgpack_each do |message|
           tag, _, record = message
           if /\Agroonga\.command\./ =~ tag
             name = $POSTMATCH
-            unless values.empty?
-              store_values(values)
-              values.clear
+            unless records.empty?
+              store_records(records)
+              records.clear
             end
-            send_command(name, record)
+            @client.send(name, record)
           else
-            values << record
+            records << record
           end
         end
-        store_values(values) unless values.empty?
+        store_records(records) unless records.empty?
       end
 
       private
@@ -106,12 +106,12 @@ module Fluent
         @client.send(command)
       end
 
-      def store_values(values)
+      def store_records(records)
         return if @table.nil?
 
         arguments = {
           "table" => @table,
-          "values" => Yajl::Encoder.encode(values),
+          "values" => Yajl::Encoder.encode(records),
         }
         send_command("load", arguments)
       end
