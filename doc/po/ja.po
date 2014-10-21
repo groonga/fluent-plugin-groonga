@@ -1597,11 +1597,17 @@ msgstr "お知らせ"
 msgid "# News"
 msgstr "# お知らせ"
 
-msgid "## 1.0.4: 2014-10-20"
+msgid "## 1.0.5: 2014-10-21"
 msgstr ""
 
 msgid "### Improvements"
 msgstr "### 改善"
+
+msgid "* Supported time value in string."
+msgstr ""
+
+msgid "## 1.0.4: 2014-10-20"
+msgstr ""
 
 msgid ""
 "* Supported the latest http_parser gem.\n"
