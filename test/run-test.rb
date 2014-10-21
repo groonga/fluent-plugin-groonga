@@ -32,10 +32,6 @@ $LOAD_PATH.unshift(lib_dir)
 
 require "fluent/test"
 
-Dir.glob("#{base_dir}/test/**/test{_,-}*.rb") do |file|
-  require file.sub(/\.rb$/, '')
-end
-
 ENV["TEST_UNIT_MAX_DIFF_TARGET_STRING_SIZE"] ||= "5000"
 
-exit Test::Unit::AutoRunner.run
+exit(Test::Unit::AutoRunner.run(true, test_dir))
