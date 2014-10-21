@@ -181,19 +181,6 @@ module Fluent
         end
 
         private
-        def time_values?
-          now = Time.now.to_i
-          year_in_seconds = 365 * 24 * 60 * 60
-          window = 10 * year_in_seconds
-          new = now + window
-          old = now - window
-          recent_range = old..new
-          @sample_values.all? do |sample_value|
-            sample_value.is_a?(Integer) and
-              recent_range.cover?(sample_value)
-          end
-        end
-
         def integer_value?(value)
           case value
           when String
@@ -207,6 +194,19 @@ module Fluent
             true
           else
             false
+          end
+        end
+
+        def time_values?
+          now = Time.now.to_i
+          year_in_seconds = 365 * 24 * 60 * 60
+          window = 10 * year_in_seconds
+          new = now + window
+          old = now - window
+          recent_range = old..new
+          @sample_values.all? do |sample_value|
+            sample_value.is_a?(Integer) and
+              recent_range.cover?(sample_value)
           end
         end
 
