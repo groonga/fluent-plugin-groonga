@@ -30,8 +30,7 @@ Test::Unit::Priority.enable
 
 $LOAD_PATH.unshift(lib_dir)
 
-require "fluent/log"
-$log = Fluent::Log.new($stdout, Fluent::Log::LEVEL_WARN)
+require "fluent/test"
 
 Dir.glob("#{base_dir}/test/**/test{_,-}*.rb") do |file|
   require file.sub(/\.rb$/, '')
