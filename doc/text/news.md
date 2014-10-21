@@ -2,6 +2,12 @@
 
 # News
 
+## 1.0.5: 2014-10-21
+
+### Improvements
+
+* Supported time value in string.
+
 ## 1.0.4: 2014-10-20
 
 ### Improvements
