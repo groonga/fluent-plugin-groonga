@@ -49,6 +49,11 @@ class OutputTypeGuesserTest < Test::Unit::TestCase
         future = now + (9 * year_in_seconds)
         assert_equal("Time", guess([now, past, future]))
       end
+
+      test "string" do
+        now = Time.now.to_i
+        assert_equal("Time", guess([now.to_s]))
+      end
     end
 
     sub_test_case "Int32" do

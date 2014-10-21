@@ -205,8 +205,8 @@ module Fluent
           old = now - window
           recent_range = old..new
           @sample_values.all? do |sample_value|
-            sample_value.is_a?(Integer) and
-              recent_range.cover?(sample_value)
+            integer_value?(sample_value) and
+              recent_range.cover?(Integer(sample_value))
           end
         end
 
