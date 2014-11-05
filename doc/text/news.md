@@ -2,6 +2,12 @@
 
 # News
 
+## 1.0.8: 2014-11-05
+
+### Fixes
+
+* out: Fixed a bug that index flags aren't separated with `|`.
+
 ## 1.0.7: 2014-11-05
 
 ### Improvements
