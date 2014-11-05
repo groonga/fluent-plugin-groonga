@@ -42,7 +42,7 @@ module Fluent
     config_section :table,
                    :param_name => "tables",
                    :required => false,
-                   :multi => true do |config|
+                   :multi => true do
       config_param :name, :string
       config_param :flags, :string, :default => nil
       config_param :key_type, :string, :default => nil
