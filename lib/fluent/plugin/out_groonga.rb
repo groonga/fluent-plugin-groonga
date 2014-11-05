@@ -184,6 +184,8 @@ module Fluent
       end
 
       def create
+        return if @definitions.empty?
+
         table_list = @client.execute("table_list")
         @definitions.each do |definition|
           existing_table = table_list.find do |table|
