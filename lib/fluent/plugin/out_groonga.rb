@@ -157,10 +157,6 @@ module Fluent
         end
       end
 
-      def use_n_gram_tokenizer?
-        /\AToken(?:Uni|Bi|Tri)gram/ === default_tokenizer.to_s
-      end
-
       def have_difference?(table)
         return true if table.name != name
 
@@ -233,7 +229,7 @@ module Fluent
 
         def flags
           _flags = ["COLUMN_INDEX"]
-          _flags << "WITH_POSITION" if @table.use_n_gram_tokenizer?
+          _flags << "WITH_POSITION" if @table.default_tokenizer
           _flags << "WITH_SECTION" if source_columns.size >= 2
           _flags
         end
