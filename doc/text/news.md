@@ -2,6 +2,18 @@
 
 # News
 
+## 1.0.6: 2014-11-05
+
+### Improvements
+
+* out: Renamed `table` parameter name to `store_table`.
+  `table` parameter is still usable for backward compatibility.
+* out: Supported table definition by `<table>` configuration.
+  See sample/store-apache.conf for details.
+* out: Supported specifying column type and creating indexes for auto
+  created columns by `<mapping>` configuration.
+  See sample/store-apache.conf for details.
+
 ## 1.0.5: 2014-10-21
 
 ### Improvements
