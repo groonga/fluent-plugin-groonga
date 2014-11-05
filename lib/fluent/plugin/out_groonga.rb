@@ -37,14 +37,15 @@ module Fluent
         raise ConfigError, "must be http, gqtp or command: <#{value}>"
       end
     end
-    config_param :table, :string, :default => nil
+    # alias is just for backward compatibility
+    config_param :store_table, :string, :default => nil, :alias => :table
 
     def configure(conf)
       super
       @client = create_client(@protocol)
       @client.configure(conf)
 
-      @emitter = Emitter.new(@client, @table)
+      @emitter = Emitter.new(@client, @store_table)
     end
 
     def start

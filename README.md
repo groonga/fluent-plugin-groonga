@@ -42,7 +42,7 @@ into Groonga:
 
     <match log.**>
       type groonga
-      table logs
+      store_table logs
 
       protocol http
       host 127.0.0.1
@@ -88,13 +88,13 @@ define schema in Groonga before running Fluentd. You just run Groonga.
 
 There is one required parameter:
 
-  * `table`: It specifies table name for storing logs.
+  * `store_table`: It specifies table name for storing logs.
 
 Here is a minimum configuration:
 
     <match log.**>
       type groonga
-      table logs
+      store_table logs
     </match>
 
 The configuration stores logs into `logs` table in Groonga that runs
@@ -115,7 +115,7 @@ Here is a configuration that specifies optional parameters explicitly:
 
     <match log.**>
       type groonga
-      table logs
+      store_table logs
 
       protocol http
       host 127.0.0.1

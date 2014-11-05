@@ -111,7 +111,7 @@ EOC
       def configuration
         <<-CONFIGURATION
           #{super}
-          table Logs
+          store_table Logs
         CONFIGURATION
       end
 
