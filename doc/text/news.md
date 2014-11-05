@@ -2,6 +2,13 @@
 
 # News
 
+## 1.0.7: 2014-11-05
+
+### Improvements
+
+* out: Added `WITH_POSITION` index flags when any tokenizer is set to
+  lexicon.
+
 ## 1.0.6: 2014-11-05
 
 ### Improvements
