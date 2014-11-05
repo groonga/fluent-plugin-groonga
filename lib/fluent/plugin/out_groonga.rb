@@ -122,7 +122,28 @@ module Fluent
       end
     end
 
+    module DefinitionParseMethods
+      private
+      def parse_flags(flags)
+        if flags.is_a?(Array)
+          flags
+        else
+          flags.strip.split(/\s*\|\s*/)
+        end
+      end
+
+      def parse_items(items)
+        if items.is_a?(Array)
+          items
+        else
+          items.strip.split(/\s*,\s*/)
+        end
+      end
+    end
+
     class TableDefinition
+      include DefinitionParseMethods
+
       def initialize(raw)
         @raw = raw
       end
@@ -192,24 +213,9 @@ module Fluent
         arguments
       end
 
-      private
-      def parse_flags(flags)
-        if flags.is_a?(Array)
-          flags
-        else
-          flags.strip.split(/\s*\|\s*/)
-        end
-      end
-
-      def parse_items(items)
-        if items.is_a?(Array)
-          items
-        else
-          items.strip.split(/\s*,\s*/)
-        end
-      end
-
       class IndexDefinition
+        include DefinitionParseMethods
+
         def initialize(table, raw)
           @table = table
           @raw = raw
@@ -224,7 +230,7 @@ module Fluent
         end
 
         def source_columns
-          @raw[:source_columns]
+          parse_items(@raw[:source_columns])
         end
 
         def flags
@@ -240,7 +246,7 @@ module Fluent
             "name"   => name,
             "flags"  => flags.join("|"),
             "type"   => source_table,
-            "source" => source_columns,
+            "source" => source_columns.join(","),
           }
         end
       end
