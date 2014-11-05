@@ -127,6 +127,10 @@ class OutputTypeGuesserTest < Test::Unit::TestCase
         message = "X" * (2 ** 12)
         assert_equal("ShortText", guess([message]))
       end
+
+      test "nil" do
+        assert_equal("ShortText", guess([nil]))
+      end
     end
 
     sub_test_case "Text" do
