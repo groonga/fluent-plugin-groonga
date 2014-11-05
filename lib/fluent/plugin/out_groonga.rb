@@ -59,6 +59,7 @@ module Fluent
       @emitter = Emitter.new(@client, @store_table)
 
       @tables = @tables.collect do |table|
+        TableDefinition.new(table)
       end
     end
 
