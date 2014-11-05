@@ -384,8 +384,10 @@ module Fluent
           return "Int64"         if int64_values?
           return "Float"         if float_values?
           return "WGS84GeoPoint" if geo_point_values?
+          return "LongText"      if long_text_values?
+          return "Text"          if text_values?
 
-          "Text"
+          "ShortText"
         end
 
         def vector?
@@ -466,6 +468,22 @@ module Fluent
           @sample_values.all? do |sample_value|
             sample_value.is_a?(String) and
               /\A-?\d+(?:\.\d+)[,x]-?\d+(?:\.\d+)\z/ =~ sample_value
+          end
+        end
+
+        MAX_SHORT_TEXT_SIZE = 2 ** 12
+        MAX_TEXT_SIZE       = 2 ** 16
+        def text_values?
+          @sample_values.any? do |sample_value|
+            sample_value.is_a?(String) and
+              sample_value.bytesize > MAX_SHORT_TEXT_SIZE
+          end
+        end
+
+        def long_text_values?
+          @sample_values.any? do |sample_value|
+            sample_value.is_a?(String) and
+              sample_value.bytesize > MAX_TEXT_SIZE
           end
         end
       end

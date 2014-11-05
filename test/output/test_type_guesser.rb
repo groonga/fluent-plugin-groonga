@@ -122,10 +122,29 @@ class OutputTypeGuesserTest < Test::Unit::TestCase
       end
     end
 
+    sub_test_case "ShortText" do
+      test "max" do
+        message = "X" * (2 ** 12)
+        assert_equal("ShortText", guess([message]))
+      end
+    end
+
     sub_test_case "Text" do
-      test "message" do
-        message = "failed to load data"
+      test "min" do
+        message = "X" * (2 ** 12 + 1)
         assert_equal("Text", guess([message]))
+      end
+
+      test "max" do
+        message = "X" * (2 ** 16)
+        assert_equal("Text", guess([message]))
+      end
+    end
+
+    sub_test_case "LongText" do
+      test "min" do
+        message = "X" * (2 ** 16 + 1)
+        assert_equal("LongText", guess([message]))
       end
     end
   end
