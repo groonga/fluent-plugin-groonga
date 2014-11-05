@@ -238,7 +238,7 @@ module Fluent
           {
             "table"  => @table.name,
             "name"   => name,
-            "flags"  => flags.join,
+            "flags"  => flags.join("|"),
             "type"   => source_table,
             "source" => source_columns,
           }
