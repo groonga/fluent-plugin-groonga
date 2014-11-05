@@ -51,6 +51,30 @@ module Fluent
       config_param :default_tokenizer, :string, :default => nil
       config_param :token_filters, :string, :default => nil
       config_param :normalizer, :string, :default => nil
+      config_section :index,
+                     :param_name => "indexes",
+                     :required => false,
+                     :multi => true do
+        config_param :name, :string
+        config_param :source_table, :string
+        config_param :source_columns, :string
+      end
+    end
+
+    config_section :mapping,
+                   :param_name => "mappings",
+                   :required => false,
+                   :multi => true do
+      config_param :name, :string
+      config_param :type, :string, :default => nil
+      config_section :index,
+                     :param_name => "indexes",
+                     :required => false,
+                     :multi => true do
+        config_param :table, :string
+        config_param :name, :string
+        config_param :flags, :string, :default => nil
+      end
     end
 
     def configure(conf)
@@ -126,6 +150,16 @@ module Fluent
         @raw[:normalizer]
       end
 
+      def indexes
+        (@raw[:indexes] || []).collect do |raw|
+          IndexDefinition.new(self, raw)
+        end
+      end
+
+      def use_n_gram_tokenizer?
+        /\AToken(?:Uni|Bi|Tri)gram/ === default_tokenizer.to_s
+      end
+
       def have_difference?(table)
         return true if table.name != name
 
@@ -177,6 +211,42 @@ module Fluent
           items.strip.split(/\s*,\s*/)
         end
       end
+
+      class IndexDefinition
+        def initialize(table, raw)
+          @table = table
+          @raw = raw
+        end
+
+        def name
+          @raw[:name]
+        end
+
+        def source_table
+          @raw[:source_table]
+        end
+
+        def source_columns
+          @raw[:source_columns]
+        end
+
+        def flags
+          _flags = ["COLUMN_INDEX"]
+          _flags << "WITH_POSITION" if @table.use_n_gram_tokenizer?
+          _flags << "WITH_SECTION" if source_columns.size >= 2
+          _flags
+        end
+
+        def to_create_arguments
+          {
+            "table"  => @table.name,
+            "name"   => name,
+            "flags"  => flags.join,
+            "type"   => source_table,
+            "source" => source_columns,
+          }
+        end
+      end
     end
 
     class TablesCreator
@@ -194,12 +264,16 @@ module Fluent
             table.name == definition.name
           end
           if existing_table
-            next unless definition.have_difference?(existing_table)
-            # TODO: Is it OK?
-            @client.execute("table_remove", "name" => definition.name)
+            if definition.have_difference?(existing_table)
+              # TODO: Is it OK?
+              @client.execute("table_remove", "name" => definition.name)
+            end
+            @client.execute("table_create", definition.to_create_arguments)
           end
 
-          @client.execute("table_create", definition.to_create_arguments)
+          definition.indexes.each do |index|
+            @client.execute("column_create", index.to_create_arguments)
+          end
         end
       end
     end
