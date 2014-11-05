@@ -82,7 +82,8 @@ module Fluent
       @client = create_client(@protocol)
       @client.configure(conf)
 
-      @emitter = Emitter.new(@client, @store_table)
+      @schema = Schema.new(@client, @store_table, @mappings)
+      @emitter = Emitter.new(@client, @store_table, @schema)
 
       @tables = @tables.collect do |table|
         TableDefinition.new(table)
@@ -264,13 +265,12 @@ module Fluent
             table.name == definition.name
           end
           if existing_table
-            if definition.have_difference?(existing_table)
-              # TODO: Is it OK?
-              @client.execute("table_remove", "name" => definition.name)
-            end
-            @client.execute("table_create", definition.to_create_arguments)
+            next unless definition.have_difference?(existing_table)
+            # TODO: Is it OK?
+            @client.execute("table_remove", "name" => definition.name)
           end
 
+          @client.execute("table_create", definition.to_create_arguments)
           definition.indexes.each do |index|
             @client.execute("column_create", index.to_create_arguments)
           end
@@ -279,9 +279,10 @@ module Fluent
     end
 
     class Schema
-      def initialize(client, table_name)
+      def initialize(client, table_name, mappings)
         @client = client
         @table_name = table_name
+        @mappings = mappings
         @table = nil
         @columns = nil
       end
@@ -317,7 +318,6 @@ module Fluent
         if target_table
           @table = Table.new(@table_name, target_table.domain)
         else
-          # TODO: Check response
           @client.execute("table_create",
                           "name"  => @table_name,
                           "flags" => "TABLE_NO_KEY")
@@ -339,20 +339,37 @@ module Fluent
       end
 
       def create_column(name, sample_values)
+        mapping = @mappings.find do |mapping|
+          mapping.name == name
+        end
+        if mapping
+          value_type = mapping[:type]
+        end
         guesser = TypeGuesser.new(sample_values)
-        value_type = guesser.guess
+        value_type ||= guesser.guess
         vector_p = guesser.vector?
         if vector_p
           flags = "COLUMN_VECTOR"
         else
           flags = "COLUMN_SCALAR"
         end
-        # TODO: Check response
         @client.execute("column_create",
                         "table" => @table_name,
                         "name" => name,
                         "flags" => flags,
                         "type" => value_type)
+        if mapping
+          mapping.indexes.each do |index|
+            index_flags = ["COLUMN_INDEX", index[:flags]].compact
+            @client.execute("column_create",
+                            "table" => index[:table],
+                            "name" => index[:table],
+                            "flags" => index_flags.join("|"),
+                            "type" => @table_name,
+                            "source" => name)
+          end
+        end
+
         Column.new(name, value_type, vector_p)
       end
 
@@ -470,14 +487,13 @@ module Fluent
     end
 
     class Emitter
-      def initialize(client, table)
+      def initialize(client, table, schema)
         @client = client
         @table = table
-        @schema = nil
+        @schema = schema
       end
 
       def start
-        @schema = Schema.new(@client, @table)
       end
 
       def shutdown
