@@ -37,8 +37,10 @@ module Fluent
         raise ConfigError, "must be http, gqtp or command: <#{value}>"
       end
     end
+
     # alias is just for backward compatibility
     config_param :store_table, :string, :default => nil, :alias => :table
+
     config_section :table,
                    :param_name => "tables",
                    :required => false,
