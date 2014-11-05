@@ -39,6 +39,17 @@ module Fluent
     end
     # alias is just for backward compatibility
     config_param :store_table, :string, :default => nil, :alias => :table
+    config_section :table,
+                   :param_name => "tables",
+                   :required => false,
+                   :multi => true do |config|
+      config_param :name, :string
+      config_param :flags, :string, :default => nil
+      config_param :key_type, :string, :default => nil
+      config_param :default_tokenizer, :string, :default => nil
+      config_param :token_filters, :string, :default => nil
+      config_param :normalizer, :string, :default => nil
+    end
 
     def configure(conf)
       super
@@ -46,12 +57,17 @@ module Fluent
       @client.configure(conf)
 
       @emitter = Emitter.new(@client, @store_table)
+
+      @tables = @tables.collect do |table|
+      end
     end
 
     def start
       super
       @client.start
       @emitter.start
+      tables_creator = TablesCreator.new(@client, @tables)
+      tables_creator.create
     end
 
     def shutdown
@@ -78,16 +94,117 @@ module Fluent
       end
     end
 
+    class TableDefinition
+      def initialize(raw)
+        @raw = raw
+      end
+
+      def name
+        @raw[:name]
+      end
+
+      def flags
+        parse_flags(@raw[:flags] || "TABLE_NO_KEY")
+      end
+
+      def key_type
+        @raw[:key_type]
+      end
+
+      def default_tokenizer
+        @raw[:default_tokenizer]
+      end
+
+      def token_filters
+        parse_items(@raw[:token_filters] || "")
+      end
+
+      def normalizer
+        @raw[:normalizer]
+      end
+
+      def have_difference?(table)
+        return true if table.name != name
+
+        table_flags = (parse_flags(table.flags) - ["PERSISTENT"])
+        return true if table_flags.sort != flags.sort
+
+        return true if table.domain != key_type
+
+        return true if table.default_tokenizer != default_tokenizer
+
+        # TODO
+        # return true if table.token_filters.sort != token_filters.sort
+
+        return true if table.normalizer != normalizer
+
+        false
+      end
+
+      def to_create_arguments
+        arguments = {
+          "name" => name,
+          "flags" => flags.join("|"),
+          "key_type" => key_type,
+          "default_tokenizer" => default_tokenizer,
+          # TODO
+          # "token_filters" => token_filters.join("|"),
+          "normalizer" => normalizer,
+        }
+        arguments.keys.each do |key|
+          value = arguments[key]
+          arguments.delete(key) if value.nil? or value.empty?
+        end
+        arguments
+      end
+
+      private
+      def parse_flags(flags)
+        if flags.is_a?(Array)
+          flags
+        else
+          flags.strip.split(/\s*\|\s*/)
+        end
+      end
+
+      def parse_items(items)
+        if items.is_a?(Array)
+          items
+        else
+          items.strip.split(/\s*,\s*/)
+        end
+      end
+    end
+
+    class TablesCreator
+      def initialize(client, definitions)
+        @client = client
+        @definitions = definitions
+      end
+
+      def create
+        table_list = @client.execute("table_list")
+        @definitions.each do |definition|
+          existing_table = table_list.find do |table|
+            table.name == definition.name
+          end
+          if existing_table
+            next unless definition.have_difference?(existing_table)
+            # TODO: Is it OK?
+            @client.execute("table_remove", "name" => definition.name)
+          end
+
+          @client.execute("table_create", definition.to_create_arguments)
+        end
+      end
+    end
+
     class Schema
       def initialize(client, table_name)
         @client = client
         @table_name = table_name
         @table = nil
         @columns = nil
-      end
-
-      def populate
-        # TODO
       end
 
       def update(records)
