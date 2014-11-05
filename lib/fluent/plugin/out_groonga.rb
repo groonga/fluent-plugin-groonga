@@ -656,14 +656,14 @@ module Fluent
         end
 
         unless output_message.empty?
-          Engine.log.debug("[output][groonga][output]",
-                           :context => context,
-                           :message => output_message)
+          $log.debug("[output][groonga][output]",
+                     :context => context,
+                     :message => output_message)
         end
         unless error_message.empty?
-          Engine.log.error("[output][groonga][error]",
-                           :context => context,
-                           :message => error_message)
+          $log.error("[output][groonga][error]",
+                     :context => context,
+                     :message => error_message)
         end
       end
     end
