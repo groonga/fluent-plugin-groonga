@@ -4,7 +4,7 @@
 
 ## 1.0.9: 2014-11-20
 
-### Improves
+### Improvements
 
 * out: Added log message with host, port and command name on Groonga
   command execution error.
