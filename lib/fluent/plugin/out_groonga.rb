@@ -585,7 +585,17 @@ module Fluent
                                         :host     => @host,
                                         :port     => @port,
                                         :backend  => :synchronous)
-        response = @client.execute(command)
+        response = nil
+        begin
+          response = @client.execute(command)
+        rescue Groonga::Client::Error
+          $log.error("[output][groonga][error]",
+                     :protocol => @protocol,
+                     :host => @host,
+                     :port => @port,
+                     :command_name => name)
+          raise
+        end
         unless response.success?
           $log.error("[output][groonga][error]",
                      :status_code => response.status_code,
