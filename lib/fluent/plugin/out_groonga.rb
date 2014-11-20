@@ -338,10 +338,10 @@ module Fluent
         column_list = @client.execute("column_list", "table" => @table_name)
         @columns = {}
         column_list.each do |column|
+          name = column.name
           vector_p = column.flags.split("|").include?("COLUMN_VECTOR")
-          @columns[column.name] = Column.new(column.name,
-                                             column.range,
-                                             vector_p)
+          @columns[name] = Column.new(name, column.range, vector_p)
+          ensure_column_indexes(name)
         end
       end
 
@@ -365,22 +365,36 @@ module Fluent
                         "name" => name,
                         "flags" => flags,
                         "type" => value_type)
-        if mapping
-          mapping.indexes.each do |index|
-            index_flags = ["COLUMN_INDEX"]
-            table = @tables[index[:table]]
-            index_flags << "WITH_POSITION" if table and table.default_tokenizer
-            index_flags << index[:flags] if index[:flags]
-            @client.execute("column_create",
-                            "table" => index[:table],
-                            "name" => index[:name],
-                            "flags" => index_flags.join("|"),
-                            "type" => @table_name,
-                            "source" => name)
-          end
-        end
+        ensure_column_indexes(name)
 
         Column.new(name, value_type, vector_p)
+      end
+
+      def ensure_column_indexes(name)
+        mapping = @mappings.find do |_mapping|
+          _mapping.name == name
+        end
+        return if mapping.nil?
+
+        mapping.indexes.each do |index|
+          table = @tables[index[:table]]
+          if table
+            column_list = @client.execute("column_list", "table" => table.name)
+            exist = column_list.any? {|column| column.name == index[:name]}
+            next if exist
+          end
+
+          index_flags = ["COLUMN_INDEX"]
+          index_flags << "WITH_POSITION" if table and table.default_tokenizer
+          index_flags << index[:flags] if index[:flags]
+
+          @client.execute("column_create",
+                          "table" => index[:table],
+                          "name" => index[:name],
+                          "flags" => index_flags.join("|"),
+                          "type" => @table_name,
+                          "source" => name)
+        end
       end
 
       class TypeGuesser
