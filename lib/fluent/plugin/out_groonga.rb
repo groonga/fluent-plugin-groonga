@@ -285,7 +285,7 @@ module Fluent
         @client = client
         @table_name = table_name
         @mappings = mappings
-        @table = nil
+        @taget_table = nil
         @columns = nil
       end
 
@@ -311,19 +311,24 @@ module Fluent
 
       private
       def ensure_table
-        return if @table
+        return if @target_table
 
-        table_list = @client.execute("table_list")
-        target_table = table_list.find do |table|
-          table.name == @table_name
+        @tables = {}
+        @client.execute("table_list").collect do |table|
+          name = table.name
+          options = {
+            :default_tokenizer => table.default_tokenizer,
+          }
+          @tables[name] = Table.new(table.name, options)
         end
-        if target_table
-          @table = Table.new(@table_name, target_table.domain)
-        else
+
+        @target_table = @tables[@table_name]
+        unless @target_table
           @client.execute("table_create",
                           "name"  => @table_name,
                           "flags" => "TABLE_NO_KEY")
-          @table = Table.new(@table_name, nil)
+          @target_table = Table.new(@table_name)
+          @tables[@table_name] = @target_table
         end
       end
 
@@ -362,7 +367,10 @@ module Fluent
                         "type" => value_type)
         if mapping
           mapping.indexes.each do |index|
-            index_flags = ["COLUMN_INDEX", index[:flags]].compact
+            index_flags = ["COLUMN_INDEX"]
+            table = @tables[index[:table]]
+            index_flags << "WITH_POSITION" if table and table.default_tokenizer
+            index_flags << index[:flags] if index[:flags]
             @client.execute("column_create",
                             "table" => index[:table],
                             "name" => index[:name],
@@ -491,9 +499,21 @@ module Fluent
       end
 
       class Table
-        def initialize(name, key_type)
+        attr_reader :name
+        attr_reader :flags
+        attr_reader :domain
+        attr_reader :range
+        attr_reader :default_tokenizer
+        attr_reader :normalizer
+        attr_reader :token_filters
+        def initialize(name, options={})
           @name = name
-          @key_type = key_type
+          @flags             = options[:flags]
+          @domain            = options[:domain]
+          @range             = options[:range]
+          @default_tokenizer = options[:default_tokenizer]
+          @normalizer        = options[:normalizer]
+          @token_filters     = options[:token_filters]
         end
       end
 
