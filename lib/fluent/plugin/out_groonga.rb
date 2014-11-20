@@ -365,7 +365,7 @@ module Fluent
             index_flags = ["COLUMN_INDEX", index[:flags]].compact
             @client.execute("column_create",
                             "table" => index[:table],
-                            "name" => index[:table],
+                            "name" => index[:name],
                             "flags" => index_flags.join("|"),
                             "type" => @table_name,
                             "source" => name)
