@@ -2,6 +2,21 @@
 
 # News
 
+## 1.0.9: 2014-11-20
+
+### Improves
+
+* out: Added log message with host, port and command name on Groonga
+  command execution error.
+* out: Added `WITH_POSITION` index flag automatically when it is
+  needed.
+* out: Supported creating index for existing column.
+
+### Fixes
+
+* out: Fixed a bug that needless `WITH_SECTION` flags is used.
+* out: Fixed a bug that wrong index name is used.
+
 ## 1.0.8: 2014-11-05
 
 ### Fixes
