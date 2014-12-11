@@ -35,9 +35,9 @@ class GroongaInputTest < Test::Unit::TestCase
   end
 
   private
-  def create_driver
+  def create_driver(use_v1=false)
     driver = Fluent::Test::InputTestDriver.new(Fluent::GroongaInput)
-    driver.configure(configuration)
+    driver.configure(configuration, use_v1)
     driver
   end
 

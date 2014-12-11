@@ -33,9 +33,9 @@ class GroongaOutputTest < Test::Unit::TestCase
   end
 
   private
-  def create_driver(tag)
+  def create_driver(tag, use_v1=false)
     driver = Fluent::Test::OutputTestDriver.new(Fluent::GroongaOutput, tag)
-    driver.configure(configuration)
+    driver.configure(configuration, use_v1)
     driver
   end
 
