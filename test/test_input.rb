@@ -35,9 +35,9 @@ class GroongaInputTest < Test::Unit::TestCase
   end
 
   private
-  def create_driver
+  def create_driver(use_v1=false)
     driver = Fluent::Test::InputTestDriver.new(Fluent::GroongaInput)
-    driver.configure(configuration)
+    driver.configure(configuration, use_v1)
     driver
   end
 
@@ -143,6 +143,36 @@ EOJ
         @real_response.status = 404
         get("/index.html")
         assert_equal("404", @last_response.code)
+      end
+    end
+
+    class HTTPWithV1ConfigTest < self
+      def setup
+        @host = "127.0.0.1"
+        @port = 2929
+
+        @driver_v1_config = create_driver(true)
+        @last_response = nil
+      end
+
+      def configuration
+        <<-EOC
+        protocol http
+        bind "#{@host}"
+        port "#{@port}"
+        real_host "#{@real_host}"
+        real_port "#{@real_port}"
+EOC
+      end
+
+      def test_v1_target_command
+        @driver_v1_config.expect_emit("groonga.command.table_create",
+                                      @now,
+                                      {"name" => "Users"})
+        @driver_v1_config.run do
+          get("/d/table_create", "name" => "Users")
+          assert_equal("200", @last_response.code)
+        end
       end
     end
 

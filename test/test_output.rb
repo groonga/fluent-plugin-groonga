@@ -33,9 +33,9 @@ class GroongaOutputTest < Test::Unit::TestCase
   end
 
   private
-  def create_driver(tag)
+  def create_driver(tag, use_v1=false)
     driver = Fluent::Test::OutputTestDriver.new(Fluent::GroongaOutput, tag)
-    driver.configure(configuration)
+    driver.configure(configuration, use_v1)
     driver
   end
 
@@ -98,6 +98,27 @@ EOC
       def test_basic_command
         @response_body = JSON.generate([[0, 0.0, 0.0], true])
         driver = create_driver("groonga.command.table_create")
+        time = Time.parse("2012-10-26T08:45:42Z").to_i
+        driver.run do
+          driver.emit({"name" => "Users"}, time)
+        end
+        assert_equal("/d/table_create?name=Users",
+                     @request_parser.request_url)
+      end
+    end
+
+    class CommandWithV1ConfigTest < self
+      def configuration
+        <<-CONFIGURATION
+          protocol http
+          host "#{@real_host}"
+          port "#{@real_port}"
+        CONFIGURATION
+      end
+
+      def test_v1_basic_command
+        @response_body = JSON.generate([[0, 0.0, 0.0], true])
+        driver = create_driver("groonga.command.table_create", true)
         time = Time.parse("2012-10-26T08:45:42Z").to_i
         driver.run do
           driver.emit({"name" => "Users"}, time)
