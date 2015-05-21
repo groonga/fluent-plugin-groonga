@@ -27,7 +27,7 @@ require "fluent/plugin/in_groonga"
 require "http_parser"
 
 class GroongaInputTest < Test::Unit::TestCase
-  setup
+  setup :before => :append
   def setup_fluent
     Fluent::Test.setup
     @now = Time.parse("2012-10-26T08:45:42Z").to_i

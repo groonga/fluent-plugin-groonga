@@ -27,7 +27,7 @@ require "fluent/plugin/out_groonga"
 require "http_parser"
 
 class GroongaOutputTest < Test::Unit::TestCase
-  setup
+  setup :before => :append
   def setup_fluent
     Fluent::Test.setup
   end
