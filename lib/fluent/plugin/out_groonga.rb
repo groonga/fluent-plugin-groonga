@@ -296,6 +296,7 @@ module Fluent
         nonexistent_columns = {}
         records.each do |record|
           record.each do |key, value|
+            next unless valid_column?(key)
             column = @columns[key]
             if column.nil?
               nonexistent_columns[key] ||= []
@@ -343,6 +344,10 @@ module Fluent
           @columns[name] = Column.new(name, column.range, vector_p)
           ensure_column_indexes(name)
         end
+      end
+
+      def valid_column?(name)
+        not name.start_with?("_")
       end
 
       def create_column(name, sample_values)
