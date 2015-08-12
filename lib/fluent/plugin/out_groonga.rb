@@ -408,6 +408,7 @@ module Fluent
         end
 
         def guess
+          return "Bool"          if bool_values?
           return "Time"          if time_values?
           return "Int32"         if int32_values?
           return "Int64"         if int64_values?
@@ -439,6 +440,18 @@ module Fluent
             true
           else
             false
+          end
+        end
+
+        BOOL_VALUES = [
+          true,
+          false,
+          "true",
+          "false",
+        ]
+        def bool_values?
+          @sample_values.all? do |sample_value|
+            BOOL_VALUES.include?(sample_value)
           end
         end
 

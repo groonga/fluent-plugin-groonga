@@ -22,6 +22,20 @@ class OutputTypeGuesserTest < Test::Unit::TestCase
       guesser.guess
     end
 
+    sub_test_case "Bool" do
+      test "true" do
+        assert_equal("Bool", guess([true]))
+      end
+
+      test "false" do
+        assert_equal("Bool", guess([false]))
+      end
+
+      test "string" do
+        assert_equal("Bool", guess(["true", "false"]))
+      end
+    end
+
     sub_test_case "Time" do
       test "now" do
         now = Time.now.to_i
