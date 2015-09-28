@@ -8,7 +8,7 @@ fluent-plugin-groonga
 
 ## Description
 
-Fluent-plugin-groonga is a Fluentd plugin collection to use
+Fluent-plugin-groonga is a [Fluentd](http://www.fluentd.org/) plugin collection to use
 [Groonga](http://groonga.org/) with Fluentd. Fluent-plugin-groonga
 supports the following two usages:
 
