@@ -2,6 +2,14 @@
 
 # News
 
+## 1.1.0: 2016-01-24
+
+### Improvements
+
+* out: Stopped to try to create pseudo columns such as `_key`.
+* out: Supported boolean value.
+* in: Supported `plugin_register` and `plugin_unregister`.
+
 ## 1.0.9: 2014-11-20
 
 ### Improvements
