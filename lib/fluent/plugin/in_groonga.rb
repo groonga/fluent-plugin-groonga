@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012-2014  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2016  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -87,6 +87,7 @@ module Fluent
         /\Atable_/,
         /\Acolumn_/,
         "delete",
+        /\Aplugin_/,
         "register",
         "truncate",
         "load",
