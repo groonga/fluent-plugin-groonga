@@ -32,7 +32,7 @@ The following configuration stores all data in `/var/log/messages`
 into Groonga:
 
     <source>
-      type tail
+      @type tail
       format syslog
       path /var/log/syslog.1
       pos_file /tmp/messages.pos
@@ -41,7 +41,7 @@ into Groonga:
     </source>
 
     <match log.**>
-      type groonga
+      @type groonga
       store_table logs
 
       protocol http
@@ -93,7 +93,7 @@ There is one required parameter:
 Here is a minimum configuration:
 
     <match log.**>
-      type groonga
+      @type groonga
       store_table logs
     </match>
 
@@ -114,7 +114,7 @@ There are optional parameters:
 Here is a configuration that specifies optional parameters explicitly:
 
     <match log.**>
-      type groonga
+      @type groonga
       store_table logs
 
       protocol http
@@ -132,7 +132,7 @@ Note that there is special tag name. You can't use
 use the following configuration:
 
     <match groonga.command.*>
-      type groonga
+      @type groonga
       # ...
     </match>
 
