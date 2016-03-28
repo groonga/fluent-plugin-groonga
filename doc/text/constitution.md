@@ -65,7 +65,7 @@ Here is an example configuration file:
 
     # For master groonga server
     <source>
-      type groonga
+      @type groonga
       protocol gqtp          # Or use the below line
       # protocol http
       bind 127.0.0.1         # For client side fluentd
@@ -79,7 +79,7 @@ Here is an example configuration file:
 
     # For slave groonga server
     <match groonga.command.*>
-      type groonga
+      @type groonga
       protocol gqtp            # Or use the below line
       # protocol http          # You can use different protocol for
                                # master groonga server and slave groonga server
@@ -193,7 +193,7 @@ Here is an example configuration file:
 
     # For master groonga server
     <source>
-      type groonga
+      @type groonga
       protocol gqtp          # Or use the below line
       # protocol http
       bind 127.0.0.1         # For client side fluentd
@@ -207,11 +207,11 @@ Here is an example configuration file:
 
     # For slave groonga servers
     <match groonga.command.*>
-      type copy
+      @type copy
 
       # The first slave groonga server
       <store>
-        type groonga
+        @type groonga
         protocol gqtp            # Or use the below line
         # protocol http          # You can use different protocol for
                                  # master groonga server and slave groonga server
@@ -247,7 +247,7 @@ Here is an example configuration file:
 
       # The second slave groonga server
       <store>
-        type groonga
+        @type groonga
         protocol gqtp            # Or use the below line
         # protocol http          # You can use different protocol for
                                  # master groonga server and slave groonga server
@@ -260,7 +260,7 @@ Here is an example configuration file:
 
       # More slave groonga servers
       # <store>
-      #   type groonga
+      #   @type groonga
       #   ...
       # </store>
     </match>
