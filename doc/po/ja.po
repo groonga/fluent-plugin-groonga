@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fluent-plugin-groonga 1.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2016-03-28 15:15+0900\n"
+"PO-Revision-Date: 2016-03-28 17:56+0900\n"
 "Last-Translator: Kouhei Sutou <kou@clear-code.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -36,42 +36,48 @@ msgid ""
 "Fluent-plugin-groonga is a Fluentd plugin collection to use\n"
 "[Groonga](http://groonga.org/) with Fluentd. Fluent-plugin-groonga\n"
 "supports the following two usages:"
-msgstr "fluent-plugin-groongaは[Groonga](http://groonga.org/ja/)ユーザー用のFluentdプラグイン集です。Groongaユーザーはfluent-plugin-groongaを使ってレプリケーションを実現することができます。"
-
-msgid ""
-"  * Store logs collected by Fluentd to Groonga.\n"
-"  * Implement replication system for Groonga."
 msgstr ""
+"fluent-plugin-groongaは[Groonga](http://groonga.org/ja/)ユーザー用のFluentdプラグイン集です。G"
+"roongaユーザーはfluent-plugin-groongaを使ってレプリケーションを実現することができます。"
+
+msgid "  * Store logs collected by Fluentd to Groonga."
+msgstr "  * Fluentdで収集したログをGroongaに保存。"
+
+msgid "  * Implement replication system for Groonga."
+msgstr "  * Groonga用のレプリケーションシステムの実装。"
 
 msgid ""
 "The first usage is normal usage. You can store logs to Groonga and\n"
 "find logs by full-text search."
-msgstr ""
+msgstr "最初の使い方は普通の使い方です。Groongaにログを保存して、全文検索で目的のログを見つけられます。"
 
 msgid ""
 "The second usage is for Groonga users. Groonga itself doesn't support\n"
 "replication. But Groonga users can replicate their data by\n"
 "fluent-plugin-groonga."
 msgstr ""
+"ふたつ目の使い方はGroongaユーザー向けの使い方です。Groonga自身はレプリケーションをサポートしていません。しかし、fluent-plugin-g"
+"roongaを使えばレプリケーションできます。"
 
 msgid ""
 "Fluent-plugin-groonga includes an input plugin and an output\n"
 "plugin. Both of them are named `groonga`."
-msgstr "fluent-plugin-groongaはinputプラグインとoutputプラグインを提供しています。どちらも `groonga` という名前です。"
+msgstr "fluent-plugin-groongaはinputプラグインとoutputプラグインを提供しています。どちらも`groonga`という名前です。"
 
 msgid ""
 "If you want to use fluent-plugin-groonga to store logs to Groonga, you\n"
 "need to use only `groonga` output plugin."
-msgstr ""
+msgstr "ログをGroongaに保存するためにfluent-plugin-groongaを使う場合は、`groonga` outputプラグインだけを使います。"
 
 msgid ""
 "The following configuration stores all data in `/var/log/messages`\n"
 "into Groonga:"
 msgstr ""
+"以下は`/var/log/messages`のすべてのデータをGroongaに保存する設定です。\n"
 
 msgid ""
 "    <source>\n"
-"      type tail\n"
+"      @type tail\n"
 "      format syslog\n"
 "      path /var/log/syslog.1\n"
 "      pos_file /tmp/messages.pos\n"
@@ -82,8 +88,8 @@ msgstr ""
 
 msgid ""
 "    <match log.**>\n"
-"      type groonga\n"
-"      table logs"
+"      @type groonga\n"
+"      store_table logs"
 msgstr ""
 
 msgid ""
@@ -101,23 +107,28 @@ msgstr ""
 msgid ""
 "If you want to use fluent-plugin-groonga to implement Groonga\n"
 "replication system, you need to use both plugins."
-msgstr ""
+msgstr "Groongaのレプリケーションシステムを実現するためにfluent-plugin-groongaを使う場合は、どちらのプラグインも使う必要があります。"
 
 msgid ""
 "The input plugin provides Groonga compatible interface. It means that\n"
 "HTTP and GQTP interface. You can use the input plugin as Groonga\n"
 "server. The input plugin receives Groonga commands and sends them to\n"
 "the output plugin through zero or more Fluentds."
-msgstr "inputプラグインはGroongaと互換性のあるインターフェイスを提供します。つまり、HTTPインターフェイスとGQTPインターフェイスがあるということです。inputプラグインをGroongaサーバーと同じように使うことができます。inputプラグインはGroongaのコマンドを受け取って、受け取ったGroongaのコマンドを0個以上のFluentdを経由してoutputプラグインに送ります。"
+msgstr ""
+"inputプラグインはGroongaと互換性のあるインターフェイスを提供します。つまり、HTTPインターフェイスとGQTPインターフェイスがあるということで"
+"す。inputプラグインをGroongaサーバーと同じように使うことができます。inputプラグインはGroongaのコマンドを受け取って、受け取ったGro"
+"ongaのコマンドを0個以上のFluentdを経由してoutputプラグインに送ります。"
 
 msgid ""
 "The output plugin sends received Groonga commands to Groonga. The\n"
 "output plugin supports all interfaces, HTTP, GQTP and command\n"
 "interface."
-msgstr "outputプラグインは受け取ったGroongaコマンドをGroongaに送ります。outputプラグインはHTTP、GQTP、コマンドとすべてのインターフェイスをサポートしています。"
+msgstr ""
+"outputプラグインは受け取ったGroongaコマンドをGroongaに送ります。outputプラグインはHTTP、GQTP、コマンドとすべてのインターフ"
+"ェイスをサポートしています。"
 
 msgid "You can replicate your data by using `copy` output plugin."
-msgstr "データは `copy` outputプラグインで複製することができます。"
+msgstr "データは`copy` outputプラグインで複製することができます。"
 
 msgid "## Install"
 msgstr "## インストール"
@@ -129,59 +140,74 @@ msgid "## Usage"
 msgstr "## 使い方"
 
 msgid "There are two usages:"
-msgstr ""
+msgstr "2つの使い方があります。"
 
 msgid "They are described in other sections."
-msgstr ""
+msgstr "これらは他のセクションで説明します。"
 
 msgid "### Store logs into Groonga"
-msgstr ""
+msgstr "### ログをGroongaに保存"
 
 msgid "You need to use `groonga` output plugin to store logs into Groonga."
-msgstr ""
+msgstr "ログをGroongaに保存するには`groonga` outputプラグインを使います。"
 
 msgid ""
 "The output plugin has auto schema define feature. So you don't need to\n"
 "define schema in Groonga before running Fluentd. You just run Groonga."
 msgstr ""
+"このoutputプラグインは自動でスキーマを定義する機能があります。そのため、Fluentdを動かす前にGroongaにスキーマを定義する必要はありません。"
+"そのままGroongaを起動してください。"
 
 msgid "There is one required parameter:"
-msgstr ""
+msgstr "1つの必須引数があります。"
 
-msgid "  * `table`: It specifies table name for storing logs."
-msgstr ""
+msgid "  * `store_table`: It specifies table name for storing logs."
+msgstr "  * `store_table`: ログを保存するテーブル名を指定します。"
 
 msgid "Here is a minimum configuration:"
 msgstr "以下は最初の設定例です。"
 
 msgid ""
 "    <match log.**>\n"
-"      type groonga\n"
-"      table logs\n"
+"      @type groonga\n"
+"      store_table logs\n"
 "    </match>"
 msgstr ""
 
 msgid ""
 "The configuration stores logs into `logs` table in Groonga that runs\n"
 "on `localhost`."
-msgstr ""
+msgstr "この設定は`localhost`で動いているGroongaの`logs`テーブルにログを保存する設定です。"
 
 msgid "There are optional parameters:"
 msgstr "省略可能なパラメーターは以下の通りです。"
 
-msgid ""
-"  * `protocol`: It specifies protocol to communicate Groonga server.\n"
-"    * Available values: `http`, `gqtp`, `command`\n"
-"    * Default: `http`\n"
-"  * `host`: It specifies host name or IP address of Groonga server.\n"
-"    * Default: `127.0.0.1`\n"
-"  * `port`: It specifies port number of Groonga server.\n"
-"    * Default for `http` protocol: `10041`\n"
-"    * Default for `gqtp` protocol: `10043`"
-msgstr ""
+msgid "  * `protocol`: It specifies protocol to communicate Groonga server."
+msgstr "  * `protocol`: Groongaサーバーとの接続で使うプロトコルを指定します。"
+
+msgid "    * Available values: `http`, `gqtp`, `command`"
+msgstr "    * 利用可能な値：`http`, `gqtp`, `command`"
+
+msgid "    * Default: `http`"
+msgstr "    * デフォルト：`http`"
+
+msgid "  * `host`: It specifies host name or IP address of Groonga server."
+msgstr "  * `host`：Groongaサーバーのホスト名またはIPアドレスを指定します。"
+
+msgid "    * Default: `127.0.0.1`"
+msgstr "    * デフォルト：`127.0.0.1`"
+
+msgid "  * `port`: It specifies port number of Groonga server."
+msgstr "  * `port`：Groongaサーバーのポート番号を指定します。"
+
+msgid "    * Default for `http` protocol: `10041`"
+msgstr "    * `http`プロトコルのときのデフォルト：`10041`"
+
+msgid "    * Default for `gqtp` protocol: `10043`"
+msgstr "    * `gqtp`プロトコルのときのデフォルト：`10043`"
 
 msgid "Here is a configuration that specifies optional parameters explicitly:"
-msgstr ""
+msgstr "以下は省略可能なパラメーターを明示的に指定した設定です。"
 
 msgid ""
 "      protocol http\n"
@@ -197,16 +223,21 @@ msgid ""
 "gin-overview)\n"
 "for details."
 msgstr ""
+"`groonga` outputプラグインはバッファーをサポートしています。そのため、バッファー関連のパラメーターを指定できます。詳細は[Buffer Pl"
+"ugin Overview | Fluentd](http://docs.fluentd.org/articles/buffer-plugin-overvi"
+"ew)を参照してください。"
 
 msgid ""
 "Note that there is special tag name. You can't use\n"
 "`groonga.command.XXX` tag name for this usage. It means that you can't\n"
 "use the following configuration:"
 msgstr ""
+"特別なタグ名があることに注意してください。この使い方のとき、`groonga.command.XXX`というタグ名を使うことはできません。つまり、次のような"
+"設定を使えないということです。"
 
 msgid ""
 "    <match groonga.command.*>\n"
-"      type groonga\n"
+"      @type groonga\n"
 "      # ...\n"
 "    </match>"
 msgstr ""
@@ -214,34 +245,38 @@ msgstr ""
 msgid ""
 "`groonga.command.XXX` tag name is reserved for implementing\n"
 "replication system for Groonga."
-msgstr ""
+msgstr "`groonga.command.XXX`はGroongaのレプリケーションシステムを実現するために予約されています。"
 
 msgid "### Implement replication system for Groonga"
-msgstr ""
+msgstr "### Groongaのレプリケーションシステムを実装"
 
 msgid ""
 "See the following documents how to implement replication system for\n"
 "Groonga:"
-msgstr ""
+msgstr "Groongaのレプリケーションシステムを実装する方法は次のドキュメントを参照してください。"
 
+# title
 msgid ""
-"* [Configuration](doc/text/configuration.md)\n"
-"  ([on the Web](http://groonga.org/fluent-plugin-groonga/en/file.configuration"
-".html))\n"
-"* [Constitution](doc/text/constitution.md)\n"
-"  ([on the Web](http://groonga.org/fluent-plugin-groonga/en/file.constitution."
-"html))"
+"  * [Configuration](doc/text/configuration.md)\n"
+"    ([on the Web](http://groonga.org/fluent-plugin-groonga/en/file.configurati"
+"on.html))"
 msgstr ""
-"* [設定](doc/text/configuration.md)\n"
-"  ([Web](http://groonga.org/fluent-plugin-groonga/ja/file.configuration.html))"
-"\n"
-"* [構成](doc/text/constitution.md)\n"
-"  ([Web](http://groonga.org/fluent-plugin-groonga/ja/file.constitution.html))"
+"  * [設定](doc/text/configuration.md)（[Web](http://groonga.org/fluent-plugin-gro"
+"onga/ja/file.configuration.html)）"
+
+# title
+msgid ""
+"  * [Constitution](doc/text/constitution.md)\n"
+"    ([on the Web](http://groonga.org/fluent-plugin-groonga/en/file.constitutio"
+"n.html))"
+msgstr ""
+"  * [構成](doc/text/constitution.md)（[Web](http://groonga.org/fluent-plugin-groo"
+"nga/ja/file.constitution.html)）"
 
 msgid "## Authors"
 msgstr "## 作者"
 
-msgid "* Kouhei Sutou `<kou@clear-code.com>`"
+msgid "  * Kouhei Sutou `<kou@clear-code.com>`"
 msgstr ""
 
 msgid "## License"
@@ -259,27 +294,33 @@ msgid "## Mailing list"
 msgstr "## メーリングリスト"
 
 msgid ""
-"* English: [groonga-talk](https://lists.sourceforge.net/lists/listinfo/groonga"
-"-talk)\n"
-"* Japanese: [groonga-dev](http://lists.sourceforge.jp/mailman/listinfo/groonga"
-"-dev)"
+"  * English: [groonga-talk](https://lists.sourceforge.net/lists/listinfo/groon"
+"ga-talk)"
 msgstr ""
-"* 英語: [groonga-talk](https://lists.sourceforge.net/lists/listinfo/groonga-talk"
-")\n"
-"* 日本語: [groonga-dev](http://lists.sourceforge.jp/mailman/listinfo/groonga-dev)"
+"  * 英語：[groonga-talk](https://lists.sourceforge.net/lists/listinfo/groonga-tal"
+"k)"
+
+msgid ""
+"  * Japanese: [groonga-dev](http://lists.sourceforge.jp/mailman/listinfo/groon"
+"ga-dev)"
+msgstr ""
+"  * 日本語：[groonga-dev](http://lists.sourceforge.jp/mailman/listinfo/groonga-dev"
+")"
 
 msgid "## Source"
-msgstr ""
+msgstr "## ソース"
 
 msgid ""
 "The repository for fluent-plugin-groonga is on\n"
 "[GitHub](https://github.com/groonga/fluent-plugin-groonga/)."
 msgstr ""
+"fluent-plugin-groongaのリポジトリーは[GitHub](https://github.com/groonga/fluent-plugin"
+"-groonga/)上にあります。"
 
 msgid "## Thanks"
 msgstr "## 感謝"
 
-msgid "* ..."
+msgid "  * ..."
 msgstr ""
 
 # title
@@ -1585,11 +1626,66 @@ msgstr "お知らせ"
 msgid "# News"
 msgstr "# お知らせ"
 
-msgid "## 1.0.5: 2014-10-21"
+msgid "## 1.1.0: 2016-01-24"
 msgstr ""
 
 msgid "### Improvements"
 msgstr "### 改善"
+
+msgid ""
+"* out: Stopped to try to create pseudo columns such as `_key`.\n"
+"* out: Supported boolean value.\n"
+"* in: Supported `plugin_register` and `plugin_unregister`."
+msgstr ""
+
+msgid "## 1.0.9: 2014-11-20"
+msgstr ""
+
+msgid ""
+"* out: Added log message with host, port and command name on Groonga\n"
+"  command execution error.\n"
+"* out: Added `WITH_POSITION` index flag automatically when it is\n"
+"  needed.\n"
+"* out: Supported creating index for existing column."
+msgstr ""
+
+msgid "### Fixes"
+msgstr ""
+
+msgid ""
+"* out: Fixed a bug that needless `WITH_SECTION` flags is used.\n"
+"* out: Fixed a bug that wrong index name is used."
+msgstr ""
+
+msgid "## 1.0.8: 2014-11-05"
+msgstr ""
+
+msgid "* out: Fixed a bug that index flags aren't separated with `|`."
+msgstr ""
+
+msgid "## 1.0.7: 2014-11-05"
+msgstr ""
+
+msgid ""
+"* out: Added `WITH_POSITION` index flags when any tokenizer is set to\n"
+"  lexicon."
+msgstr ""
+
+msgid "## 1.0.6: 2014-11-05"
+msgstr ""
+
+msgid ""
+"* out: Renamed `table` parameter name to `store_table`.\n"
+"  `table` parameter is still usable for backward compatibility.\n"
+"* out: Supported table definition by `<table>` configuration.\n"
+"  See sample/store-apache.conf for details.\n"
+"* out: Supported specifying column type and creating indexes for auto\n"
+"  created columns by `<mapping>` configuration.\n"
+"  See sample/store-apache.conf for details."
+msgstr ""
+
+msgid "## 1.0.5: 2014-10-21"
+msgstr ""
 
 msgid "* Supported time value in string."
 msgstr ""
@@ -1685,12 +1781,52 @@ msgstr ""
 msgid "a new instance of GroongaOutput"
 msgstr ""
 
+# @return [TableDefinition]
+msgid "a new instance of TableDefinition"
+msgstr ""
+
+# @return [IndexDefinition]
+msgid "a new instance of IndexDefinition"
+msgstr ""
+
+# @return [TablesCreator]
+msgid "a new instance of TablesCreator"
+msgstr ""
+
 # @return [Schema]
 msgid "a new instance of Schema"
 msgstr ""
 
 # @return [TypeGuesser]
 msgid "a new instance of TypeGuesser"
+msgstr ""
+
+# Fluent::GroongaOutput::Schema::Table#name
+msgid "Returns the value of attribute name"
+msgstr ""
+
+# Fluent::GroongaOutput::Schema::Table#flags
+msgid "Returns the value of attribute flags"
+msgstr ""
+
+# Fluent::GroongaOutput::Schema::Table#domain
+msgid "Returns the value of attribute domain"
+msgstr ""
+
+# Fluent::GroongaOutput::Schema::Table#range
+msgid "Returns the value of attribute range"
+msgstr ""
+
+# Fluent::GroongaOutput::Schema::Table#default_tokenizer
+msgid "Returns the value of attribute default_tokenizer"
+msgstr ""
+
+# Fluent::GroongaOutput::Schema::Table#normalizer
+msgid "Returns the value of attribute normalizer"
+msgstr ""
+
+# Fluent::GroongaOutput::Schema::Table#token_filters
+msgid "Returns the value of attribute token_filters"
 msgstr ""
 
 # @return [Table]

@@ -13,6 +13,7 @@ Fluent-plugin-groonga is a Fluentd plugin collection to use
 supports the following two usages:
 
   * Store logs collected by Fluentd to Groonga.
+
   * Implement replication system for Groonga.
 
 The first usage is normal usage. You can store logs to Groonga and
@@ -75,6 +76,7 @@ You can replicate your data by using `copy` output plugin.
 There are two usages:
 
   * Store logs collected by Fluentd to Groonga.
+
   * Implement replication system for Groonga.
 
 They are described in other sections.
@@ -103,12 +105,19 @@ on `localhost`.
 There are optional parameters:
 
   * `protocol`: It specifies protocol to communicate Groonga server.
+
     * Available values: `http`, `gqtp`, `command`
+
     * Default: `http`
+
   * `host`: It specifies host name or IP address of Groonga server.
+
     * Default: `127.0.0.1`
+
   * `port`: It specifies port number of Groonga server.
+
     * Default for `http` protocol: `10041`
+
     * Default for `gqtp` protocol: `10043`
 
 Here is a configuration that specifies optional parameters explicitly:
@@ -144,14 +153,15 @@ replication system for Groonga.
 See the following documents how to implement replication system for
 Groonga:
 
-* [Configuration](doc/text/configuration.md)
-  ([on the Web](http://groonga.org/fluent-plugin-groonga/en/file.configuration.html))
-* [Constitution](doc/text/constitution.md)
-  ([on the Web](http://groonga.org/fluent-plugin-groonga/en/file.constitution.html))
+  * [Configuration](doc/text/configuration.md)
+    ([on the Web](http://groonga.org/fluent-plugin-groonga/en/file.configuration.html))
+
+  * [Constitution](doc/text/constitution.md)
+    ([on the Web](http://groonga.org/fluent-plugin-groonga/en/file.constitution.html))
 
 ## Authors
 
-* Kouhei Sutou `<kou@clear-code.com>`
+  * Kouhei Sutou `<kou@clear-code.com>`
 
 ## License
 
@@ -162,8 +172,9 @@ contributed patches.)
 
 ## Mailing list
 
-* English: [groonga-talk](https://lists.sourceforge.net/lists/listinfo/groonga-talk)
-* Japanese: [groonga-dev](http://lists.sourceforge.jp/mailman/listinfo/groonga-dev)
+  * English: [groonga-talk](https://lists.sourceforge.net/lists/listinfo/groonga-talk)
+
+  * Japanese: [groonga-dev](http://lists.sourceforge.jp/mailman/listinfo/groonga-dev)
 
 ## Source
 
@@ -172,4 +183,4 @@ The repository for fluent-plugin-groonga is on
 
 ## Thanks
 
-* ...
+  * ...
