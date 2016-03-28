@@ -24,6 +24,8 @@ require "http_parser"
 require "gqtp"
 require "groonga/command/parser"
 
+require "fluent/process"
+
 module Fluent
   class GroongaInput < Input
     Plugin.register_input("groonga", self)
