@@ -47,9 +47,9 @@ module Fluent
       super
       case @protocol
       when :http
-        @input = HTTPInput.new
+        @input = HTTPInput.new(self)
       when :gqtp
-        @input = GQTPInput.new
+        @input = GQTPInput.new(self)
       end
       @input.configure(conf)
     end
@@ -109,6 +109,10 @@ module Fluent
         end
       end
 
+      def initialize(input_plugin)
+        @input_plugin = input_plugin
+      end
+
       def configure(conf)
         super
 
@@ -149,7 +153,9 @@ module Fluent
 
       def emit(command, params)
         return unless emit_command?(command)
-        Engine.emit("groonga.command.#{command}", Engine.now, params)
+        @input_plugin.router.emit("groonga.command.#{command}",
+                                  Engine.now,
+                                  params)
       end
 
       private
