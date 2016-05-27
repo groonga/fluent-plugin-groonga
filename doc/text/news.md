@@ -2,6 +2,17 @@
 
 # News
 
+## 1.1.1: 2016-05-27
+
+### Improvements
+
+* in: Stopped using deprecated API.
+  [GitHub#6][Reported by okkez]
+
+### Thanks
+
+* okkez
+
 ## 1.1.0: 2016-01-24
 
 ### Improvements
