@@ -24,6 +24,7 @@ require "http_parser"
 require "gqtp"
 require "groonga/command/parser"
 
+require "fluent/input"
 require "fluent/process"
 
 module Fluent
