@@ -2,6 +2,17 @@
 
 # News
 
+## 1.1.2: 2016-06-05
+
+### Improvements
+
+* in http: Supported `Host` rewriting. It supports groonga-httpd again.
+  [groonga-dev:04037][Reported by Hiroaki TACHIKAWA]
+
+### Thanks
+
+* Hiroaki TACHIKAWA
+
 ## 1.1.1: 2016-05-27
 
 ### Improvements
