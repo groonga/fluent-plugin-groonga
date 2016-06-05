@@ -34,7 +34,8 @@ class GroongaOutputTest < Test::Unit::TestCase
 
   private
   def create_driver(tag)
-    driver = Fluent::Test::OutputTestDriver.new(Fluent::GroongaOutput, tag)
+    driver = Fluent::Test::BufferedOutputTestDriver.new(Fluent::GroongaOutput,
+                                                        tag)
     driver.configure(configuration)
     driver
   end
@@ -99,9 +100,8 @@ EOC
         @response_body = JSON.generate([[0, 0.0, 0.0], true])
         driver = create_driver("groonga.command.table_create")
         time = Time.parse("2012-10-26T08:45:42Z").to_i
-        driver.run do
-          driver.emit({"name" => "Users"}, time)
-        end
+        driver.emit({"name" => "Users"}, time)
+        driver.run
         assert_equal("/d/table_create?name=Users",
                      @request_parser.request_url)
       end
@@ -119,9 +119,8 @@ EOC
         @response_body = JSON.generate([[0, 0.0, 0.0], [1]])
         driver = create_driver("log")
         time = Time.parse("2012-10-26T08:45:42Z").to_i
-        driver.run do
-          driver.emit({"message" => "1st message"}, time)
-        end
+        driver.emit({"message" => "1st message"}, time)
+        driver.run
         assert_equal("/d/load?table=Logs",
                      @request_parser.request_url)
         assert_equal([{"message" => "1st message"}],
@@ -132,10 +131,9 @@ EOC
         @response_body = JSON.generate([[0, 0.0, 0.0], [2]])
         driver = create_driver("log")
         time = Time.parse("2012-10-26T08:45:42Z").to_i
-        driver.run do
-          driver.emit({"message" => "1st message"}, time)
-          driver.emit({"message" => "2nd message"}, time + 1)
-        end
+        driver.emit({"message" => "1st message"}, time)
+        driver.emit({"message" => "2nd message"}, time + 1)
+        driver.run
         assert_equal("/d/load?table=Logs",
                      @request_parser.request_url)
         assert_equal([
@@ -232,10 +230,9 @@ EOC
     class CommandTest < self
       def test_basic_command
         driver = create_driver("groonga.command.table_create")
-        time = Time.parse("2012-10-26T08:45:42Z")
-        driver.run do
-          driver.emit({"name" => "Users"}, time)
-        end
+        time = Time.parse("2012-10-26T08:45:42Z").to_i
+        driver.emit({"name" => "Users"}, time)
+        driver.run
         assert_equal([
                        [
                          "--input-fd", actual_input_fd,
