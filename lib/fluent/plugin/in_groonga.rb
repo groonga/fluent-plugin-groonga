@@ -56,10 +56,12 @@ module Fluent
     end
 
     def start
+      super
       @input.start
     end
 
     def shutdown
+      super
       @input.shutdown
     end
 
