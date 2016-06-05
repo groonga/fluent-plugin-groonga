@@ -196,8 +196,15 @@ module Fluent
         end
 
         def on_read(data)
-          @parser << data
-          @repeater.write(data)
+          begin
+            @parser << data
+          rescue HTTP::Parser::Error
+            $log.error("[input][groonga][error] " +
+                       "failed to parse HTTP request:",
+                       :error => $!.to_s)
+            $log.error_backtrace
+            close
+          end
         end
 
         def on_message_begin
@@ -205,10 +212,26 @@ module Fluent
         end
 
         def on_headers_complete(headers)
+          method = @parser.http_method
+          url = @parser.request_url
+          http_version = @parser.http_version.join(".")
+          @repeater.write("#{method} #{url} HTTP/#{http_version}\r\n")
+          headers.each do |name, value|
+            case name
+            when /\AHost\z/i
+              real_host = @input.real_host
+              real_port = @input.real_port
+              @repeater.write("#{name}: #{real_host}:#{real_port}\r\n")
+            else
+              @repeater.write("#{name}: #{value}\r\n")
+            end
+          end
+          @repeater.write("\r\n")
         end
 
         def on_body(chunk)
           @body << chunk
+          @repeater.write(chunk)
         end
 
         def on_message_complete
