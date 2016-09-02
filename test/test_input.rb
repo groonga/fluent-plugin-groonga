@@ -101,11 +101,16 @@ EOC
     end
 
     def test_target_command
+      @real_response["Content-Type"] = "application/json"
+      @real_response.body = JSON.generate([[0, 0.0, 0.0], true])
       @driver.expect_emit("groonga.command.table_create",
                           @now,
-                          {"name" => "Users"})
+                          {
+                            "name" => "Users",
+                            "flags" => "TABLE_NO_KEY",
+                          })
       @driver.run do
-        get("/d/table_create", "name" => "Users")
+        get("/d/table_create", "name" => "Users", "flags" => "TABLE_NO_KEY")
         assert_equal("200", @last_response.code)
       end
     end
@@ -119,6 +124,8 @@ EOC
     end
 
     def test_load
+      @real_response["Content-Type"] = "application/json"
+      @real_response.body = JSON.generate([[0, 0.0, 0.0], 2])
       json = <<-EOJ
 [
 {"name": "Alice"},

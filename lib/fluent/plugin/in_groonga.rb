@@ -155,8 +155,9 @@ module Fluent
       end
 
       def emit(command, params)
-        return unless emit_command?(command)
-        @input_plugin.router.emit("groonga.command.#{command}",
+        normalized_command = command.split(".")[0]
+        return unless emit_command?(normalized_command)
+        @input_plugin.router.emit("groonga.command.#{normalized_command}",
                                   Engine.now,
                                   params)
       end
@@ -194,13 +195,17 @@ module Fluent
         end
 
         def on_connect
-          @parser = HTTP::Parser.new(self)
           @repeater = @input.create_repeater(self)
+          @repeater.on_connect_failed do
+            close
+          end
+          @request_handler = RequestHandler.new(@input, @repeater)
+          @response_handler = ResponseHandler.new(self)
         end
 
         def on_read(data)
           begin
-            @parser << data
+            @request_handler << data
           rescue HTTP::Parser::Error
             $log.error("[input][groonga][error] " +
                        "failed to parse HTTP request:",
@@ -210,8 +215,43 @@ module Fluent
           end
         end
 
+        def write(data)
+          @response_handler << data
+          super
+        end
+
+        def on_response_complete(response)
+          case response
+          when Array
+            return_code = response[0][0]
+            if return_code.zero?
+              @input.emit(@request_handler.command,
+                          @request_handler.params)
+            end
+          end
+          on_write_complete do
+            @repeater.close
+          end
+        end
+      end
+
+      class RequestHandler
+        attr_reader :command
+        attr_reader :params
+        def initialize(input, repeater)
+          @input = input
+          @repeater = repeater
+          @parser = Http::Parser.new(self)
+        end
+
+        def <<(chunk)
+          @parser << chunk
+        end
+
         def on_message_begin
           @body = ""
+          @command = nil
+          @params = nil
         end
 
         def on_headers_complete(headers)
@@ -247,8 +287,52 @@ module Fluent
             if command == "load"
               params["values"] = @body unless @body.empty?
             end
-            @input.emit(command, params)
+            @command = command
+            @params = params
           end
+        end
+      end
+
+      class ResponseHandler
+        def initialize(handler)
+          @handler = handler
+          @parser = Http::Parser.new(self)
+        end
+
+        def <<(chunk)
+          @parser << chunk
+        end
+
+        def on_message_begin
+          @body = ""
+          @content_type = nil
+        end
+
+        def on_headers_complete(headers)
+          headers.each do |name, value|
+            case name
+            when /\AContent-Type\z/i
+              @content_type = value
+            end
+          end
+        end
+
+        def on_body(chunk)
+          @body << chunk
+        end
+
+        def on_message_complete
+          case @content_type
+          when /\Aapplication\/json\z/
+            response = JSON.parse(@body)
+          when /\Aapplication\/x-msgpack\z/
+            response = MessagePack.unpack(@body)
+          when /\Atext\/x-groonga-command-list/
+            response = @body
+          else
+            response = nil
+          end
+          @handler.on_response_complete(response)
         end
       end
     end
