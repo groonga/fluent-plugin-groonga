@@ -221,16 +221,25 @@ module Fluent
         end
 
         def on_response_complete(response)
-          case response
-          when Array
-            return_code = response[0][0]
-            if return_code.zero?
-              @input.emit(@request_handler.command,
-                          @request_handler.params)
-            end
+          if need_emit?(response)
+            @input.emit(@request_handler.command,
+                        @request_handler.params)
           end
           on_write_complete do
             @repeater.close
+          end
+        end
+
+        private
+        def need_emit?(response)
+          return true if @request_handler.command == "load"
+
+          case response
+          when Array
+            return_code = response[0][0]
+            return_code.zero?
+          else
+            false
           end
         end
       end
