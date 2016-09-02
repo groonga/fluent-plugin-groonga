@@ -2,6 +2,21 @@
 
 # News
 
+## 1.1.3: 2016-09-02
+
+### Improvements
+
+* Supported Fluentd 0.14.
+
+* Stopped to emit requests when real Groonga server returns error
+  responses. `load` request and `object_remove` request are
+  exceptions. They are always emitted if real Groonga server returns
+  error responses. Because they may be effected when Groonga server
+  returns error responses.
+
+* Updated the default emit target command list to reflect the recent
+  Groonga command list.
+
 ## 1.1.2: 2016-06-05
 
 ### Improvements
