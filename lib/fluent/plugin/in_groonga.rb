@@ -89,13 +89,29 @@ module Fluent
       config_param :real_host, :string
       config_param :real_port, :integer, :default => nil
       DEFAULT_EMIT_COMMANDS = [
-        /\Atable_/,
-        /\Acolumn_/,
+        "clearlock",
+        "column_copy",
+        "column_create",
+        "column_remove",
+        "column_rename",
+        "config_delete",
+        "config_set",
         "delete",
-        /\Aplugin_/,
-        "register",
-        "truncate",
         "load",
+        "lock_acquire",
+        "lock_clear",
+        "lock_release",
+        "logical_table_remove",
+        "object_remove",
+        "plugin_register",
+        "plugin_unregister",
+        "register",
+        "reindex",
+        "table_copy",
+        "table_create",
+        "table_remove",
+        "table_rename",
+        "truncate",
       ]
       config_param :emit_commands, :default => DEFAULT_EMIT_COMMANDS do |value|
         commands = value.split(/\s*,\s*/)
@@ -232,7 +248,10 @@ module Fluent
 
         private
         def need_emit?(response)
-          return true if @request_handler.command == "load"
+          case @request_handler.command
+          when "load", "object_remove"
+            return true
+          end
 
           case response
           when Array
