@@ -275,6 +275,7 @@ module Fluent
           write("Content-Length: 0\r\n")
           write("\r\n")
           disable
+          @repeater.close
           on_write_complete do
             close
           end
