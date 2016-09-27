@@ -213,6 +213,10 @@ module Fluent
         def on_connect
           @repeater = @input.create_repeater(self)
           @repeater.on_connect_failed do
+            $log.error("[input][groonga][error] " +
+                       "failed to connect to Groonga:",
+                       :real_host => @input.real_host,
+                       :real_port => @input.real_port)
             close
           end
           @request_handler = RequestHandler.new(@input, @repeater)
