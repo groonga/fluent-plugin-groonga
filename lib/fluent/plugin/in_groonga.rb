@@ -72,7 +72,7 @@ module Fluent
       end
 
       def on_read(data)
-        @handler.write(data)
+        @handler.write_back(data)
       end
 
       def on_close
@@ -227,13 +227,21 @@ module Fluent
                        "failed to parse HTTP request:",
                        :error => $!.to_s)
             $log.error_backtrace
-            close
+            write("HTTP1.1 400 Bad Request\r\n")
+            write("Server: fluent-plugin-groonga\r\n")
+            write("Connection: close\r\n")
+            write("Content-Length: 0\r\n")
+            write("\r\n")
+            disable
+            on_write_complete do
+              close
+            end
           end
         end
 
-        def write(data)
+        def write_back(data)
           @response_handler << data
-          super
+          write(data)
         end
 
         def on_response_complete(response)
