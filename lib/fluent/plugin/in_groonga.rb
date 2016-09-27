@@ -225,7 +225,7 @@ module Fluent
           rescue HTTP::Parser::Error, URI::InvalidURIError
             $log.error("[input][groonga][error] " +
                        "failed to parse HTTP request:",
-                       :error => $!.to_s)
+                       :error => "#{$!.class}: #{$!}")
             $log.error_backtrace
             write("HTTP1.1 400 Bad Request\r\n")
             write("Server: fluent-plugin-groonga\r\n")
