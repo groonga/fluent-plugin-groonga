@@ -222,7 +222,7 @@ module Fluent
         def on_read(data)
           begin
             @request_handler << data
-          rescue HTTP::Parser::Error
+          rescue HTTP::Parser::Error, URI::InvalidURIError
             $log.error("[input][groonga][error] " +
                        "failed to parse HTTP request:",
                        :error => $!.to_s)
