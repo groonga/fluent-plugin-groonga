@@ -227,13 +227,13 @@ module Fluent
                        "failed to parse HTTP request:",
                        :error => "#{$!.class}: #{$!}")
             $log.error_backtrace
-            write_error_response("400 Bad Request")
+            reply_error_response("400 Bad Request")
           rescue
             $log.error("[input][groonga][error] " +
                        "failed to handle HTTP request:",
                        :error => "#{$!.class}: #{$!}")
             $log.error_backtrace
-            write_error_response("500 Internal Server Error")
+            reply_error_response("500 Internal Server Error")
           end
         end
 
@@ -268,7 +268,7 @@ module Fluent
           end
         end
 
-        def write_error_response(status)
+        def reply_error_response(status)
           write("HTTP1.1 #{status}\r\n")
           write("Server: fluent-plugin-groonga\r\n")
           write("Connection: close\r\n")
