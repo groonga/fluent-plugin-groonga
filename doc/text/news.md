@@ -2,6 +2,12 @@
 
 # News
 
+## 1.1.5: 2016-09-28
+
+### Improvements
+
+* Sent error response on error.
+
 ## 1.1.4: 2016-09-28
 
 ### Improvements
