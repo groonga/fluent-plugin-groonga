@@ -2,6 +2,14 @@
 
 # News
 
+## 1.1.4: 2016-09-28
+
+### Improvements
+
+* Supported invalid request URL.
+* Added error class to log.
+* Added log on failing to connect to Groonga.
+
 ## 1.1.3: 2016-09-02
 
 ### Improvements
