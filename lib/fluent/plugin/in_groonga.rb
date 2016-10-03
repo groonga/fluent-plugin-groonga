@@ -396,7 +396,7 @@ module Fluent
             end
           when /\Aapplication\/x-msgpack\z/
             response = MessagePack.unpack(@body)
-          when /\Atext\/x-groonga-command-list/
+          when /\Atext\/x-groonga-command-list\z/
             response = @body
           else
             response = nil
