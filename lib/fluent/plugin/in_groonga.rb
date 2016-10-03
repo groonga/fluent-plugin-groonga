@@ -376,7 +376,15 @@ module Fluent
 
           case @content_type
           when /\Aapplication\/json\z/
-            response = JSON.parse(@body)
+            begin
+              response = JSON.parse(@body)
+            rescue JSON::ParserError
+              $log.warn("[input][groonga][response][warn] " +
+                         "failed to parse response JSON:",
+                         :error => "#{$!.class}: #{$!}",
+                         :json => @body)
+              response = nil
+            end
           when /\Aapplication\/x-msgpack\z/
             response = MessagePack.unpack(@body)
           when /\Atext\/x-groonga-command-list/
