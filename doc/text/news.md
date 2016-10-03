@@ -12,6 +12,7 @@
   when they send a large POST data. The input groonga plugin should
   support "100-conitnue".
 * Ignored invalid JSON.
+* Added more information to logs.
 
 ## 1.1.5: 2016-09-28
 
