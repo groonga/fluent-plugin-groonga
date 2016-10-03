@@ -372,6 +372,8 @@ module Fluent
         end
 
         def on_message_complete
+          return if @parser.status_code == 100
+
           case @content_type
           when /\Aapplication\/json\z/
             response = JSON.parse(@body)
