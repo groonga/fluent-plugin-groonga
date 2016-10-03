@@ -390,9 +390,9 @@ module Fluent
               response = JSON.parse(@body)
             rescue JSON::ParserError
               $log.warn("[input][groonga][response][warn] " +
-                         "failed to parse response JSON:",
-                         :error => "#{$!.class}: #{$!}",
-                         :json => @body)
+                        "failed to parse response JSON:",
+                        :error => "#{$!.class}: #{$!}",
+                        :json => @body)
             end
           when /\Aapplication\/x-msgpack\z/i
             begin
