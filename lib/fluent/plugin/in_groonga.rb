@@ -182,7 +182,8 @@ module Fluent
       def run
         @loop.run
       rescue
-        $log.error "unexpected error", :error => $!.to_s
+        $log.error("[input][groonga][error] unexpected error",
+                   :error => "#{$!.class}: #{$!}")
         $log.error_backtrace
       end
 
@@ -213,7 +214,7 @@ module Fluent
         def on_connect
           @repeater = @input.create_repeater(self)
           @repeater.on_connect_failed do
-            $log.error("[input][groonga][error] " +
+            $log.error("[input][groonga][connect][error] " +
                        "failed to connect to Groonga:",
                        :real_host => @input.real_host,
                        :real_port => @input.real_port)
@@ -227,13 +228,13 @@ module Fluent
           begin
             @request_handler << data
           rescue HTTP::Parser::Error, URI::InvalidURIError
-            $log.error("[input][groonga][error] " +
+            $log.error("[input][groonga][request][error] " +
                        "failed to parse HTTP request:",
                        :error => "#{$!.class}: #{$!}")
             $log.error_backtrace
             reply_error_response("400 Bad Request")
           rescue
-            $log.error("[input][groonga][error] " +
+            $log.error("[input][groonga][request][error] " +
                        "failed to handle HTTP request:",
                        :error => "#{$!.class}: #{$!}")
             $log.error_backtrace
@@ -245,8 +246,8 @@ module Fluent
           begin
             @response_handler << data
           rescue
-            $log.error("[input][groonga][error] " +
-                       "failed to handle HTTP response:",
+            $log.error("[input][groonga][response][error] " +
+                       "failed to handle HTTP response from Groonga:",
                        :error => "#{$!.class}: #{$!}")
             $log.error_backtrace
             reply_error_response("500 Internal Server Error")
