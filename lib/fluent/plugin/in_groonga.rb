@@ -242,7 +242,16 @@ module Fluent
         end
 
         def write_back(data)
-          @response_handler << data
+          begin
+            @response_handler << data
+          rescue
+            $log.error("[input][groonga][error] " +
+                       "failed to handle HTTP response:",
+                       :error => "#{$!.class}: #{$!}")
+            $log.error_backtrace
+            reply_error_response("500 Internal Server Error")
+            return
+          end
           write(data)
         end
 
