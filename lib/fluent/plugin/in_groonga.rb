@@ -383,6 +383,7 @@ module Fluent
         def on_message_complete
           return if @parser.status_code == 100
 
+          response = nil
           case @content_type
           when /\Aapplication\/json\z/i
             begin
@@ -392,14 +393,18 @@ module Fluent
                          "failed to parse response JSON:",
                          :error => "#{$!.class}: #{$!}",
                          :json => @body)
-              response = nil
             end
           when /\Aapplication\/x-msgpack\z/i
-            response = MessagePack.unpack(@body)
+            begin
+              response = MessagePack.unpack(@body)
+            rescue MessagePack::UnpackError, EOFError
+              $log.warn("[input][groonga][response][warn] " +
+                        "failed to parse response MessagePack",
+                        :error => "#{$!.class}: #{$!}",
+                        :msgpack => @body)
+            end
           when /\Atext\/x-groonga-command-list\z/i
             response = @body
-          else
-            response = nil
           end
           @handler.on_response_complete(response)
         end
