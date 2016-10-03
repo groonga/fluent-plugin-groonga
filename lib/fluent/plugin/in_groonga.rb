@@ -384,7 +384,7 @@ module Fluent
           return if @parser.status_code == 100
 
           case @content_type
-          when /\Aapplication\/json\z/
+          when /\Aapplication\/json\z/i
             begin
               response = JSON.parse(@body)
             rescue JSON::ParserError
@@ -394,9 +394,9 @@ module Fluent
                          :json => @body)
               response = nil
             end
-          when /\Aapplication\/x-msgpack\z/
+          when /\Aapplication\/x-msgpack\z/i
             response = MessagePack.unpack(@body)
-          when /\Atext\/x-groonga-command-list\z/
+          when /\Atext\/x-groonga-command-list\z/i
             response = @body
           else
             response = nil
