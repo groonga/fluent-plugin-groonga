@@ -2,6 +2,17 @@
 
 # News
 
+## 1.1.6: 2016-10-03
+
+### Improvements
+
+* Supported "100-continue" case.
+  HTTP response shouldn't be finished when a HTTP client requests
+  "100-continue". curl, PHP HTTP client and so on use "100-continue"
+  when they send a large POST data. The input groonga plugin should
+  support "100-conitnue".
+* Ignored invalid JSON.
+
 ## 1.1.5: 2016-09-28
 
 ### Improvements
