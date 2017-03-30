@@ -141,7 +141,7 @@ module Fluent
 
       def start
         listen_socket = TCPServer.new(@bind, @port)
-        detach_multi_process do
+        block = lambda do
           @loop = Coolio::Loop.new
 
           @socket = Coolio::TCPServer.new(listen_socket, nil,
@@ -154,6 +154,12 @@ module Fluent
           @thread = Thread.new do
             run
           end
+        end
+        if respond_to?(:detach_multi_process)
+          $log.warn("[input][groonga][warn] detach_multi_process is not supported in this Fluentd version. ignored.")
+          detach_multi_process(&block)
+        else
+          block.call
         end
       end
 
