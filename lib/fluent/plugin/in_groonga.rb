@@ -35,7 +35,7 @@ module Fluent
       super
     end
 
-    config_param :protocol, :defalut => :http do |value|
+    config_param :protocol, :default => :http do |value|
       case value
       when "http", "gqtp"
         value.to_sym
