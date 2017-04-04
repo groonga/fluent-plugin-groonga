@@ -2,6 +2,13 @@
 
 # News
 
+## 1.1.7: 2017-04-04
+
+### Fixes
+
+* in: Fixed a typo about configuration parameter.
+  It causes unexpected error because of unknown option.
+
 ## 1.1.6: 2016-10-03
 
 ### Improvements
