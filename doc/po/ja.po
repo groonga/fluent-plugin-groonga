@@ -1670,11 +1670,94 @@ msgstr "お知らせ"
 msgid "# News"
 msgstr "# お知らせ"
 
-msgid "## 1.1.0: 2016-01-24"
+msgid "## 1.1.7: 2017-04-04"
+msgstr ""
+
+msgid "### Fixes"
+msgstr ""
+
+msgid ""
+"* in: Fixed a typo about configuration parameter.\n"
+"  It causes unexpected error because of unknown option."
+msgstr ""
+
+msgid "## 1.1.6: 2016-10-03"
 msgstr ""
 
 msgid "### Improvements"
 msgstr "### 改善"
+
+msgid ""
+"* Supported \"100-continue\" case.\n"
+"  HTTP response shouldn't be finished when a HTTP client requests\n"
+"  \"100-continue\". curl, PHP HTTP client and so on use \"100-continue\"\n"
+"  when they send a large POST data. The input groonga plugin should\n"
+"  support \"100-conitnue\".\n"
+"* Ignored invalid JSON.\n"
+"* Added more information to logs."
+msgstr ""
+
+msgid "## 1.1.5: 2016-09-28"
+msgstr ""
+
+msgid "* Sent error response on error."
+msgstr ""
+
+msgid "## 1.1.4: 2016-09-28"
+msgstr ""
+
+msgid ""
+"* Supported invalid request URL.\n"
+"* Added error class to log.\n"
+"* Added log on failing to connect to Groonga."
+msgstr ""
+
+msgid "## 1.1.3: 2016-09-02"
+msgstr ""
+
+msgid "* Supported Fluentd 0.14."
+msgstr ""
+
+msgid ""
+"* Stopped to emit requests when real Groonga server returns error\n"
+"  responses. `load` request and `object_remove` request are\n"
+"  exceptions. They are always emitted if real Groonga server returns\n"
+"  error responses. Because they may be effected when Groonga server\n"
+"  returns error responses."
+msgstr ""
+
+msgid ""
+"* Updated the default emit target command list to reflect the recent\n"
+"  Groonga command list."
+msgstr ""
+
+msgid "## 1.1.2: 2016-06-05"
+msgstr ""
+
+msgid ""
+"* in http: Supported `Host` rewriting. It supports groonga-httpd again.\n"
+"  [groonga-dev:04037][Reported by Hiroaki TACHIKAWA]"
+msgstr ""
+
+msgid "### Thanks"
+msgstr "### 感謝"
+
+msgid "* Hiroaki TACHIKAWA"
+msgstr ""
+
+msgid "## 1.1.1: 2016-05-27"
+msgstr ""
+
+msgid ""
+"* in: Stopped using deprecated API.\n"
+"  [GitHub#6][Reported by okkez]"
+msgstr ""
+
+msgid "* okkez"
+msgstr ""
+
+msgid "## 1.1.0: 2016-01-24"
+msgstr ""
 
 msgid ""
 "* out: Stopped to try to create pseudo columns such as `_key`.\n"
@@ -1691,9 +1774,6 @@ msgid ""
 "* out: Added `WITH_POSITION` index flag automatically when it is\n"
 "  needed.\n"
 "* out: Supported creating index for existing column."
-msgstr ""
-
-msgid "### Fixes"
 msgstr ""
 
 msgid ""
@@ -1762,9 +1842,6 @@ msgstr ""
 "  [GitHub#1][Benjamin Fleischerさんが報告]\n"
 "* groonga-command-parserをサポート。"
 
-msgid "### Thanks"
-msgstr "### 感謝"
-
 msgid "* Benjamin Fleischer"
 msgstr ""
 
@@ -1813,8 +1890,28 @@ msgstr ""
 msgid "a new instance of Repeater"
 msgstr ""
 
+# @return [BaseInput]
+msgid "a new instance of BaseInput"
+msgstr ""
+
 # @return [Handler]
 msgid "a new instance of Handler"
+msgstr ""
+
+# Fluent::GroongaInput::HTTPInput::RequestHandler#command
+msgid "Returns the value of attribute command"
+msgstr ""
+
+# Fluent::GroongaInput::HTTPInput::RequestHandler#params
+msgid "Returns the value of attribute params"
+msgstr ""
+
+# @return [RequestHandler]
+msgid "a new instance of RequestHandler"
+msgstr ""
+
+# @return [ResponseHandler]
+msgid "a new instance of ResponseHandler"
 msgstr ""
 
 # @return [Parser]
