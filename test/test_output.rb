@@ -22,12 +22,14 @@ require "webrick/config"
 require "webrick/httpresponse"
 
 require "fluent/test"
+require 'fluent/test/helpers'
 require "fluent/plugin/out_groonga"
 require "fluent/test/driver/output"
 
 require "http_parser"
 
 class GroongaOutputTest < Test::Unit::TestCase
+  include Fluent::Test::Helpers
   setup :before => :append
   def setup_fluent
     Fluent::Test.setup
@@ -99,7 +101,7 @@ EOC
       def test_basic_command
         @response_body = JSON.generate([[0, 0.0, 0.0], true])
         driver = create_driver
-        time = Time.parse("2012-10-26T08:45:42Z").to_i
+        time = event_time("2012-10-26T08:45:42Z").to_i
         driver.run(default_tag: "groonga.command.table_create") do
           driver.feed(time, {"name" => "Users"})
         end
@@ -119,7 +121,7 @@ EOC
       def test_one_message
         @response_body = JSON.generate([[0, 0.0, 0.0], [1]])
         driver = create_driver
-        time = Time.parse("2012-10-26T08:45:42Z").to_i
+        time = event_time("2012-10-26T08:45:42Z").to_i
         driver.run(default_tag: "log") do
           driver.feed(time, {"message" => "1st message"})
         end
@@ -132,7 +134,7 @@ EOC
       def test_multiple_messages
         @response_body = JSON.generate([[0, 0.0, 0.0], [2]])
         driver = create_driver
-        time = Time.parse("2012-10-26T08:45:42Z").to_i
+        time = event_time("2012-10-26T08:45:42Z").to_i
         driver.run(default_tag: "log") do
           driver.feed(time, {"message" => "1st message"})
           driver.feed(time + 1, {"message" => "2nd message"})
@@ -233,7 +235,7 @@ EOC
     class CommandTest < self
       def test_basic_command
         driver = create_driver
-        time = Time.parse("2012-10-26T08:45:42Z").to_i
+        time = event_time("2012-10-26T08:45:42Z").to_i
         driver.run(default_tag: "groonga.command.table_create") do
           driver.feed(time, {"name" => "Users"})
         end
