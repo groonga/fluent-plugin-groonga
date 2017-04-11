@@ -139,7 +139,6 @@ module Fluent
 
         def start
           listen_socket = TCPServer.new(@bind, @port)
-          detach_multi_process do
             @loop = Coolio::Loop.new
 
             @socket = Coolio::TCPServer.new(listen_socket, nil,
@@ -152,7 +151,6 @@ module Fluent
             @thread = Thread.new do
               run
             end
-          end
         end
 
         def shutdown
