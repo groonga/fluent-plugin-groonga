@@ -33,14 +33,7 @@ module Fluent
         super
       end
 
-      config_param :protocol, :default => :http do |value|
-        case value
-        when "http", "gqtp"
-          value.to_sym
-        else
-          raise ConfigError, "must be http or gqtp: <#{value}>"
-        end
-      end
+      config_param :protocol, :enum, :list => [:http, :gqtp], :default => :http
 
       def configure(conf)
         super
