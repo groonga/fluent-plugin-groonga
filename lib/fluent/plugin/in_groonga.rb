@@ -139,18 +139,18 @@ module Fluent
 
         def start
           listen_socket = TCPServer.new(@bind, @port)
-            @loop = Coolio::Loop.new
+          @loop = Coolio::Loop.new
 
-            @socket = Coolio::TCPServer.new(listen_socket, nil,
-                                            handler_class, self)
-            @loop.attach(@socket)
+          @socket = Coolio::TCPServer.new(listen_socket, nil,
+                                          handler_class, self)
+          @loop.attach(@socket)
 
-            @shutdown_notifier = Coolio::AsyncWatcher.new
-            @loop.attach(@shutdown_notifier)
+          @shutdown_notifier = Coolio::AsyncWatcher.new
+          @loop.attach(@shutdown_notifier)
 
-            @thread = Thread.new do
-              run
-            end
+          @thread = Thread.new do
+            run
+          end
         end
 
         def shutdown
