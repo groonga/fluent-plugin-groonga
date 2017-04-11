@@ -17,7 +17,7 @@ require "fluent/plugin/out_groonga"
 
 class OutputTypeTableDefinitionTest < Test::Unit::TestCase
   def definition(raw={})
-    Fluent::GroongaOutput::TableDefinition.new(raw)
+    Fluent::Plugin::GroongaOutput::TableDefinition.new(raw)
   end
 
   sub_test_case "readers" do
