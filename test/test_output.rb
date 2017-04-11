@@ -23,6 +23,7 @@ require "webrick/httpresponse"
 
 require "fluent/test"
 require "fluent/plugin/out_groonga"
+require "fluent/test/driver/output"
 
 require "http_parser"
 
@@ -34,8 +35,7 @@ class GroongaOutputTest < Test::Unit::TestCase
 
   private
   def create_driver(tag)
-    driver = Fluent::Test::BufferedOutputTestDriver.new(Fluent::Plugin::GroongaOutput,
-                                                        tag)
+    driver = Fluent::Test::Driver::Output.new(Fluent::Plugin::GroongaOutput)
     driver.configure(configuration)
     driver
   end
@@ -100,8 +100,9 @@ EOC
         @response_body = JSON.generate([[0, 0.0, 0.0], true])
         driver = create_driver("groonga.command.table_create")
         time = Time.parse("2012-10-26T08:45:42Z").to_i
-        driver.emit({"name" => "Users"}, time)
-        driver.run
+        driver.run(default_tag: "groonga.command.table_create") do
+          driver.feed(time, {"name" => "Users"})
+        end
         assert_equal("/d/table_create?name=Users",
                      @request_parser.request_url)
       end
@@ -119,8 +120,9 @@ EOC
         @response_body = JSON.generate([[0, 0.0, 0.0], [1]])
         driver = create_driver("log")
         time = Time.parse("2012-10-26T08:45:42Z").to_i
-        driver.emit({"message" => "1st message"}, time)
-        driver.run
+        driver.run(default_tag: "log") do
+          driver.feed(time, {"message" => "1st message"})
+        end
         assert_equal("/d/load?table=Logs",
                      @request_parser.request_url)
         assert_equal([{"message" => "1st message"}],
@@ -131,9 +133,10 @@ EOC
         @response_body = JSON.generate([[0, 0.0, 0.0], [2]])
         driver = create_driver("log")
         time = Time.parse("2012-10-26T08:45:42Z").to_i
-        driver.emit({"message" => "1st message"}, time)
-        driver.emit({"message" => "2nd message"}, time + 1)
-        driver.run
+        driver.run(default_tag: "log") do
+          driver.feed(time, {"message" => "1st message"})
+          driver.feed(time + 1, {"message" => "2nd message"})
+        end
         assert_equal("/d/load?table=Logs",
                      @request_parser.request_url)
         assert_equal([
@@ -231,8 +234,9 @@ EOC
       def test_basic_command
         driver = create_driver("groonga.command.table_create")
         time = Time.parse("2012-10-26T08:45:42Z").to_i
-        driver.emit({"name" => "Users"}, time)
-        driver.run
+        driver.run(default_tag: "groonga.command.table_create") do
+          driver.feed(time, {"name" => "Users"})
+        end
         assert_equal([
                        [
                          "--input-fd", actual_input_fd,
