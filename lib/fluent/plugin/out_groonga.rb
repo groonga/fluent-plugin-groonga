@@ -32,14 +32,7 @@ module Fluent
         super
       end
 
-      config_param :protocol, :default => :http do |value|
-        case value
-        when "http", "gqtp", "command"
-          value.to_sym
-        else
-          raise ConfigError, "must be http, gqtp or command: <#{value}>"
-        end
-      end
+      config_param :protocol, :enum, :list => [:http, :gqtp, :command], :default => :http
 
       # alias is just for backward compatibility
       config_param :store_table, :string, :default => nil, :alias => :table
