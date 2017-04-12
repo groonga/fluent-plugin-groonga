@@ -37,7 +37,7 @@ class GroongaOutputTest < Test::Unit::TestCase
   end
 
   private
-  def create_driver(tag)
+  def create_driver
     driver = Fluent::Test::Driver::Output.new(Fluent::Plugin::GroongaOutput)
     driver.configure(configuration)
     driver
@@ -101,7 +101,7 @@ EOC
     class CommandTest < self
       def test_basic_command
         @response_body = JSON.generate([[0, 0.0, 0.0], true])
-        driver = create_driver("groonga.command.table_create")
+        driver = create_driver
         time = event_time("2012-10-26T08:45:42Z")
         driver.run(default_tag: "groonga.command.table_create") do
           driver.feed(time, {"name" => "Users"})
@@ -121,7 +121,7 @@ EOC
 
       def test_one_message
         @response_body = JSON.generate([[0, 0.0, 0.0], [1]])
-        driver = create_driver("log")
+        driver = create_driver
         time = event_time("2012-10-26T08:45:42Z")
         driver.run(default_tag: "log") do
           driver.feed(time, {"message" => "1st message"})
@@ -134,7 +134,7 @@ EOC
 
       def test_multiple_messages
         @response_body = JSON.generate([[0, 0.0, 0.0], [2]])
-        driver = create_driver("log")
+        driver = create_driver
         time = event_time("2012-10-26T08:45:42Z")
         driver.run(default_tag: "log") do
           driver.feed(time, {"message" => "1st message"})
@@ -235,7 +235,7 @@ EOC
 
     class CommandTest < self
       def test_basic_command
-        driver = create_driver("groonga.command.table_create")
+        driver = create_driver
         time = event_time("2012-10-26T08:45:42Z")
         driver.run(default_tag: "groonga.command.table_create") do
           driver.feed(time, {"name" => "Users"})
