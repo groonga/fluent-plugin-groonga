@@ -26,6 +26,7 @@ require "fluent/plugin/input"
 require "fluent/process"
 
 module Fluent
+  module Plugin
   class GroongaInput < Input
     Plugin.register_input("groonga", self)
 
@@ -473,5 +474,6 @@ module Fluent
         end
       end
     end
+  end
   end
 end
