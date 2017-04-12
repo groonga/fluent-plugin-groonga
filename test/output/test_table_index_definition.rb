@@ -21,7 +21,7 @@ class OutputTypeTableIndexDefinitionTest < Test::Unit::TestCase
       :name              => "Terms",
       :default_tokenizer => "TokenBigram",
     }
-    Fluent::GroongaOutput::TableDefinition.new(raw)
+    Fluent::Plugin::GroongaOutput::TableDefinition.new(raw)
   end
 
   def definition(raw={})
@@ -29,7 +29,7 @@ class OutputTypeTableIndexDefinitionTest < Test::Unit::TestCase
       :source_columns => "title",
     }
     raw = default_raw.merge(raw)
-    Fluent::GroongaOutput::TableDefinition::IndexDefinition.new(table_definition,
+    Fluent::Plugin::GroongaOutput::TableDefinition::IndexDefinition.new(table_definition,
                                                                 raw)
   end
 
