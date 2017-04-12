@@ -52,8 +52,8 @@ module Fluent
     end
 
     def shutdown
-      super
       @input.shutdown
+      super
     end
 
     class Repeater < Coolio::TCPSocket
