@@ -21,6 +21,8 @@ require "yajl"
 
 require "groonga/client"
 
+require "fluent/plugin/output"
+
 module Fluent
   module Plugin
   class GroongaOutput < BufferedOutput
