@@ -22,6 +22,7 @@ require "yajl"
 require "groonga/client"
 
 module Fluent
+  module Plugin
   class GroongaOutput < BufferedOutput
     Plugin.register_output("groonga", self)
 
@@ -758,5 +759,6 @@ module Fluent
         end
       end
     end
+  end
   end
 end
