@@ -27,6 +27,7 @@ module Fluent
   module Plugin
   class GroongaOutput < Output
     Plugin.register_output("groonga", self)
+    helpers :compat_parameters
 
     def initialize
       super
@@ -73,7 +74,13 @@ module Fluent
       end
     end
 
+    config_section :buffer do
+      config_set_default :@type, "memory"
+      config_set_default :chunk_keys, ['tag']
+    end
+
     def configure(conf)
+      compat_parameters_convert(conf, :buffer)
       super
       @client = create_client(@protocol)
       @client.configure(conf)
