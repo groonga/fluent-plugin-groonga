@@ -23,7 +23,6 @@ require "gqtp"
 require "groonga/command/parser"
 
 require "fluent/plugin/input"
-require "fluent/process"
 
 module Fluent
   module Plugin
