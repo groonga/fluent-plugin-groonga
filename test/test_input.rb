@@ -27,9 +27,9 @@ require "fluent/plugin/in_groonga"
 
 require "http_parser"
 
-class GroongaInputTest < Test::Unit::TestCase
-  include Fluent::Test::Helpers
+include Fluent::Test::Helpers
 
+class GroongaInputTest < Test::Unit::TestCase
   setup :before => :append
   def setup_fluent
     Fluent::Test.setup
