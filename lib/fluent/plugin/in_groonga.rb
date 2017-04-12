@@ -73,7 +73,6 @@ module Fluent
 
     class BaseInput
       include Configurable
-      include DetachMultiProcessMixin
 
       config_param :bind, :string, :default => "0.0.0.0"
       config_param :port, :integer, :default => nil
@@ -132,7 +131,6 @@ module Fluent
 
       def start
         listen_socket = TCPServer.new(@bind, @port)
-        detach_multi_process do
           @loop = Coolio::Loop.new
 
           @socket = Coolio::TCPServer.new(listen_socket, nil,
@@ -145,7 +143,6 @@ module Fluent
           @thread = Thread.new do
             run
           end
-        end
       end
 
       def shutdown
