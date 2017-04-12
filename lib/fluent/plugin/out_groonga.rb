@@ -25,7 +25,7 @@ require "fluent/plugin/output"
 
 module Fluent
   module Plugin
-  class GroongaOutput < BufferedOutput
+  class GroongaOutput < Output
     Plugin.register_output("groonga", self)
 
     def initialize
