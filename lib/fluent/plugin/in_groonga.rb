@@ -206,9 +206,9 @@ module Fluent
           @repeater = @input.create_repeater(self)
           @repeater.on_connect_failed do
             @input.log.error("[input][groonga][connect][error] " +
-                       "failed to connect to Groonga:",
-                       :real_host => @input.real_host,
-                       :real_port => @input.real_port)
+                             "failed to connect to Groonga:",
+                             :real_host => @input.real_host,
+                             :real_port => @input.real_port)
             close
           end
           @request_handler = RequestHandler.new(@input, @repeater)
@@ -220,14 +220,14 @@ module Fluent
             @request_handler << data
           rescue HTTP::Parser::Error, URI::InvalidURIError
             @input.log.error("[input][groonga][request][error] " +
-                       "failed to parse HTTP request:",
-                       :error => "#{$!.class}: #{$!}")
+                             "failed to parse HTTP request:",
+                             :error => "#{$!.class}: #{$!}")
             @input.log.error_backtrace
             reply_error_response("400 Bad Request")
           rescue
             @input.log.error("[input][groonga][request][error] " +
-                       "failed to handle HTTP request:",
-                       :error => "#{$!.class}: #{$!}")
+                             "failed to handle HTTP request:",
+                             :error => "#{$!.class}: #{$!}")
             @input.log.error_backtrace
             reply_error_response("500 Internal Server Error")
           end
@@ -238,8 +238,8 @@ module Fluent
             @response_handler << data
           rescue
             @input.log.error("[input][groonga][response][error] " +
-                       "failed to handle HTTP response from Groonga:",
-                       :error => "#{$!.class}: #{$!}")
+                             "failed to handle HTTP response from Groonga:",
+                             :error => "#{$!.class}: #{$!}")
             @input.log.error_backtrace
             reply_error_response("500 Internal Server Error")
             return
