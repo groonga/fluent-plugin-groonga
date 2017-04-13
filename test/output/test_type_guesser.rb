@@ -18,7 +18,7 @@ require "fluent/plugin/out_groonga"
 class OutputTypeGuesserTest < Test::Unit::TestCase
   sub_test_case "#guess" do
     def guess(sample_values)
-      guesser = Fluent::GroongaOutput::Schema::TypeGuesser.new(sample_values)
+      guesser = Fluent::Plugin::GroongaOutput::Schema::TypeGuesser.new(sample_values)
       guesser.guess
     end
 
