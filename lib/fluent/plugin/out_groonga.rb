@@ -109,9 +109,9 @@ module Fluent
     def create_client(protocol)
       case protocol
       when :http, :gqtp
-        NetworkClient.new(protocol)
+        NetworkClient.new(protocol, self)
       when :command
-        CommandClient.new
+        CommandClient.new(self)
       end
     end
 
@@ -610,9 +610,10 @@ module Fluent
       config_param :host, :string, :default => nil
       config_param :port, :integer, :default => nil
 
-      def initialize(protocol)
+      def initialize(protocol, output_plugin)
         super()
         @protocol = protocol
+        @output_plugin = output_plugin
       end
 
       def start
@@ -634,17 +635,17 @@ module Fluent
         begin
           response = @client.execute(command)
         rescue Groonga::Client::Error
-          $log.error("[output][groonga][error]",
-                     :protocol => @protocol,
-                     :host => @host,
-                     :port => @port,
-                     :command_name => name)
+          @output_plugin.log.error("[output][groonga][error]",
+                                   :protocol => @protocol,
+                                   :host => @host,
+                                   :port => @port,
+                                   :command_name => name)
           raise
         end
         unless response.success?
-          $log.error("[output][groonga][error]",
-                     :status_code => response.status_code,
-                     :message => response.message)
+          @output_plugin.log.error("[output][groonga][error]",
+                                   :status_code => response.status_code,
+                                   :message => response.message)
         end
         response
       end
@@ -659,8 +660,9 @@ module Fluent
         Shellwords.split(value)
       end
 
-      def initialize
-        super
+      def initialize(output_plugin)
+        super()
+        @output_plugin = output_plugin
       end
 
       def configure(conf)
@@ -747,14 +749,14 @@ module Fluent
         end
 
         unless output_message.empty?
-          $log.debug("[output][groonga][output]",
-                     :context => context,
-                     :message => output_message)
+          @output_plugin.log.debug("[output][groonga][output]",
+                                   :context => context,
+                                   :message => output_message)
         end
         unless error_message.empty?
-          $log.error("[output][groonga][error]",
-                     :context => context,
-                     :message => error_message)
+          @output_plugin.log.error("[output][groonga][error]",
+                                   :context => context,
+                                   :message => error_message)
         end
       end
     end

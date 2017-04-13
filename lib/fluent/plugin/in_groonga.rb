@@ -173,9 +173,9 @@ module Fluent
       def run
         @loop.run
       rescue
-        $log.error("[input][groonga][error] unexpected error",
-                   :error => "#{$!.class}: #{$!}")
-        $log.error_backtrace
+        @input_plugin.log.error("[input][groonga][error] unexpected error",
+                                :error => "#{$!.class}: #{$!}")
+        @input_plugin.log.error_backtrace
       end
 
       def emit_command?(command)
@@ -205,30 +205,30 @@ module Fluent
         def on_connect
           @repeater = @input.create_repeater(self)
           @repeater.on_connect_failed do
-            $log.error("[input][groonga][connect][error] " +
+            @input.log.error("[input][groonga][connect][error] " +
                        "failed to connect to Groonga:",
                        :real_host => @input.real_host,
                        :real_port => @input.real_port)
             close
           end
           @request_handler = RequestHandler.new(@input, @repeater)
-          @response_handler = ResponseHandler.new(self)
+          @response_handler = ResponseHandler.new(self, @input)
         end
 
         def on_read(data)
           begin
             @request_handler << data
           rescue HTTP::Parser::Error, URI::InvalidURIError
-            $log.error("[input][groonga][request][error] " +
+            @input.log.error("[input][groonga][request][error] " +
                        "failed to parse HTTP request:",
                        :error => "#{$!.class}: #{$!}")
-            $log.error_backtrace
+            @input.log.error_backtrace
             reply_error_response("400 Bad Request")
           rescue
-            $log.error("[input][groonga][request][error] " +
+            @input.log.error("[input][groonga][request][error] " +
                        "failed to handle HTTP request:",
                        :error => "#{$!.class}: #{$!}")
-            $log.error_backtrace
+            @input.log.error_backtrace
             reply_error_response("500 Internal Server Error")
           end
         end
@@ -237,10 +237,10 @@ module Fluent
           begin
             @response_handler << data
           rescue
-            $log.error("[input][groonga][response][error] " +
+            @input.log.error("[input][groonga][response][error] " +
                        "failed to handle HTTP response from Groonga:",
                        :error => "#{$!.class}: #{$!}")
-            $log.error_backtrace
+            @input.log.error_backtrace
             reply_error_response("500 Internal Server Error")
             return
           end
@@ -345,8 +345,9 @@ module Fluent
       end
 
       class ResponseHandler
-        def initialize(handler)
+        def initialize(handler, input)
           @handler = handler
+          @input = input
           @parser = Http::Parser.new(self)
         end
 
@@ -381,19 +382,19 @@ module Fluent
             begin
               response = JSON.parse(@body)
             rescue JSON::ParserError
-              $log.warn("[input][groonga][response][warn] " +
-                        "failed to parse response JSON:",
-                        :error => "#{$!.class}: #{$!}",
-                        :json => @body)
+              @input.log.warn("[input][groonga][response][warn] " +
+                              "failed to parse response JSON:",
+                              :error => "#{$!.class}: #{$!}",
+                              :json => @body)
             end
           when /\Aapplication\/x-msgpack\z/i
             begin
               response = MessagePack.unpack(@body)
             rescue MessagePack::UnpackError, EOFError
-              $log.warn("[input][groonga][response][warn] " +
-                        "failed to parse response MessagePack",
-                        :error => "#{$!.class}: #{$!}",
-                        :msgpack => @body)
+              @input.log.warn("[input][groonga][response][warn] " +
+                              "failed to parse response MessagePack",
+                              :error => "#{$!.class}: #{$!}",
+                              :msgpack => @body)
             end
           when /\Atext\/x-groonga-command-list\z/i
             response = @body
