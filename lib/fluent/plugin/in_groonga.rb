@@ -169,13 +169,17 @@ module Fluent
                                   params)
       end
 
+      def log
+        @input_plugin.log
+      end
+
       private
       def run
         @loop.run
       rescue
-        @input_plugin.log.error("[input][groonga][error] unexpected error",
-                                :error => "#{$!.class}: #{$!}")
-        @input_plugin.log.error_backtrace
+        log.error("[input][groonga][error] unexpected error",
+                  :error => "#{$!.class}: #{$!}")
+        log.error_backtrace
       end
 
       def emit_command?(command)
