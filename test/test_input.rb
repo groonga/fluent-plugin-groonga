@@ -19,9 +19,9 @@ require "net/http"
 require "webrick/config"
 require "webrick/httpresponse"
 
-require "fluent/plugin/in_groonga"
+require "fluent/test/driver/input"
 
-require "http_parser"
+require "fluent/plugin/in_groonga"
 
 class GroongaInputTest < Test::Unit::TestCase
   setup :before => :append
@@ -33,7 +33,7 @@ class GroongaInputTest < Test::Unit::TestCase
 
   private
   def create_driver
-    driver = Fluent::Test::InputTestDriver.new(Fluent::Plugin::GroongaInput)
+    driver = Fluent::Test::Driver::Input.new(Fluent::Plugin::GroongaInput)
     driver.configure(configuration)
     driver
   end
@@ -100,16 +100,21 @@ EOC
     def test_target_command
       @real_response["Content-Type"] = "application/json"
       @real_response.body = JSON.generate([[0, 0.0, 0.0], true])
-      @driver.expect_emit("groonga.command.table_create",
-                          @now,
-                          {
-                            "name" => "Users",
-                            "flags" => "TABLE_NO_KEY",
-                          })
       @driver.run do
         get("/d/table_create", "name" => "Users", "flags" => "TABLE_NO_KEY")
         assert_equal("200", @last_response.code)
       end
+      assert_equal([
+                     [
+                       "groonga.command.table_create",
+                       @now,
+                       {
+                         "name" => "Users",
+                         "flags" => "TABLE_NO_KEY",
+                       },
+                     ]
+                   ],
+                   @driver.events)
     end
 
     def test_not_target_command
@@ -117,7 +122,7 @@ EOC
         get("/d/status")
         assert_equal("200", @last_response.code)
       end
-      assert_empty(@driver.emits)
+      assert_empty(@driver.events)
     end
 
     def test_load
@@ -129,17 +134,21 @@ EOC
 {"name": "Bob"}
 ]
 EOJ
-      @driver.expect_emit("groonga.command.load",
-                          @now,
-                          {
-                            "table" => "Users",
-                            "values" => json,
-                          })
-
       @driver.run do
         post("/d/load", json, "table" => "Users")
         assert_equal("200", @last_response.code)
       end
+      assert_equal([
+                     [
+                       "groonga.command.load",
+                       @now,
+                       {
+                         "table" => "Users",
+                         "values" => json,
+                       },
+                     ],
+                   ],
+                   @driver.events)
     end
 
     def test_not_command

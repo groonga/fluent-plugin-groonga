@@ -58,6 +58,7 @@ module Fluent
         server_create_connection(:groonga_input,
                                  port,
                                  :proto => :tcp,
+                                 :shared => system_config.workers > 1,
                                  :bind => bind) do |connection|
           handler = nil
           real_host = @input.real_host
@@ -87,6 +88,10 @@ module Fluent
 
       def shutdown
         super
+      end
+
+      def multi_workers_ready?
+        true
       end
 
       class Repeater < Coolio::TCPSocket

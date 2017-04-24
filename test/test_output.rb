@@ -20,9 +20,8 @@ require "webrick/config"
 require "webrick/httpresponse"
 
 require "fluent/test/driver/output"
-require "fluent/plugin/out_groonga"
 
-require "http_parser"
+require "fluent/plugin/out_groonga"
 
 class GroongaOutputTest < Test::Unit::TestCase
   setup :before => :append
