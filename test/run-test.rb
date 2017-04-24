@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Copyright (C) 2012  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2017  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -31,6 +31,9 @@ Test::Unit::Priority.enable
 $LOAD_PATH.unshift(lib_dir)
 
 require "fluent/test"
+require "fluent/test/helpers"
+
+include Fluent::Test::Helpers
 
 ENV["TEST_UNIT_MAX_DIFF_TARGET_STRING_SIZE"] ||= "5000"
 

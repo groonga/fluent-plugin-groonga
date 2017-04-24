@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2012  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2017  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -21,16 +19,12 @@ require "net/http"
 require "webrick/config"
 require "webrick/httpresponse"
 
-require "fluent/test"
 require "fluent/test/driver/output"
-require "fluent/test/helpers"
 require "fluent/plugin/out_groonga"
 
 require "http_parser"
 
 class GroongaOutputTest < Test::Unit::TestCase
-  include Fluent::Test::Helpers
-
   setup :before => :append
   def setup_fluent
     Fluent::Test.setup
