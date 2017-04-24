@@ -27,9 +27,9 @@ require "fluent/plugin/in_groonga"
 
 require "http_parser"
 
-class GroongaInputTest < Test::Unit::TestCase
-  include Fluent::Test::Helpers
+include Fluent::Test::Helpers
 
+class GroongaInputTest < Test::Unit::TestCase
   setup :before => :append
   def setup_fluent
     Fluent::Test.setup
@@ -39,7 +39,7 @@ class GroongaInputTest < Test::Unit::TestCase
 
   private
   def create_driver
-    driver = Fluent::Test::InputTestDriver.new(Fluent::GroongaInput)
+    driver = Fluent::Test::InputTestDriver.new(Fluent::Plugin::GroongaInput)
     driver.configure(configuration)
     driver
   end

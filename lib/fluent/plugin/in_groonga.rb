@@ -22,10 +22,10 @@ require "http_parser"
 require "gqtp"
 require "groonga/command/parser"
 
-require "fluent/input"
-require "fluent/process"
+require "fluent/plugin/input"
 
 module Fluent
+  module Plugin
   class GroongaInput < Input
     Plugin.register_input("groonga", self)
 
@@ -52,8 +52,8 @@ module Fluent
     end
 
     def shutdown
-      super
       @input.shutdown
+      super
     end
 
     class Repeater < Coolio::TCPSocket
@@ -73,7 +73,6 @@ module Fluent
 
     class BaseInput
       include Configurable
-      include DetachMultiProcessMixin
 
       config_param :bind, :string, :default => "0.0.0.0"
       config_param :port, :integer, :default => nil
@@ -132,7 +131,6 @@ module Fluent
 
       def start
         listen_socket = TCPServer.new(@bind, @port)
-        detach_multi_process do
           @loop = Coolio::Loop.new
 
           @socket = Coolio::TCPServer.new(listen_socket, nil,
@@ -145,7 +143,6 @@ module Fluent
           @thread = Thread.new do
             run
           end
-        end
       end
 
       def shutdown
@@ -473,5 +470,6 @@ module Fluent
         end
       end
     end
+  end
   end
 end

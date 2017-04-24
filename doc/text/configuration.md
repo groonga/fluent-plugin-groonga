@@ -8,7 +8,20 @@ describes configuration parameters of them.
 
 ## The `groonga` input plugin
 
-Here are available parameters:
+`groonga` input plugin is customized in `system` directive and
+`source` directive parameters.
+
+Here is recommended parameter in `system` directive:
+
+  * `workers`: It specifies the number of workers. The point of view
+    in performance, the recommended value is greater than 1 to process
+    requests in parallel.
+
+    * recommended value: greater than 1.
+
+    * default: 1
+
+Here are available parameters in `source` directive:
 
   * `protocol`: It specifies protocol for receiving Groonga commands.
 
@@ -35,6 +48,10 @@ Here are available parameters:
   * `emit_commands`: TODO
 
 Here is an example:
+
+    <system>
+      workers 2
+    </system>
 
     <source>
       @type groonga
