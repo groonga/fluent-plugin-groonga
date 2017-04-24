@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fluent-plugin-groonga 1.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2016-03-28 18:22+0900\n"
+"PO-Revision-Date: 2017-04-24 19:00+0900\n"
 "Last-Translator: Kouhei Sutou <kou@clear-code.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -341,8 +341,28 @@ msgstr ""
 msgid "## The `groonga` input plugin"
 msgstr "## `groonga` inputプラグイン"
 
-msgid "Here are available parameters:"
-msgstr "利用可能なパラメーターは以下の通りです。"
+msgid ""
+"The behavior of `groonga` input plugin is customized in `system`\n"
+"directive and `source` directive parameters."
+msgstr "`groonga` インプットプラグインは `system` ディレクティブと `source` ディレクティブでカスタマイズできます。"
+
+msgid "Here is recommended parameter in `system` directive:"
+msgstr "`system` ディレクティブの推奨設定は以下の通りです。:"
+
+msgid ""
+"  * `workers`: It specifies the number of workers. The point of view\n"
+"    in performance, the recommended value is greater than 1 to process\n"
+"    requests in parallel."
+msgstr "  * `workers`: ワーカーの数を指定します。パフォーマンスの観点では、リクエストを並行処理するために1より大きな値を設定することをおすすめします。"
+
+msgid "    * recommended value: greater than 1."
+msgstr "    * 推奨値: 1より大きい値"
+
+msgid "    * default: `1`"
+msgstr "    * デフォルト：`1`"
+
+msgid "Here are available parameters in `source` directive:"
+msgstr "`source` ディレクティブで利用可能なパラメータは以下の通りです:"
 
 msgid "  * `protocol`: It specifies protocol for receiving Groonga commands."
 msgstr "  * `protocol`: Groongaコマンドを受信するときに使うプロトコルを指定します。"
@@ -379,6 +399,12 @@ msgstr "  * `emit_commands`：TODO"
 
 msgid "Here is an example:"
 msgstr "以下は設定例です。"
+
+msgid ""
+"    <system>\n"
+"      workers 2\n"
+"    </system>"
+msgstr ""
 
 msgid ""
 "    <source>\n"
@@ -1914,8 +1940,8 @@ msgstr ""
 msgid "a new instance of ResponseHandler"
 msgstr ""
 
-# @return [Parser]
-msgid "a new instance of Parser"
+# @return [RequestParser]
+msgid "a new instance of RequestParser"
 msgstr ""
 
 # @return [GroongaOutput]
