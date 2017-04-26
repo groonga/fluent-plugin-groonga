@@ -8,8 +8,8 @@
 
 * Supported recent fluentd v0.14 API.
   Since fluentd 0.14.12, compatibility layer is unexpectedly broken,
-  fluent-plugin-groonga is also affected because fluent-plugin-groonga
-  relies on it. Note that fluent-plugin-groonga does not work with
+  fluent-plugin-groonga had been also affected because fluent-plugin-groonga
+  relied on it. Note that fluent-plugin-groonga does not work with
   fluentd v0.12 because it does not use compatibility layer
   anymore. We recommends to use latest release, but if you still stay
   with fluentd v0.12, you need to use fluent-plugin-groonga 1.1.7.
