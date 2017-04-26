@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fluent-plugin-groonga 1.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-04-26 17:00+0900\n"
+"PO-Revision-Date: 2017-04-26 17:20+0900\n"
 "Last-Translator: Kouhei Sutou <kou@clear-code.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -357,19 +357,20 @@ msgstr ""
 "  * `workers`: ワーカーの数を指定します。パフォーマンスの観点では、リクエストを並行処理するために1より大きな値を設定することをおすすめします"
 "。"
 
-msgid "    * recommended value: greater than 1."
-msgstr "    * 推奨値: 1より大きい値"
+msgid "    * recommended value: greater than `1`."
+msgstr "    * 推奨値: `1`より大きい値"
 
 msgid "    * default: `1`"
 msgstr "    * デフォルト：`1`"
 
 msgid ""
 "Note that there is one exception about the number of recommended\n"
-"workers.  Users should use `1` worker if command contains DDL (\n"
-"`table_create` and `column_create` and so on) because\n"
-"execution order of these command may be swapped. In such a case,\n"
-"replication will fail."
-msgstr "ワーカーの推奨値には1つ例外があります。コマンドがDDL ( `table_create` や `column_create` など)を含んでいる場合です。その場合にはワーカーの数は `1` でなければなりません。コマンドの実行順序が入れ替わる可能性があるので、その場合にはレプリケーションが失敗します。"
+"workers. Users should use `1` worker when commands contain DDL such as\n"
+"`table_create` and `column_create`. Because execution order of these\n"
+"commands may be swapped. In such a case, replication will fail."
+msgstr ""
+"ワーカーの推奨値には1つ例外があります。コマンドが`table_create`や`column_create`といったDDLを含んでいる場合です。その場合は"
+"ワーカーの数は `1` でなければなりません。コマンドの実行順序が入れ替わる可能性があるからです。実行順序が入れ替わるとレプリケーションは失敗します。"
 
 msgid "Here are available parameters in `source` directive:"
 msgstr "`source` ディレクティブで利用可能なパラメータは以下の通りです:"
@@ -1934,6 +1935,10 @@ msgstr ""
 msgid "a new instance of Handler"
 msgstr ""
 
+# @return [Parser]
+msgid "a new instance of Parser"
+msgstr ""
+
 # Fluent::GroongaInput::HTTPInput::RequestHandler#command
 msgid "Returns the value of attribute command"
 msgstr ""
@@ -1958,8 +1963,24 @@ msgstr ""
 msgid "a new instance of GroongaOutput"
 msgstr ""
 
+# @return [Emitter]
+msgid "a new instance of Emitter"
+msgstr ""
+
+# @return [RawGroongaOutput]
+msgid "a new instance of RawGroongaOutput"
+msgstr ""
+
+# @return [BufferedGroongaOutput]
+msgid "a new instance of BufferedGroongaOutput"
+msgstr ""
+
 # @return [TableDefinition]
 msgid "a new instance of TableDefinition"
+msgstr ""
+
+# @return [CommandClient]
+msgid "a new instance of CommandClient"
 msgstr ""
 
 # @return [IndexDefinition]
@@ -2014,14 +2035,6 @@ msgstr ""
 msgid "a new instance of Column"
 msgstr ""
 
-# @return [Emitter]
-msgid "a new instance of Emitter"
-msgstr ""
-
 # @return [NetworkClient]
 msgid "a new instance of NetworkClient"
-msgstr ""
-
-# @return [CommandClient]
-msgid "a new instance of CommandClient"
 msgstr ""

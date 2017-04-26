@@ -17,15 +17,14 @@ Here is recommended parameter in `system` directive:
     in performance, the recommended value is greater than 1 to process
     requests in parallel.
 
-    * recommended value: greater than 1.
+    * recommended value: greater than `1`.
 
     * default: `1`
 
 Note that there is one exception about the number of recommended
-workers.  Users should use `1` worker if command contains DDL (
-`table_create` and `column_create` and so on) because
-execution order of these command may be swapped. In such a case,
-replication will fail.
+workers. Users should use `1` worker when commands contain DDL such as
+`table_create` and `column_create`. Because execution order of these
+commands may be swapped. In such a case, replication will fail.
 
 Here are available parameters in `source` directive:
 
