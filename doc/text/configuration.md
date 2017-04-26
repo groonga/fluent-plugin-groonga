@@ -21,6 +21,12 @@ Here is recommended parameter in `system` directive:
 
     * default: `1`
 
+Note that there is one exception about the number of recommended
+workers.  Users should use `1` worker if command contains DDL (
+`table_create` and `column_create` and so on) because
+execution order of these command may be swapped. In such a case,
+replication will fail.
+
 Here are available parameters in `source` directive:
 
   * `protocol`: It specifies protocol for receiving Groonga commands.
