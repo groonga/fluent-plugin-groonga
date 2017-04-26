@@ -1,4 +1,4 @@
-# @title README
+# @title README for [Fluentd](http://fluentd.org)
 
 # README
 
