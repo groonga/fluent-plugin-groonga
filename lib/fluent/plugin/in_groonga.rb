@@ -94,21 +94,6 @@ module Fluent
         true
       end
 
-      class Repeater < Coolio::TCPSocket
-        def initialize(socket, handler)
-          super(socket)
-          @handler = handler
-        end
-
-        def on_read(data)
-          @handler.write_back(data)
-        end
-
-        def on_close
-          @handler.close
-        end
-      end
-
       class BaseInput
         include Configurable
 
