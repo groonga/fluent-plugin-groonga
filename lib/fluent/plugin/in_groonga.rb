@@ -75,7 +75,9 @@ module Fluent
             handler.write_back(data)
           end
           repeater.on_close do
-            handler.close
+            connection.on(:write_complete) do
+              handler.close
+            end
           end
           event_loop_attach(repeater)
 
