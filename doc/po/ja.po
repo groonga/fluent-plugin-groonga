@@ -1707,10 +1707,35 @@ msgstr "お知らせ"
 msgid "# News"
 msgstr "# お知らせ"
 
-msgid "## 1.1.7: 2017-04-04"
+msgid "## 1.2.1: 2017-05-01"
 msgstr ""
 
 msgid "### Fixes"
+msgstr ""
+
+msgid ""
+"* in: Fixed to wait until write back is completed to client.\n"
+"  Without this change, fluentd couldn't send back response correctly."
+msgstr ""
+
+msgid "## 1.2.0: 2017-04-26"
+msgstr ""
+
+msgid "### Improvements"
+msgstr "### 改善"
+
+msgid ""
+"* Supported recent fluentd v0.14 API.\n"
+"  Since fluentd 0.14.12, compatibility layer is unexpectedly broken,\n"
+"  fluent-plugin-groonga had been also affected because\n"
+"  fluent-plugin-groonga relied on it. Note that fluent-plugin-groonga\n"
+"  does not work with fluentd v0.12 because it does not use\n"
+"  compatibility layer anymore. We recommends to use latest release,\n"
+"  but if you still stay with fluentd v0.12, you need to use\n"
+"  fluent-plugin-groonga 1.1.7."
+msgstr ""
+
+msgid "## 1.1.7: 2017-04-04"
 msgstr ""
 
 msgid ""
@@ -1720,9 +1745,6 @@ msgstr ""
 
 msgid "## 1.1.6: 2016-10-03"
 msgstr ""
-
-msgid "### Improvements"
-msgstr "### 改善"
 
 msgid ""
 "* Supported \"100-continue\" case.\n"
@@ -1935,10 +1957,6 @@ msgstr ""
 msgid "a new instance of Handler"
 msgstr ""
 
-# @return [Parser]
-msgid "a new instance of Parser"
-msgstr ""
-
 # Fluent::GroongaInput::HTTPInput::RequestHandler#command
 msgid "Returns the value of attribute command"
 msgstr ""
@@ -1959,28 +1977,16 @@ msgstr ""
 msgid "a new instance of RequestParser"
 msgstr ""
 
+# @return [Parser]
+msgid "a new instance of Parser"
+msgstr ""
+
 # @return [GroongaOutput]
 msgid "a new instance of GroongaOutput"
 msgstr ""
 
-# @return [Emitter]
-msgid "a new instance of Emitter"
-msgstr ""
-
-# @return [RawGroongaOutput]
-msgid "a new instance of RawGroongaOutput"
-msgstr ""
-
-# @return [BufferedGroongaOutput]
-msgid "a new instance of BufferedGroongaOutput"
-msgstr ""
-
 # @return [TableDefinition]
 msgid "a new instance of TableDefinition"
-msgstr ""
-
-# @return [CommandClient]
-msgid "a new instance of CommandClient"
 msgstr ""
 
 # @return [IndexDefinition]
@@ -2035,6 +2041,14 @@ msgstr ""
 msgid "a new instance of Column"
 msgstr ""
 
+# @return [Emitter]
+msgid "a new instance of Emitter"
+msgstr ""
+
 # @return [NetworkClient]
 msgid "a new instance of NetworkClient"
+msgstr ""
+
+# @return [CommandClient]
+msgid "a new instance of CommandClient"
 msgstr ""
