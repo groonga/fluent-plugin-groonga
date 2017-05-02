@@ -2,6 +2,13 @@
 
 # News
 
+## 1.2.1: 2017-05-01
+
+### Fixes
+
+* in: Fixed to wait until write back is completed to client.
+  Without this change, fluentd couldn't send back response correctly.
+
 ## 1.2.0: 2017-04-26
 
 ### Improvements
