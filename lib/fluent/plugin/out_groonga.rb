@@ -113,7 +113,7 @@ module Fluent
         [tag, time, record].to_msgpack
       end
 
-      def formatted_to_msgpack_binary
+      def formatted_to_msgpack_binary?
         true
       end
 
