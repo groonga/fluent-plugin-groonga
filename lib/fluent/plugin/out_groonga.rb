@@ -628,37 +628,35 @@ module Fluent
         end
 
         def start
-          @client = nil
         end
 
         def shutdown
-          return if @client.nil?
-          @client.close
         end
 
         def execute(name, arguments={})
           command = build_command(name, arguments)
-          @client ||= Groonga::Client.new(:protocol => @protocol,
-                                          :host     => @host,
-                                          :port     => @port,
-                                          :backend  => :synchronous)
-          response = nil
-          begin
-            response = @client.execute(command)
-          rescue Groonga::Client::Error
-            @output_plugin.log.error("[output][groonga][error]",
-                                     :protocol => @protocol,
-                                     :host => @host,
-                                     :port => @port,
-                                     :command_name => name)
-            raise
+          Groonga::Client.open(:protocol => @protocol,
+                               :host     => @host,
+                               :port     => @port,
+                               :backend  => :synchronous) do |client|
+            response = nil
+            begin
+              response = client.execute(command)
+            rescue Groonga::Client::Error
+              @output_plugin.log.error("[output][groonga][error]",
+                                       :protocol => @protocol,
+                                       :host => @host,
+                                       :port => @port,
+                                       :command_name => name)
+              raise
+            end
+            unless response.success?
+              @output_plugin.log.error("[output][groonga][error]",
+                                       :status_code => response.status_code,
+                                       :message => response.message)
+            end
+            response
           end
-          unless response.success?
-            @output_plugin.log.error("[output][groonga][error]",
-                                     :status_code => response.status_code,
-                                     :message => response.message)
-          end
-          response
         end
       end
 
