@@ -2,6 +2,12 @@
 
 # News
 
+## 1.2.2: 2017-11-22
+
+### Fixes
+
+* out: Fixed a bug that command execution order may be swapped.
+
 ## 1.2.1: 2017-05-01
 
 ### Fixes
