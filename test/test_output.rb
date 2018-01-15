@@ -105,6 +105,16 @@ EOC
         assert_equal("/d/table_create?name=Users",
                      @request_parser.request_url)
       end
+
+      def test_basic_command_with_command_format_record
+        @response_body = JSON.generate([[0, 0.0, 0.0], true])
+        driver = create_driver("groonga.command")
+        time = Time.parse("2012-10-26T08:45:42Z").to_i
+        driver.emit({"name" => "table_create", "arguments" => {"name" => "Users"}}, time)
+        driver.run
+        assert_equal("/d/table_create?name=Users",
+                     @request_parser.request_url)
+      end
     end
 
     class StoreTest < self
@@ -232,6 +242,25 @@ EOC
         driver = create_driver("groonga.command.table_create")
         time = Time.parse("2012-10-26T08:45:42Z").to_i
         driver.emit({"name" => "Users"}, time)
+        driver.run
+        assert_equal([
+                       [
+                         "--input-fd", actual_input_fd,
+                         "--output-fd", actual_output_fd,
+                         "-n", @database_path,
+                       ],
+                       "/d/table_create?name=Users\n",
+                     ],
+                     [
+                       actual_command_line,
+                       actual_input,
+                     ])
+      end
+
+      def test_basic_command_with_command_format_record
+        driver = create_driver("groonga.command")
+        time = Time.parse("2012-10-26T08:45:42Z").to_i
+        driver.emit({"name" => "table_create", "arguments" => {"name" => "Users"}}, time)
         driver.run
         assert_equal([
                        [
