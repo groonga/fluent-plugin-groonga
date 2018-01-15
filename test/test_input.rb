@@ -32,9 +32,9 @@ class GroongaInputTest < Test::Unit::TestCase
   end
 
   private
-  def create_driver
+  def create_driver(conf = configuration)
     driver = Fluent::Test::Driver::Input.new(Fluent::Plugin::GroongaInput)
-    driver.configure(configuration)
+    driver.configure(conf)
     driver
   end
 
@@ -115,6 +115,38 @@ EOC
                      ]
                    ],
                    @driver.events)
+    end
+
+    def test_target_command_with_command_format_record
+      @real_response["Content-Type"] = "application/json"
+      @real_response.body = JSON.generate([[0, 0.0, 0.0], true])
+      conf = <<EOC
+      protocol http
+      bind #{@host}
+      port #{@port}
+      real_host #{@real_host}
+      real_port #{@real_port}
+      command_format record
+EOC
+      driver = create_driver(conf)
+      driver.run do
+        get("/d/table_create", "name" => "Users", "flags" => "TABLE_NO_KEY")
+        assert_equal("200", @last_response.code)
+      end
+      assert_equal([
+                     [
+                       "groonga.command",
+                       @now,
+                       {
+                         "name" => "table_create",
+                         "arguments" => {
+                           "name" => "Users",
+                           "flags" => "TABLE_NO_KEY",
+                         }
+                       },
+                     ]
+                   ],
+                   driver.events)
     end
 
     def test_not_target_command
