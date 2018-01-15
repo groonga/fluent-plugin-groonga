@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2017  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2018  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -36,7 +36,7 @@ module Fluent
       end
 
       config_param :protocol, :enum, :list => [:http, :gqtp], :default => :http
-      config_param :command_format, :enum, :list => [:tag, :record], :default => :tag
+      config_param :command_name_position, :enum, :list => [:tag, :record], :default => :tag
 
       def configure(conf)
         super
@@ -158,7 +158,7 @@ module Fluent
         def emit(command, params)
           normalized_command = command.split(".")[0]
           return unless emit_command?(normalized_command)
-          case @input_plugin.command_format
+          case @input_plugin.command_name_position
           when :tag
             tag = "groonga.command.#{normalized_command}"
             record = params
