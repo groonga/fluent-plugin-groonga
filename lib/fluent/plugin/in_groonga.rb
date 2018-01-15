@@ -34,6 +34,7 @@ module Fluent
     end
 
     config_param :protocol, :enum, :list => [:http, :gqtp], :default => :http
+    config_param :command_format, :enum, :list => [:tag, :record], :default => :tag
 
     def configure(conf)
       super
@@ -164,9 +165,20 @@ module Fluent
       def emit(command, params)
         normalized_command = command.split(".")[0]
         return unless emit_command?(normalized_command)
-        @input_plugin.router.emit("groonga.command.#{normalized_command}",
+        case @input_plugin.command_format
+        when :tag
+          tag = "groonga.command.#{normalized_command}"
+          record = params
+        else
+          tag = "groonga.command"
+          record = {
+            "name" => normalized_command,
+            "arguments" => params
+          }
+        end
+        @input_plugin.router.emit(tag,
                                   Engine.now,
-                                  params)
+                                  record)
       end
 
       private
