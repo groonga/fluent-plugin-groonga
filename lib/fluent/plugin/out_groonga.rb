@@ -586,6 +586,10 @@ module Fluent
                 records.clear
               end
               @client.execute(name, record)
+            elsif tag == "groonga.command"
+              name = record["name"]
+              arguments = record["arguments"]
+              @client.execute(name, arguments)
             else
               records << record
             end
