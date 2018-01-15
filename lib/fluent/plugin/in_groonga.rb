@@ -159,16 +159,16 @@ module Fluent
           normalized_command = command.split(".")[0]
           return unless emit_command?(normalized_command)
           case @input_plugin.command_format
-              when :tag
-                 tag = "groonga.command.#{normalized_command}"
-                 record = params
-              else
-                 tag = "groonga.command"
-                 record = {
-                   "name" => normalized_command,
-                   "arguments" => params
-                 }
-              end
+          when :tag
+            tag = "groonga.command.#{normalized_command}"
+            record = params
+          else
+            tag = "groonga.command"
+            record = {
+              "name" => normalized_command,
+              "arguments" => params
+            }
+          end
           @input_plugin.router.emit(tag,
                                     Engine.now,
                                     record)
