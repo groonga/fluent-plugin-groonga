@@ -96,7 +96,7 @@ EOC
     end
 
     class CommandTest < self
-      def test_basic_command
+      def test_command_name_position_tag
         @response_body = JSON.generate([[0, 0.0, 0.0], true])
         driver = create_driver("groonga.command.table_create")
         time = Time.parse("2012-10-26T08:45:42Z").to_i
@@ -106,11 +106,16 @@ EOC
                      @request_parser.request_url)
       end
 
-      def test_basic_command_with_command_format_record
+      def test_command_name_position_record
         @response_body = JSON.generate([[0, 0.0, 0.0], true])
         driver = create_driver("groonga.command")
         time = Time.parse("2012-10-26T08:45:42Z").to_i
-        driver.emit({"name" => "table_create", "arguments" => {"name" => "Users"}}, time)
+        driver.emit({
+                      "name" => "table_create",
+                      "arguments" => {
+                        "name" => "Users"
+                      }
+                    }, time)
         driver.run
         assert_equal("/d/table_create?name=Users",
                      @request_parser.request_url)
@@ -238,7 +243,7 @@ EOC
     end
 
     class CommandTest < self
-      def test_basic_command
+      def test_command_name_position_tag
         driver = create_driver("groonga.command.table_create")
         time = Time.parse("2012-10-26T08:45:42Z").to_i
         driver.emit({"name" => "Users"}, time)
@@ -257,10 +262,13 @@ EOC
                      ])
       end
 
-      def test_basic_command_with_command_format_record
+      def test_command_name_position_record
         driver = create_driver("groonga.command")
         time = Time.parse("2012-10-26T08:45:42Z").to_i
-        driver.emit({"name" => "table_create", "arguments" => {"name" => "Users"}}, time)
+        driver.emit({
+                      "name" => "table_create",
+                      "arguments" => {"name" => "Users"}
+                    }, time)
         driver.run
         assert_equal([
                        [
