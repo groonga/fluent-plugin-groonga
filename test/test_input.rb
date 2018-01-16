@@ -162,8 +162,9 @@ EOJ
     sub_test_case("command_name_position") do
       sub_test_case("record") do
         def configuration
-          super + <<-CONFIGURATION
-  command_name_position record
+          <<-CONFIGURATION
+            #{super}
+            command_name_position record
           CONFIGURATION
         end
 
