@@ -2,6 +2,18 @@
 
 # News
 
+## 1.2.3: 2018-01-16
+
+### Improvements
+
+* in: `command_name_position`: Added a new parameter to control
+  command format. The default behavior isn't changed.
+
+### Fixes
+
+* out: Fixed a bug that existing column may be tried to create when
+  Groonga command messages and data load messages are mixed.
+
 ## 1.2.2: 2017-11-22
 
 ### Fixes
