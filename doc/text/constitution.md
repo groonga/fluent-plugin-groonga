@@ -66,19 +66,21 @@ Here is an example configuration file:
     # For master Groonga server
     <source>
       @type groonga
-      protocol gqtp          # Or use the below line
+      protocol gqtp                # Or use the below line
       # protocol http
-      bind 127.0.0.1         # For client side Fluentd
-      # bind 192.168.0.1     # For master Groonga server side Fluentd
+      bind 127.0.0.1               # For client side Fluentd
+      # bind 192.168.0.1           # For master Groonga server side Fluentd
       port 10041
-      real_host 192.168.29.1 # IP address of master Groonga server
-      real_port 10041        # Port number of master Groonga server
-      # real_port 20041      # Use different port number
-                             # for master Groonga server side Fluentd
+      real_host 192.168.29.1       # IP address of master Groonga server
+      real_port 10041              # Port number of master Groonga server
+      # real_port 20041            # Use different port number
+                                   # for master Groonga server side Fluentd
+
+      command_name_position record # To keep command order
     </source>
 
     # For slave Groonga server
-    <match groonga.command.*>
+    <match groonga.command.**>
       @type groonga
       protocol gqtp            # Or use the below line
       # protocol http          # You can use different protocol for
@@ -194,19 +196,21 @@ Here is an example configuration file:
     # For master Groonga server
     <source>
       @type groonga
-      protocol gqtp          # Or use the below line
+      protocol gqtp                # Or use the below line
       # protocol http
-      bind 127.0.0.1         # For client side Fluentd
-      # bind 192.168.0.1     # For master Groonga server side Fluentd
+      bind 127.0.0.1               # For client side Fluentd
+      # bind 192.168.0.1           # For master Groonga server side Fluentd
       port 10041
-      real_host 192.168.29.1 # IP address of master Groonga server
-      real_port 10041        # Port number of master Groonga server
-      # real_port 20041      # Use different port number
-                             # for master Groonga server side fluentd
+      real_host 192.168.29.1       # IP address of master Groonga server
+      real_port 10041              # Port number of master Groonga server
+      # real_port 20041            # Use different port number
+                                   # for master Groonga server side fluentd
+
+      command_name_position record # To keep command order
     </source>
 
     # For slave Groonga servers
-    <match groonga.command.*>
+    <match groonga.command.**>
       @type copy
 
       # The first slave Groonga server
