@@ -1,6 +1,7 @@
 # -*- mode: ruby; coding: utf-8 -*-
 #
-# Copyright (C) 2012-2016  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2018  Yasuhiro Horimoto <horimoto@clear-code.com>
+# Copyright (C) 2012-2017  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,7 +18,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = "fluent-plugin-groonga"
-  spec.version = "1.1.7"
+  spec.version = "1.1.8"
   spec.authors = ["Kouhei Sutou"]
   spec.email = ["kou@clear-code.com"]
   spec.summary = "Fluentd plugin to store data into Groonga and implement Groonga replication system."
