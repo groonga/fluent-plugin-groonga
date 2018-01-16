@@ -332,8 +332,7 @@ module Fluent
         @columns = {}
         column_list.each do |column|
           name = column.name
-          vector_p = column.flags.split("|").include?("COLUMN_VECTOR")
-          @columns[name] = Column.new(name, column.range, vector_p)
+          @columns[name] = Column.new(name, column.range, column.vector?)
           ensure_column_indexes(name)
         end
       end
