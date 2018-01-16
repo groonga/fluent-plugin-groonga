@@ -583,22 +583,27 @@ module Fluent
           records = []
           chunk.msgpack_each do |message|
             tag, _, record = message
+            name = nil
+            arguments = nil
             case tag
             when /\Agroonga\.command\./
               name = $POSTMATCH
+              arguments = record
+            when "groonga.command"
+              name = record["name"]
+              arguments = record["arguments"]
+            end
+
+            if name
               unless records.empty?
                 store_records(records)
                 records.clear
               end
-              @client.execute(name, record)
+              @client.execute(name, arguments)
               case name
               when /\A(?:table|column)_(?:create|remove)/
                 @schema.clear_cache
               end
-            when "groonga.command"
-              name = record["name"]
-              arguments = record["arguments"]
-              @client.execute(name, arguments)
             else
               records << record
             end

@@ -405,6 +405,73 @@ EOC
         ]
       end
 
+      def test_command_name_position_record
+        @response_bodies << JSON.generate([
+                                            [0, 0.0, 0.0],
+                                            table_list_response_body,
+                                          ])
+        @response_bodies << JSON.generate([
+                                            [0, 0.0, 0.0],
+                                            column_list_response_body,
+                                          ])
+        driver = create_driver
+        time = event_time("2012-10-26T08:45:42Z")
+        driver.run do
+          @response_bodies << JSON.generate([[0, 0.0, 0.0], 2])
+          driver.feed("log", time + 0, {"message" => "message1"})
+          driver.feed("log", time + 1, {"message" => "message2"})
+
+          @response_bodies << JSON.generate([[0, 0.0, 0.0], true])
+          driver.feed("groonga.command",
+                      time + 2,
+                      {
+                        "name" => "column_create",
+                        "arguments" => {
+                          "table" => "Logs",
+                          "name" => "new_column",
+                          "flags" => "COLUMN_SCALAR",
+                          "type" => "ShortText",
+                        },
+                      })
+
+          @response_bodies << JSON.generate([
+                                              [0, 0.0, 0.0],
+                                              table_list_response_body,
+                                            ])
+          new_column_list_response_body = column_list_response_body
+          new_column_list_response_body << [
+            258,
+            "new_column",
+            "/tmp/db/db.0000102",
+            "scalar",
+            "COLUMN_SCALAR",
+              "Logs",
+            "ShortText",
+            [
+            ],
+          ]
+          @response_bodies << JSON.generate([
+                                              [0, 0.0, 0.0],
+                                              new_column_list_response_body,
+                                            ])
+          @response_bodies << JSON.generate([[0, 0.0, 0.0], 2])
+          driver.feed("log", time + 3,
+                      {"message" => "message3", "new_column" => "value1"})
+          driver.feed("log", time + 4,
+                      {"message" => "message4", "new_column" => "value2"})
+        end
+        assert_equal([
+                       "/d/table_list",
+                       "/d/column_list?table=Logs",
+                       "/d/load?table=Logs",
+                       "/d/column_create?flags=COLUMN_SCALAR&name=new_column&table=Logs&type=ShortText",
+                       "/d/table_list",
+                       "/d/column_list?table=Logs",
+                       "/d/load?table=Logs",
+                     ],
+                     @request_urls)
+      end
+
       def test_command_name_position_tag
         @response_bodies << JSON.generate([
                                             [0, 0.0, 0.0],
