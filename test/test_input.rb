@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2018  Yasuhiro Horimoto <horimoto@clear-code.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -115,7 +115,7 @@ EOC
       end
     end
 
-    def test_target_command_with_command_format_record
+    def test_target_command_with_command_name_position_record
       @real_response["Content-Type"] = "application/json"
       @real_response.body = JSON.generate([[0, 0.0, 0.0], true])
       conf = <<EOC
@@ -124,7 +124,7 @@ EOC
       port #{@port}
       real_host #{@real_host}
       real_port #{@real_port}
-      command_format record
+      command_name_position record
 EOC
       driver = create_driver(conf)
       driver.expect_emit("groonga.command",
