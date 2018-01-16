@@ -2,6 +2,13 @@
 
 # News
 
+## 1.1.8: 2018-01-16
+
+### Improvements
+
+* in: `command_name_position`: Added a new parameter to control
+  command format. The default behavior isn't changed.
+
 ## 1.1.7: 2017-04-04
 
 ### Fixes
