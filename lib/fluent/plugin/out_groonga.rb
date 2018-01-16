@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012-2014  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2018  Yasuhiro Horimoto <horimoto@clear-code.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -332,8 +332,7 @@ module Fluent
         @columns = {}
         column_list.each do |column|
           name = column.name
-          vector_p = column.flags.split("|").include?("COLUMN_VECTOR")
-          @columns[name] = Column.new(name, column.range, vector_p)
+          @columns[name] = Column.new(name, column.range, column.vector?)
           ensure_column_indexes(name)
         end
       end
@@ -567,13 +566,18 @@ module Fluent
         records = []
         chunk.msgpack_each do |message|
           tag, _, record = message
-          if /\Agroonga\.command\./ =~ tag
+          case tag
+          when /\Agroonga\.command\./
             name = $POSTMATCH
             unless records.empty?
               store_records(records)
               records.clear
             end
             @client.execute(name, record)
+          when "groonga.command"
+            name = record["name"]
+            arguments = record["arguments"]
+            @client.execute(name, arguments)
           else
             records << record
           end

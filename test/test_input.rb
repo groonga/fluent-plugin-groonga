@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2018  Yasuhiro Horimoto <horimoto@clear-code.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -150,6 +150,59 @@ EOJ
         @real_response.status = 404
         get("/index.html")
         assert_equal("404", @last_response.code)
+      end
+    end
+
+    sub_test_case("command_name_position") do
+      sub_test_case("record") do
+        def configuration
+          <<-CONFIGURATION
+            #{super}
+            command_name_position record
+          CONFIGURATION
+        end
+
+        def test_not_load
+          @real_response["Content-Type"] = "application/json"
+          @real_response.body = JSON.generate([[0, 0.0, 0.0], true])
+          @driver.expect_emit("groonga.command",
+                              @now,
+                              {
+                                "name" => "table_create",
+                                "arguments" => {
+                                  "name" => "Users",
+                                  "flags" => "TABLE_NO_KEY",
+                                }
+                              })
+          @driver.run do
+            get("/d/table_create", "name" => "Users", "flags" => "TABLE_NO_KEY")
+            assert_equal("200", @last_response.code)
+          end
+       end
+
+        def test_load
+          @real_response["Content-Type"] = "application/json"
+          @real_response.body = JSON.generate([[0, 0.0, 0.0], true])
+          json = <<-JSON
+[
+{"name": "Alice"},
+{"name": "Bob"}
+]
+          JSON
+          @driver.expect_emit("groonga.command",
+                      @now,
+                      {
+                        "name" => "load",
+                        "arguments" => {
+                          "table" => "Users",
+                          "values" => json,
+                        }
+                      })
+          @driver.run do
+            post("/d/load", json, "table" => "Users")
+            assert_equal("200", @last_response.code)
+          end
+        end
       end
     end
 

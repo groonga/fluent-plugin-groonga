@@ -96,11 +96,26 @@ EOC
     end
 
     class CommandTest < self
-      def test_basic_command
+      def test_command_name_position_tag
         @response_body = JSON.generate([[0, 0.0, 0.0], true])
         driver = create_driver("groonga.command.table_create")
         time = Time.parse("2012-10-26T08:45:42Z").to_i
         driver.emit({"name" => "Users"}, time)
+        driver.run
+        assert_equal("/d/table_create?name=Users",
+                     @request_parser.request_url)
+      end
+
+      def test_command_name_position_record
+        @response_body = JSON.generate([[0, 0.0, 0.0], true])
+        driver = create_driver("groonga.command")
+        time = Time.parse("2012-10-26T08:45:42Z").to_i
+        driver.emit({
+                      "name" => "table_create",
+                      "arguments" => {
+                        "name" => "Users"
+                      }
+                    }, time)
         driver.run
         assert_equal("/d/table_create?name=Users",
                      @request_parser.request_url)
@@ -228,10 +243,32 @@ EOC
     end
 
     class CommandTest < self
-      def test_basic_command
+      def test_command_name_position_tag
         driver = create_driver("groonga.command.table_create")
         time = Time.parse("2012-10-26T08:45:42Z").to_i
         driver.emit({"name" => "Users"}, time)
+        driver.run
+        assert_equal([
+                       [
+                         "--input-fd", actual_input_fd,
+                         "--output-fd", actual_output_fd,
+                         "-n", @database_path,
+                       ],
+                       "/d/table_create?name=Users\n",
+                     ],
+                     [
+                       actual_command_line,
+                       actual_input,
+                     ])
+      end
+
+      def test_command_name_position_record
+        driver = create_driver("groonga.command")
+        time = Time.parse("2012-10-26T08:45:42Z").to_i
+        driver.emit({
+                      "name" => "table_create",
+                      "arguments" => {"name" => "Users"}
+                    }, time)
         driver.run
         assert_equal([
                        [
