@@ -35,9 +35,9 @@ class GroongaInputTest < Test::Unit::TestCase
   end
 
   private
-  def create_driver(conf = configuration)
+  def create_driver
     driver = Fluent::Test::InputTestDriver.new(Fluent::GroongaInput)
-    driver.configure(conf)
+    driver.configure(configuration)
     driver
   end
 
@@ -115,33 +115,6 @@ EOC
       end
     end
 
-    def test_target_command_with_command_name_position_record
-      @real_response["Content-Type"] = "application/json"
-      @real_response.body = JSON.generate([[0, 0.0, 0.0], true])
-      conf = <<EOC
-      protocol http
-      bind #{@host}
-      port #{@port}
-      real_host #{@real_host}
-      real_port #{@real_port}
-      command_name_position record
-EOC
-      driver = create_driver(conf)
-      driver.expect_emit("groonga.command",
-                          @now,
-                          {
-                            "name" => "table_create",
-                            "arguments" => {
-                              "name" => "Users",
-                              "flags" => "TABLE_NO_KEY",
-                            }
-                          })
-      driver.run do
-        get("/d/table_create", "name" => "Users", "flags" => "TABLE_NO_KEY")
-        assert_equal("200", @last_response.code)
-      end
-    end
-
     def test_not_target_command
       @driver.run do
         get("/d/status")
@@ -177,6 +150,59 @@ EOJ
         @real_response.status = 404
         get("/index.html")
         assert_equal("404", @last_response.code)
+      end
+    end
+
+    sub_test_case("command_name_position") do
+      sub_test_case("record") do
+        def configuration
+          <<-CONFIGURATION
+            #{super}
+            command_name_position record
+          CONFIGURATION
+        end
+
+        def test_not_load
+          @real_response["Content-Type"] = "application/json"
+          @real_response.body = JSON.generate([[0, 0.0, 0.0], true])
+          @driver.expect_emit("groonga.command",
+                              @now,
+                              {
+                                "name" => "table_create",
+                                "arguments" => {
+                                  "name" => "Users",
+                                  "flags" => "TABLE_NO_KEY",
+                                }
+                              })
+          @driver.run do
+            get("/d/table_create", "name" => "Users", "flags" => "TABLE_NO_KEY")
+            assert_equal("200", @last_response.code)
+          end
+       end
+
+        def test_load
+          @real_response["Content-Type"] = "application/json"
+          @real_response.body = JSON.generate([[0, 0.0, 0.0], true])
+          json = <<-JSON
+[
+{"name": "Alice"},
+{"name": "Bob"}
+]
+          JSON
+          @driver.expect_emit("groonga.command",
+                      @now,
+                      {
+                        "name" => "load",
+                        "arguments" => {
+                          "table" => "Users",
+                          "values" => json,
+                        }
+                      })
+          @driver.run do
+            post("/d/load", json, "table" => "Users")
+            assert_equal("200", @last_response.code)
+          end
+        end
       end
     end
 
