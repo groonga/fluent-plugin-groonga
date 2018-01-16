@@ -50,6 +50,24 @@ Here are available parameters in `source` directive:
 
     * default: `10041`
 
+  * `command_name_position`: It specifies where Groonga command's
+    name.
+
+    If `tag` is specified, the plugin puts Groonga command's name to
+    tag as `groonga.command.#{COMMAND_NAME}` format and record
+    is the arguments of the command.
+
+    If `record` is specified, the plugin puts both Groonga command's
+    name and arguments to record as `{"name": "#{COMMAND_NAME}",
+    "arguments": {...}}` format. Tag is always `groonga.command`.
+
+    `record` is suitable when you want to implement replication. If
+    you `tag` for replication, Groonga command's order may be changed.
+
+    * Available values: `tag`, `record`
+
+    * default: `tag`
+
   * `emit_commands`: TODO
 
 Here is an example:
@@ -65,6 +83,7 @@ Here is an example:
       port 10041
       real_host 192.168.0.1
       real_port 10041
+      command_name_position record
     </source>
 
 ## The `groonga` output plugin
