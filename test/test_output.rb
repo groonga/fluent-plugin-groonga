@@ -92,7 +92,7 @@ EOC
     end
 
     class CommandTest < self
-      def test_basic_command
+      def test_command_name_position_tag
         @response_body = JSON.generate([[0, 0.0, 0.0], true])
         driver = create_driver
         time = event_time("2012-10-26T08:45:42Z")
@@ -103,12 +103,18 @@ EOC
                      @request_parser.request_url)
       end
 
-      def test_basic_command_with_command_format_record
+      def test_command_name_position_record
         @response_body = JSON.generate([[0, 0.0, 0.0], true])
         driver = create_driver
         time = event_time("2012-10-26T08:45:42Z")
         driver.run(default_tag: "groonga.command") do
-          driver.feed(time, {"name" => "table_create", "arguments" => {"name" => "Users"}})
+          driver.feed(time,
+                      {
+                        "name" => "table_create",
+                        "arguments" => {
+                          "name" => "Users",
+                        },
+                      })
         end
         assert_equal("/d/table_create?name=Users",
                      @request_parser.request_url)
@@ -238,7 +244,7 @@ EOC
     end
 
     class CommandTest < self
-      def test_basic_command
+      def test_command_name_position_tag
         driver = create_driver
         time = event_time("2012-10-26T08:45:42Z")
         driver.run(default_tag: "groonga.command.table_create") do
@@ -257,11 +263,18 @@ EOC
                        actual_input,
                      ])
       end
-      def test_basic_command_with_command_format_record
+
+      def test_command_name_position_record
         driver = create_driver
         time = event_time("2012-10-26T08:45:42Z")
         driver.run(default_tag: "groonga.command") do
-          driver.feed(time, {"name" => "table_create", "arguments" => {"name" => "Users"}})
+          driver.feed(time,
+                      {
+                        "name" => "table_create",
+                        "arguments" => {
+                          "name" => "Users",
+                        },
+                      })
         end
         assert_equal([
                        [
