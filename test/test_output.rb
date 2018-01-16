@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2017  Kouhei Sutou <kou@clear-code.com>
+# Copyright (C) 2012-2018  Kouhei Sutou <kou@clear-code.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -44,9 +44,10 @@ EOC
   class HTTPTest < self
     setup :before => :append
     def setup_real_server
+      @request_urls = []
       @request_parser = HTTP::Parser.new
       @request_body = ""
-      @response_body = nil
+      @response_bodies = []
 
       @real_host = "127.0.0.1"
       @real_port = 29292
@@ -55,16 +56,15 @@ EOC
         loop do
           response_config = WEBrick::Config::HTTP.dup.update(:Logger => $log)
           real_response = WEBrick::HTTPResponse.new(response_config)
-          request_headers = nil
-          request_body = ""
           client = @real_server.accept
           @request_parser.on_body = lambda do |chunk|
             @request_body << chunk
           end
           @request_parser.on_message_complete = lambda do
-            real_response.body = @response_body
+            real_response.body = @response_bodies.shift
             real_response.send_response(client)
             client.close
+            @request_urls << @request_parser.request_url
           end
 
           loop do
@@ -93,7 +93,7 @@ EOC
 
     class CommandTest < self
       def test_command_name_position_tag
-        @response_body = JSON.generate([[0, 0.0, 0.0], true])
+        @response_bodies << JSON.generate([[0, 0.0, 0.0], true])
         driver = create_driver
         time = event_time("2012-10-26T08:45:42Z")
         driver.run(default_tag: "groonga.command.table_create") do
@@ -104,7 +104,7 @@ EOC
       end
 
       def test_command_name_position_record
-        @response_body = JSON.generate([[0, 0.0, 0.0], true])
+        @response_bodies << JSON.generate([[0, 0.0, 0.0], true])
         driver = create_driver
         time = event_time("2012-10-26T08:45:42Z")
         driver.run(default_tag: "groonga.command") do
@@ -129,8 +129,126 @@ EOC
         CONFIGURATION
       end
 
+      def table_list_response_body
+        [
+          [
+            [
+              "id",
+              "UInt32"
+            ],
+            [
+              "name",
+              "ShortText"
+            ],
+            [
+              "path",
+              "ShortText"
+            ],
+            [
+              "flags",
+              "ShortText"
+            ],
+            [
+              "domain",
+              "ShortText"
+            ],
+            [
+              "range",
+              "ShortText"
+            ],
+            [
+              "default_tokenizer",
+              "ShortText"
+            ],
+            [
+              "normalizer",
+              "ShortText"
+            ]
+          ],
+          [
+            256,
+            "Logs",
+            "//tmp/db/db.0000100",
+            "TABLE_HASH_KEY|PERSISTENT",
+            "ShortText",
+            nil,
+            nil,
+            nil,
+          ],
+        ]
+      end
+
+      def column_list_response_body
+        [
+          [
+            [
+              "id",
+              "UInt32"
+            ],
+            [
+              "name",
+              "ShortText"
+            ],
+            [
+              "path",
+              "ShortText"
+            ],
+            [
+              "type",
+              "ShortText"
+            ],
+            [
+              "flags",
+              "ShortText"
+            ],
+            [
+              "domain",
+              "ShortText"
+            ],
+            [
+              "range",
+              "ShortText"
+            ],
+            [
+              "source",
+              "ShortText"
+            ]
+          ],
+          [
+            256,
+            "_key",
+            "",
+            "",
+            "COLUMN_SCALAR",
+            "Logs",
+            "ShortText",
+            [
+            ]
+          ],
+          [
+            257,
+            "message",
+            "/tmp/db/db.0000101",
+            "scalar",
+            "COLUMN_SCALAR",
+            "Logs",
+            "ShortText",
+            [
+            ]
+          ],
+        ]
+      end
+
       def test_one_message
-        @response_body = JSON.generate([[0, 0.0, 0.0], [1]])
+        @response_bodies << JSON.generate([
+                                            [0, 0.0, 0.0],
+                                            table_list_response_body,
+                                          ])
+        @response_bodies << JSON.generate([
+                                            [0, 0.0, 0.0],
+                                            column_list_response_body,
+                                          ])
+        @response_bodies << JSON.generate([[0, 0.0, 0.0], [1]])
         driver = create_driver
         time = event_time("2012-10-26T08:45:42Z")
         driver.run(default_tag: "log") do
@@ -143,7 +261,15 @@ EOC
       end
 
       def test_multiple_messages
-        @response_body = JSON.generate([[0, 0.0, 0.0], [2]])
+        @response_bodies << JSON.generate([
+                                            [0, 0.0, 0.0],
+                                            table_list_response_body,
+                                          ])
+        @response_bodies << JSON.generate([
+                                            [0, 0.0, 0.0],
+                                            column_list_response_body,
+                                          ])
+        @response_bodies << JSON.generate([[0, 0.0, 0.0], [2]])
         driver = create_driver
         time = event_time("2012-10-26T08:45:42Z")
         driver.run(default_tag: "log") do
@@ -157,6 +283,190 @@ EOC
                        {"message" => "2nd message"},
                      ],
                      JSON.parse(@request_body))
+      end
+    end
+
+    class MixTest < self
+      def configuration
+        <<-CONFIGURATION
+          #{super}
+          store_table Logs
+        CONFIGURATION
+      end
+
+
+      def table_list_response_body
+        [
+          [
+            [
+              "id",
+              "UInt32"
+            ],
+            [
+              "name",
+              "ShortText"
+            ],
+            [
+              "path",
+              "ShortText"
+            ],
+            [
+              "flags",
+              "ShortText"
+            ],
+            [
+              "domain",
+              "ShortText"
+            ],
+            [
+              "range",
+              "ShortText"
+            ],
+            [
+              "default_tokenizer",
+              "ShortText"
+            ],
+            [
+              "normalizer",
+              "ShortText"
+            ]
+          ],
+          [
+            256,
+            "Logs",
+            "//tmp/db/db.0000100",
+            "TABLE_HASH_KEY|PERSISTENT",
+            "ShortText",
+            nil,
+            nil,
+            nil,
+          ],
+        ]
+      end
+
+      def column_list_response_body
+        [
+          [
+            [
+              "id",
+              "UInt32"
+            ],
+            [
+              "name",
+              "ShortText"
+            ],
+            [
+              "path",
+              "ShortText"
+            ],
+            [
+              "type",
+              "ShortText"
+            ],
+            [
+              "flags",
+              "ShortText"
+            ],
+            [
+              "domain",
+              "ShortText"
+            ],
+            [
+              "range",
+              "ShortText"
+            ],
+            [
+              "source",
+              "ShortText"
+            ]
+          ],
+          [
+            256,
+            "_key",
+            "",
+            "",
+            "COLUMN_SCALAR",
+            "Logs",
+            "ShortText",
+            [
+            ]
+          ],
+          [
+            257,
+            "message",
+            "/tmp/db/db.0000101",
+            "scalar",
+            "COLUMN_SCALAR",
+            "Logs",
+            "ShortText",
+            [
+            ]
+          ],
+        ]
+      end
+
+      def test_command_name_position_tag
+        @response_bodies << JSON.generate([
+                                            [0, 0.0, 0.0],
+                                            table_list_response_body,
+                                          ])
+        @response_bodies << JSON.generate([
+                                            [0, 0.0, 0.0],
+                                            column_list_response_body,
+                                          ])
+        driver = create_driver
+        time = event_time("2012-10-26T08:45:42Z")
+        driver.run do
+          @response_bodies << JSON.generate([[0, 0.0, 0.0], 2])
+          driver.feed("log", time + 0, {"message" => "message1"})
+          driver.feed("log", time + 1, {"message" => "message2"})
+
+          @response_bodies << JSON.generate([[0, 0.0, 0.0], true])
+          driver.feed("groonga.command.column_create",
+                      time + 2,
+                      {
+                        "table" => "Logs",
+                        "name" => "new_column",
+                        "flags" => "COLUMN_SCALAR",
+                        "type" => "ShortText",
+                      })
+
+          @response_bodies << JSON.generate([
+                                              [0, 0.0, 0.0],
+                                              table_list_response_body,
+                                            ])
+          new_column_list_response_body = column_list_response_body
+          new_column_list_response_body << [
+            258,
+            "new_column",
+            "/tmp/db/db.0000102",
+            "scalar",
+            "COLUMN_SCALAR",
+              "Logs",
+            "ShortText",
+            [
+            ],
+          ]
+          @response_bodies << JSON.generate([
+                                              [0, 0.0, 0.0],
+                                              new_column_list_response_body,
+                                            ])
+          @response_bodies << JSON.generate([[0, 0.0, 0.0], 2])
+          driver.feed("log", time + 3,
+                      {"message" => "message3", "new_column" => "value1"})
+          driver.feed("log", time + 4,
+                      {"message" => "message4", "new_column" => "value2"})
+        end
+        assert_equal([
+                       "/d/table_list",
+                       "/d/column_list?table=Logs",
+                       "/d/load?table=Logs",
+                       "/d/column_create?flags=COLUMN_SCALAR&name=new_column&table=Logs&type=ShortText",
+                       "/d/table_list",
+                       "/d/column_list?table=Logs",
+                       "/d/load?table=Logs",
+                     ],
+                     @request_urls)
       end
     end
   end

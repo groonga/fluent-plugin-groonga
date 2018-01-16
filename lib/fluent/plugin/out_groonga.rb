@@ -314,6 +314,11 @@ module Fluent
           end
         end
 
+        def clear_cache
+          @target_table = nil
+          @columns = nil
+        end
+
         private
         def ensure_table
           return if @target_table
@@ -586,6 +591,10 @@ module Fluent
                 records.clear
               end
               @client.execute(name, record)
+              case name
+              when /\A(?:table|column)_(?:create|remove)/
+                @schema.clear_cache
+              end
             when "groonga.command"
               name = record["name"]
               arguments = record["arguments"]
