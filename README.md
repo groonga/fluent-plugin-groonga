@@ -165,7 +165,7 @@ Groonga:
 
 ## License
 
-LGPL 2.1. See doc/text/lgpl-2.1.txt for details.
+LGPL 2.1 or later. See doc/text/lgpl-2.1.txt for details.
 
 (Kouhei Sutou has a right to change the license including
 contributed patches.)
