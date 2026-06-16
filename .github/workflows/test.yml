@@ -1,0 +1,34 @@
+name: Test
+on:
+  push:
+    branches-ignore:
+      - 'copilot/**'
+      - 'dependabot/**'
+  pull_request:
+jobs:
+  ruby-versions:
+    uses: ruby/actions/.github/workflows/ruby_versions.yml@master
+    with:
+      engine: cruby
+      min_version: 3.2
+  test:
+    needs: ruby-versions
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest']
+        ruby: ${{ fromJson(needs.ruby-versions.outputs.versions) }}
+        exclude:
+          - ruby: head
+
+    name: Ruby ${{ matrix.ruby }} on ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v6
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+    - name: unit testing
+      run: |
+        bundle install --jobs 4 --retry 3
+        bundle exec rake test
