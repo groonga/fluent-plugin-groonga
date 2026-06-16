@@ -1,7 +1,9 @@
 name: Test
 on:
   push:
-    branches: [master]
+    branches-ignore:
+      - 'copilot/**'
+      - 'dependabot/**'
   pull_request:
 jobs:
   ruby-versions:
