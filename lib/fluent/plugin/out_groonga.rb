@@ -16,7 +16,7 @@
 
 require "fileutils"
 
-require "yajl"
+require "json"
 
 require "groonga/client"
 
@@ -620,7 +620,7 @@ module Fluent
 
           arguments = {
             "table" => @table,
-            "values" => Yajl::Encoder.encode(records),
+            "values" => JSON.generate(records),
           }
           @client.execute("load", arguments)
         end

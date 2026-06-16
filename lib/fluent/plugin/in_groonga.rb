@@ -461,7 +461,7 @@ module Fluent
             @command_parser.on_load_value do |command, value|
               arguments = command.arguments.dup
               arguments[:columns] = command.columns.join(", ")
-              arguments[:values] = Yajl::Encoder.encode([value])
+              arguments[:values] = JSON.generate([value])
               @input.emit(command.command_name, arguments)
             end
           end
