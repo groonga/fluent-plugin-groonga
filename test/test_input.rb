@@ -53,7 +53,7 @@ EOC
       @repeater = nil
       response_config = WEBrick::Config::HTTP.dup.update(:Logger => $log)
       @real_response = WEBrick::HTTPResponse.new(response_config)
-      Thread.new do
+      @real_server_thread = Thread.new do
         @repeater = @real_server.accept
         @real_server.close
         parser = HTTP::Parser.new
@@ -73,6 +73,7 @@ EOC
 
     teardown
     def teardown_real_server
+      @real_server_thread.kill
       @real_server.close unless @real_server.closed?
 
       if @repeater and not @repeater.closed?
