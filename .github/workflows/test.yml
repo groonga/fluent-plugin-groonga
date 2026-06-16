@@ -3,7 +3,6 @@ on:
   push:
     branches: [master]
   pull_request:
-    branches: [master]
 jobs:
   ruby-versions:
     uses: ruby/actions/.github/workflows/ruby_versions.yml@master
